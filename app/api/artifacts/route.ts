@@ -1,6 +1,6 @@
-import supabase from "@/libs/supabase-client";
-import { NextRequest, NextResponse } from "next/server";
+// import supabase from "@/libs/supabase-client";
+// import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async () => {
+// export const POST = async () => {
 
-}
+// }

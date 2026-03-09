@@ -18,7 +18,7 @@ export default function Home() {
       </section>
 
       {/* Section 2: Data Listing Grid */}
-      <section className="h-screen w-full snap-start bg-amber-400 flex items-center justify-center">
+      <section className="h-screen w-full snap-start bg-blue-500 flex items-center justify-center">
         <Artifacts />
       </section>
     </main>
