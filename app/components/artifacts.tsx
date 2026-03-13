@@ -1,19 +1,27 @@
-
+"use client"
 import { Card } from "./card";
 import supabase from "@/libs/supabase-client";
+import { useEffect, useState } from "react";
 
-
-export const Artifacts = async () => {
+export const Artifacts = () => {
+    const [data, setData] = useState<any[]>([]);
+    // const [error, setError] = useState(false);
 
     // ดึงข้อมูลจากตาราง artifacts
-    const { data, error } = await supabase
-        .from('Artifacts')
-        .select('*');
-    console.log("Data:", data);
-    console.log("Error:", error);    // 2. จัดการ Error (ถ้าดึงข้อมูลไม่ได้)
-    if (error) {
-        return <div className="p-10 text-red-500">เกิดข้อผิดพลาด: {error.message}</div>;
-    }
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data: artifacts } = await supabase.from('Artifacts').select('*');
+            if (artifacts) {
+                setData(artifacts);
+            }
+            // else {
+            //     setError(true);
+            //     return <div className="p-10 text-red-500"></div>;
+            // }
+        };
+        fetchData();
+    }, []);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {data.length > 0 ? (data.map((item) => (

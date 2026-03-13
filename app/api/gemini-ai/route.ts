@@ -1,0 +1,29 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
+
+export const POST = async (req: Request) => {
+    try {
+        const apiKey = process.env.GOOGLE_GEMINI_API;
+        if (!apiKey) {
+            return NextResponse.json({ error: "ไม่พบ Gemini API Key ในระบบ" }, { status: 500 });
+        }
+        //
+        const body = await req.json();
+        const prompt = body.query || body.prompt;
+        if (!prompt) {
+            return NextResponse.json({ error: "กรุณาส่งข้อความค้นหา" }, { status: 400 });
+        }
+        //
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
+        //
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+        console.log("Connected Gemini");
+        return NextResponse.json({ result: responseText }); //คำตอบ AI
+    }
+    catch (error: any) {
+        console.error("Gemini Error:", error.message);
+        return NextResponse.json({ error: 'Connection Gemini Failed' })
+    }
+}
