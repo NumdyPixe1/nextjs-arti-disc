@@ -15,15 +15,15 @@ export const POST = async (req: Request) => {
         }
         //
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
-        //
+        // --- Prompt ---
+        /*  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" }) 
         const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-        console.log("Connected Gemini");
-        return NextResponse.json({ result: responseText }); //คำตอบ AI
+          const responseText = result.response.text();
+          return NextResponse.json({ result: responseText }); //คำตอบ AI
+        */
     }
     catch (error: any) {
         console.error("Gemini Error:", error.message);
-        return NextResponse.json({ error: 'Connection Gemini Failed' })
+        return NextResponse.json({ error: 'Connection Gemini Failed' }, { status: 500 });
     }
 }
