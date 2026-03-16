@@ -38,7 +38,7 @@ export const GET = async () => {
             if (updateError) console.error(`ID ${item.id} Broken:`, updateError.message);
         }
 
-        return NextResponse.json({ message: "Gemini Embedding completed!" });
+        return NextResponse.json({ message: "Gemini embedding completed!" });
     }
     catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
