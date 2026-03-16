@@ -41,46 +41,43 @@ export type Database = {
     Tables: {
       Artifacts: {
         Row: {
+          art_style: string | null
           aspect_ratio: number | null
           created_at: string
           description: string | null
-          embedding: string | null
-          art_style: string | null
+          embedding: number[] | null
           id: number
           image_url: string | null
           location: string | null
           location_found: string | null
           material: string | null
           title: string | null
-          type: string | null
         }
         Insert: {
+          art_style?: string | null
           aspect_ratio?: number | null
           created_at?: string
           description?: string | null
-          embedding?: string | null
-          art_style?: string | null
+          embedding?: number[] | null
           id?: number
           image_url?: string | null
           location?: string | null
           location_found?: string | null
           material?: string | null
           title?: string | null
-          type?: string | null
         }
         Update: {
+          art_style?: string | null
           aspect_ratio?: number | null
           created_at?: string
           description?: string | null
-          embedding?: string | null
-          art_style?: string | null
+          embedding?: number[] | null
           id?: number
           image_url?: string | null
           location?: string | null
           location_found?: string | null
           material?: string | null
           title?: string | null
-          type?: string | null
         }
         Relationships: []
       }
