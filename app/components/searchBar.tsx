@@ -10,6 +10,7 @@ interface Props {
 
 export const SearchBar = ({ onSearch, loading }: Props) => {
     const [query, setQuery] = useState("");
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!query.trim()) return;
