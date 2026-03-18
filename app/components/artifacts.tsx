@@ -3,28 +3,32 @@ import { Card } from "./card";
 import supabase from "@/libs/supabase-client";
 import { useEffect, useState } from "react";
 
-export const Artifacts = () => {
+interface Props {
+    search_data?: any[];
+}
+
+export const Artifacts = ({ search_data }: Props) => {
     const [data, setData] = useState<any[]>([]);
     // const [error, setError] = useState(false);
 
-    // ดึงข้อมูลจากตาราง artifacts
+    // ดึงข้อมูลทั้งหมดจากตาราง artifacts
     useEffect(() => {
-        const fetchData = async () => {
-            const { data: artifacts } = await supabase.from('Artifacts').select('*');
-            if (artifacts) {
-                setData(artifacts);
+        if (!search_data || search_data.length === 0) {
+            const fetchData = async () => {
+                const { data: artifacts } = await supabase.from('Artifacts').select('*');
+                if (artifacts) {
+                    setData(artifacts);
+                }
             }
-            // else {
-            //     setError(true);
-            //     return <div className="p-10 text-red-500"></div>;
-            // }
+            fetchData();
         };
-        fetchData();
-    }, []);
+        // เมื่อ search_data เปลี่ยน ให้เช็คใหม่
+    }, [search_data]);
 
+    const displayData = (search_data && search_data.length > 0) ? search_data : data;
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-            {data.length > 0 ? (data.map((item) => (
+            {displayData.length > 0 ? (displayData.map((item) => (
                 <Card
                     key={item.id}
                     title={item.title ?? "ไม่ระบุ"}

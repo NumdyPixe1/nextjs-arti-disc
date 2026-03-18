@@ -1,3 +1,4 @@
+// ** http://localhost:3000/api/embedding **
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import supabase from "@/libs/supabase-client";
@@ -12,14 +13,16 @@ export const GET = async () => {
         const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
 
         // --- Embedding Vector ---
-        const { data: artifacts, error: fetchError } = await supabase.from('Artifacts').select('*').is('embedding', null);
+        const { data: artifacts, error: fetchError } = await supabase
+            .from('Artifacts').select('*');
+        //.is('embedding', null)
         if (!artifacts || artifacts.length === 0) {
             return NextResponse.json({ message: "No artifacts found without embeddings." }, { status: 404 });
         }
         console.log(`Processing Gemini Embeddings ${artifacts.length} Items...`);
 
         for (const item of artifacts) {
-            const textToEmbed = `Title: ${item.title} Description: ${item.description}`;
+            const textToEmbed = `Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`;
 
             // 2. สร้าง Vector ด้วย Gemini
             const result = await embedModel.embedContent(textToEmbed);
@@ -30,8 +33,8 @@ export const GET = async () => {
                 .from('Artifacts')
                 .update({
                     // Array เชื่อมกับคอมม่าและล้อมด้วยวงเล็บเหลี่ยมเพื่อให้ตรงกับรูปแบบที่เก็บในฐานข้อมูล
-                    embedding: `[${vector.join(',')}]`
-                } as any)
+                    embedding: vector
+                })
                 .eq('id', item.id);
 
             // Error

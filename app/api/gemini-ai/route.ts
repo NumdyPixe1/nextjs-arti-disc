@@ -17,9 +17,9 @@ export const POST = async (req: Request) => {
         const genAI = new GoogleGenerativeAI(apiKey);
         // --- Prompt ---
         /*  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" }) 
-        const result = await model.generateContent(prompt);
-          const responseText = result.response.text();
-          return NextResponse.json({ result: responseText }); //คำตอบ AI
+        const results = await model.generateContent(prompt);
+          const responseText = results.response.text();
+          return NextResponse.json({ results: responseText }); //คำตอบ AI
         */
     }
     catch (error: any) {

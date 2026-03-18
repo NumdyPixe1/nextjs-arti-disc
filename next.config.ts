@@ -4,11 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'antique.finearts.go.th',
-        pathname: '/**',
-      },
+      // {
+      //   protocol: 'https',
+      //   hostname: 'antique.finearts.go.th',
+      //   pathname: '/**',
+      // },
       {
         protocol: 'https',
         hostname: 'upload.wikimedia.org',
