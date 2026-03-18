@@ -18,9 +18,6 @@ export const SearchBar = ({ onSearch, loading }: Props) => {
     }
 
     const { scrollY } = useScroll();
-    // คำนวณระยะการเลื่อน
-    // [0, 300] คือระยะ scroll จากบนสุดลงมา 300px
-    // [0, -420] คือการดันตัวมันเองขึ้นไป 420px
     const y = useTransform(scrollY, [0, 300], [0, -320]);
     const smoothY = useSpring(y, { stiffness: 100, damping: 20 });
 
@@ -68,3 +65,7 @@ export const SearchBar = ({ onSearch, loading }: Props) => {
         </motion.div >
     );
 };
+
+// คำนวณระยะการเลื่อน
+// [0, 300] คือระยะ scroll จากบนสุดลงมา 300px
+// [0, -420] คือการดันตัวมันเองขึ้นไป 420px

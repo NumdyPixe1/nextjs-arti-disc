@@ -10,8 +10,20 @@ interface Props {
 export const Card = ({ title, image_url, art, location_found }: Props) => {
     return (
         <div className=" overflow-hidden relative  w-64 h-72 group bg-white rounded-2xl flex flex-col">
-            {/* <Image blurDataURL="" fill className="object-cover" src={image_url} alt={title} /> */}
-            <img className=" w-full h-full object-cover" src={image_url} alt={title} />
+            {image_url ? (
+                <Image
+                    fill
+                    className="object-cover"
+                    src={image_url}
+                    alt={title}
+                    loading="lazy"
+                />
+            ) : (
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <span className="text-sm text-gray-400">ไม่มีรูปภาพ</span>
+                </div>
+            )}
+            {/* <img className=" w-full h-full object-cover" src={image_url} alt={title} /> */}
             <div className="absolute inset-0 bg-linear-to-t rounded-2xl from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <div className="flex flex-row absolute top-4 left-4">
                     <LocalIcon />

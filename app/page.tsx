@@ -3,6 +3,7 @@
 import { SearchBar } from "./components/searchBar";
 import { Artifacts } from "./components/artifacts";
 import { useState } from "react";
+import { Loading } from "./components/loading";
 export default function Home() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -80,8 +81,7 @@ export default function Home() {
 
         {/* Loading */}
         {loading && (<div className="text-center py-20">
-          <div className="animate-bounce text-blue-500 text-6xl">🔍</div>
-          <p className="mt-4 text-gray-500">AI กำลังวิเคราะห์ความหมาย...</p>
+          <Loading />
         </div>)}
 
         {/* Found Results */}
