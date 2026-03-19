@@ -1,6 +1,7 @@
+// ดึงข้อมูลมาใส่ใน Card 
 "use client"
-import { Card } from "./card";
-import supabase from "@/libs/supabase-client";
+import { Card } from "./Card";
+import supabase from "@/lib/supabase-client";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -9,7 +10,6 @@ interface Props {
 
 export const Artifacts = ({ search_data }: Props) => {
     const [data, setData] = useState<any[]>([]);
-    // const [error, setError] = useState(false);
 
     // ดึงข้อมูลทั้งหมดจากตาราง artifacts
     useEffect(() => {
@@ -35,6 +35,7 @@ export const Artifacts = ({ search_data }: Props) => {
                     image_url={item.image_url ?? "ไม่ระบุ"}
                     art={item.art_style ?? "ไม่ระบุ"}
                     location_found={item.location_found ?? "ไม่ระบุ"}
+                    href={`/artifact/${item.id}`}
                 />
             ))) : (<p className="text-white/20 mb-60  text-5xl font-bold">ไม่พบข้อมูล</p>)}
         </div>)

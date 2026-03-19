@@ -1,7 +1,7 @@
 // ** http://localhost:3000/api/embedding **
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-import supabase from "@/libs/supabase-client";
+import supabase from "@/lib/supabase-client";
 
 export const GET = async () => {
     try {

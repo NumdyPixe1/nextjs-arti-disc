@@ -1,10 +1,10 @@
 "use client"
 
-import { SearchBar } from "./components/searchBar";
-import { Artifacts } from "./components/artifacts";
+import { Artifacts } from "./components/Artifacts";
 import { useState } from "react";
-import { Loading } from "./components/loading";
-export default function Home() {
+import { SearchBar } from "./components/SearchBar";
+import { Loading } from "./components/Loading";
+export default function HomePage() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -69,14 +69,14 @@ export default function Home() {
       </div>
 
       {/* Section 1: Visual Search Focus */}
-      <section className="h-screen w-full snap-start bg-blue-500 flex items-center justify-center">
+      <section className="h-screen w-full snap-start bg-[#FDF8F1] flex items-center justify-center">
         <div className="flex flex-col ">
-          <h1 className="text-white mb-60  text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
+          <h1 className="text-[#1A1A1A] mb-60  text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
         </div>
       </section>
 
       {/* Section 2: Data Listing Grid */}
-      <section className="h-screen w-full snap-start bg-blue-500 flex items-center justify-center">
+      <section className="h-screen w-full snap-start bg-[#FDF8F1] flex items-center justify-center">
         {results.length === 0 && !loading && (<Artifacts />)}
 
         {/* Loading */}
@@ -92,12 +92,6 @@ export default function Home() {
             {/* ส่ง results เข้าไปทีเดียวเลย Artifacts จะไป map ข้างในเอง */}
             <Artifacts search_data={results} />
 
-            {/* <button
-              onClick={() => setResults([])}
-              className="mt-10 text-white/50 hover:text-white underline transition-colors"
-            >
-              กลับไปหน้าเริ่มต้น
-            </button> */}
           </div>
         )}
       </section>
