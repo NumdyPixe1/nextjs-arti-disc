@@ -1,13 +1,15 @@
+// แปลงข้อมูลในตาราง Artifacts ที่ยังไม่มี embedding
 // ** http://localhost:3000/api/embedding **
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import supabase from "@/lib/supabase-client";
 
+const apiKey = process.env.GOOGLE_GEMINI_API;
+
 export const GET = async () => {
     try {
-        const apiKey = process.env.GOOGLE_GEMINI_API;
         if (!apiKey) {
-            return NextResponse.json({ error: "ไม่พบ Gemini API Key ในระบบ" }, { status: 500 });
+            throw new Error("Gemini API Key not found");
         }
         const genAI = new GoogleGenerativeAI(apiKey);
         const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });

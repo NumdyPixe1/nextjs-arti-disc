@@ -1,8 +1,9 @@
 
 import { getArtifact } from "@/lib/artifacts";
 import Image from "next/image";
-// import Link from "next/link";
+
 import NotFoundPage from "./not-found";
+import { AiDescription } from "@/app/components/AiDescription";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
@@ -15,20 +16,6 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-            {/* Header Navigation */}
-            {/* <div className="border-b border-white/10 backdrop-blur-sm sticky top-0 z-10">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="text-white/60 hover:text-white transition-colors flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        กลับ
-                    </Link>
-                    <h1 className="text-white/80 text-sm font-medium">รายละเอียดโบราณวัตถุ</h1>
-                    <div className="w-5"></div>
-                </div>
-            </div> */}
-
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 {/* ส่วนบน: ข้อมูลหลัก */}
@@ -36,11 +23,11 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     {/* Image */}
                     <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden bg-white/5 border border-white/10">
                         <Image
+                            className="object-contain p-4"
                             fill
-                            className="object-cover"
+                            sizes="(max-w-768px) 100vw, 800px"
                             src={item.image_url ?? "/img/no-photos.png"}
                             alt={item.title ?? "โบราณวัตถุ"}
-                            loading="lazy"
                             priority
                         />
                     </div>
@@ -65,13 +52,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                                 </div>
                             </div>
                         </div>
-
-                        <div>
-                            <h3 className="text-lg font-semibold text-white mb-3">คำบรรยาย</h3>
-                            <p className="text-white/70 leading-relaxed">
-                                {item.description ?? "ไม่มีคำบรรยายสำหรับโบราณวัตถุนี้"}
-                            </p>
-                        </div>
+                        <AiDescription data={item} />
                     </div>
                 </div>
 

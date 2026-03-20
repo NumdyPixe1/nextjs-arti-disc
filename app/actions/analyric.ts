@@ -1,0 +1,44 @@
+"use server";
+import { baseInstruction } from "@/lib/analyric-prompt";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { a } from "motion/react-client";
+
+const apiKey = process.env.GOOGLE_GEMINI_API;
+
+async function imageUrlToBase64(url: string) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return buffer.toString("base64");
+}
+
+export const AnalyzeArtifact = async (dbData: any) => {
+    try {
+        if (!apiKey) {
+            throw new Error("Gemini API Key not found");
+        }
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
+
+        // ดึงข้อมูลใน DB และแปลงรูปภาพเป็น Base64
+        const imageBase64 = await imageUrlToBase64(dbData.image_url);
+        const prompt = baseInstruction(dbData);
+
+        // ส่งข้อมูลไปให้ Gemini วิเคราะห์
+        const result = await model.generateContent([
+            prompt,
+            { inlineData: { data: imageBase64, mimeType: "image/jpeg" } }
+        ]);
+        const response = result.response.text();
+
+        // Cleaning เอาข้อมูลในปีกกาออกมา
+        const jsonMatch = response.match(/\{[\s\S]*\}/);
+        // ถ้าไม่มีปีกกาให้ใช้ข้อความทั้งหมดแล้วลบ ```json ออก
+        const cleanedJson = jsonMatch ? jsonMatch[0] : response.replace(/```json|```/g, "").trim();
+        return JSON.parse(cleanedJson);
+
+    }
+    catch (error: any) {
+        console.error("Connection Gemini Failed:", error);
+    }
+}
