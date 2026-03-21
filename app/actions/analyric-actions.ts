@@ -34,7 +34,7 @@ async function getImageData(url: string) {
     };
 }
 
-export const AnalyzeArtifact = async (dbData: any) => {
+export const analyzeArtifact = async (dbData: any) => {
     try {
         if (!apiKey) {
             throw new Error("Gemini API Key not found");

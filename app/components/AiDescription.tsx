@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { AnalyzeArtifact } from "../actions/analyric-actions";
+import { analyzeArtifact } from "../actions/analyric-actions";
 
 // หยิบ data จาก props มาแสดงผลในนี้
 export const AiDescription = ({ data }: { data: any }) => {
@@ -20,7 +20,7 @@ export const AiDescription = ({ data }: { data: any }) => {
             setError(null);
 
             try {
-                const result = await AnalyzeArtifact(data);
+                const result = await analyzeArtifact(data);
                 if (!result || !result.description) {
                     setError("AI ไม่สามารถสร้างคำอธิบายได้ โปรดลองอีกครั้ง");
                 } else {
@@ -42,7 +42,7 @@ export const AiDescription = ({ data }: { data: any }) => {
         setAiAnalysis(null);
         setError(null);
         setLoading(true);
-        AnalyzeArtifact(data)
+        analyzeArtifact(data)
             .then((result) => {
                 if (result?.description) {
                     setAiAnalysis(result);

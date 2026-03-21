@@ -32,5 +32,8 @@ BEGIN
 END;
 $$;
 
+** (สำหรับเพิ่มข้อมูล) นับ ID ใหม่ให้เริ่มต่อจากค่าที่มากที่สุดในตารางปัจจุบัน **
+SELECT setval(pg_get_serial_sequence('"Artifacts"', 'id'), coalesce(max(id), 0) + 1, false) FROM "Artifacts";
+
 ** Remove Function **
 DROP FUNCTION IF EXISTS match_artifacts(vector, float, int);
