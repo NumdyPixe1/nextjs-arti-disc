@@ -44,19 +44,3 @@ export const POST = async (req: Request) => {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }
-
-export const PUT = async (req: Request) => {
-    try {
-
-    }
-    catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
-    }
-}
-
-export const DELETE = async (req: Request) => {
-    try { }
-    catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
-    }
-}
