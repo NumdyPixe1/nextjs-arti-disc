@@ -1,3 +1,4 @@
+// แปลงคำค้นหาเป็น Vector
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import supabase from "@/lib/supabase-client";

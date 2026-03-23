@@ -3,6 +3,7 @@
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
 import { DeleteConfirmationModal, EditModal } from '@/app/components/Modal';
 import { artifactService } from '@/app/services/artifactService';
+import { s } from 'motion/react-client';
 import { useState, useEffect } from 'react';
 
 export default function ManagerArtifactsPage() {
@@ -27,8 +28,17 @@ export default function ManagerArtifactsPage() {
     const [imageUrl, setImageUrl] = useState('');
     const [material, setMaterial] = useState('');
 
+    // 
+    const [editTitle, setEditTitle] = useState('');
+    const [editArtStyle, setEditArtStyle] = useState('');
+    const [editLocation, setEditLocation] = useState('');
+    const [editLocationFound, setEditLocationFound] = useState('');
+    const [editDescription, setEditDescription] = useState('');
+    const [editImageUrl, setEditImageUrl] = useState('');
+    const [editMaterial, setEditMaterial] = useState('');
 
     const [loading, setLoading] = useState(false);
+    const [loadingSave, setLoadingSave] = useState(false);
     // เปิดมาก็โหลดเลย
     const [artifactsLoading, setArtifactsLoading] = useState(true);
     const [message, setMessage] = useState('');
@@ -52,32 +62,46 @@ export default function ManagerArtifactsPage() {
 
     // ################## Handlers ##################
 
-    const handleEdit = async (id: number, e: React.FormEvent) => {
+    const handleEdit = async (item: any, e: React.FormEvent) => {
         e.stopPropagation();
+        setEditArtifact(item.id);
+        // เมื่อกด edit ให้เอาข้อมูลของ item ที่กดมาใส่ใน state ของ form edit เพื่อให้แสดงใน modal
+        setEditTitle(item.title || '');
+        setEditArtStyle(item.art_style || '');
+        setEditLocation(item.location || '');
+        setEditLocationFound(item.location_found || '');
+        setEditDescription(item.description || '');
+        setEditImageUrl(item.image_url || '');
+        setEditMaterial(item.material || '');
+
         setIsEditModalOpen(true);
-        setEditArtifact(id);
     }
     const saveEdit = async () => {
-        if (editArtifact !== null) {
-            try {
-                if (editArtifact !== null) {
-                    await artifactService.editArtifact(editArtifact, {
-                        title,
-                        art_style: artStyle,
-                        material,
-                        location_found: locationFound,
-                        location,
-                        description,
-                        image_url: imageUrl
-                    });
-                    setIsEditModalOpen(false);
-                    setEditArtifact(null);
-                }
+        if (editArtifact === null) return;
+        setLoadingSave(true);
+        try {
+            const updatedData = {
+                title: editTitle,
+                art_style: editArtStyle,
+                location: editLocation,
+                location_found: editLocationFound,
+                description: editDescription,
+                image_url: editImageUrl,
+                material: editMaterial
             }
-            catch (error) {
-                console.error('Failed to save edit:', error);
-            }
+            //editArtifact(id, data)
+            await artifactService.editArtifact(editArtifact, updatedData);
+            // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
+            setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedData } : item));
+            setIsEditModalOpen(false);
+            setEditArtifact(null);
         }
+        catch (error) {
+            console.error('Failed to save edit:', error);
+        } finally {
+            setLoadingSave(false);
+        }
+
     }
 
     const handleDelete = async (id: number, e: React.FormEvent) => {
@@ -246,15 +270,33 @@ export default function ManagerArtifactsPage() {
                     </div>
                 </form>
             </section>
-            {isEditModalOpen ? (
-                <EditModal
-                    isOpen={isEditModalOpen}
-                    onClose={() => setIsEditModalOpen(false)}
-                    onConfirm={saveEdit}
-                    itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
-                />
-            ) : null}
+            {/* Edit Modal */}
 
+            {isEditModalOpen ? (<EditModal
+                isLodading={loadingSave}
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onConfirm={saveEdit}
+                itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
+                //   ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
+                title={editTitle}
+                artStyle={editArtStyle}
+                location={editLocation}
+                locationFound={editLocationFound}
+                description={editDescription}
+                imageUrl={editImageUrl}
+                material={editMaterial}
+                // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
+                setTitle={setEditTitle}
+                setArtStyle={setEditArtStyle}
+                setLocation={setEditLocation}
+                setLocationFound={setEditLocationFound}
+                setDescription={setEditDescription}
+                setImageUrl={setEditImageUrl}
+                setMaterial={setEditMaterial}
+            />) : null}
+
+            {/* Delete Confirmation Modal */}
             {isDeleteModalOpen ? (
                 <DeleteConfirmationModal
                     isOpen={isDeleteModalOpen}
@@ -307,7 +349,7 @@ export default function ManagerArtifactsPage() {
                                             <td className="px-4 py-2 border border-slate-200">{item.created_at ? new Date(item.created_at).toLocaleString() : '-'}</td>
                                             <td className="gap-4 flex px-4 py-2 border border-slate-200">
                                                 <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
-                                                    onClick={(e) => handleEdit(item.id, e)}>
+                                                    onClick={(e) => handleEdit(item, e)}>
                                                     Edit
                                                 </button>
                                                 <button className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"

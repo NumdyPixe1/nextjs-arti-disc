@@ -1,17 +1,154 @@
+import { LoadingSpinner } from "./LoadingSpinner";
+
 interface Props {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm?: () => void;
     itemName?: string;
+    isLodading?: boolean;
+}
+interface EditModalProps extends Props {
+    title: string;
+    locationFound: string;
+    artStyle: string;
+    location: string;
+    description: string;
+    imageUrl: string;
+    material: string;
+
+    setTitle: (value: string) => void;
+    setLocationFound: (value: string) => void;
+    setArtStyle: (value: string) => void;
+    setLocation: (value: string) => void;
+    setDescription: (value: string) => void;
+    setImageUrl: (value: string) => void;
+    setMaterial: (value: string) => void;
 }
 
-export const EditModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => {
+export const EditModal = ({ isLodading, isOpen, onClose, onConfirm, title, locationFound, artStyle, location, description, imageUrl, material, setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageUrl, setMaterial }: EditModalProps) => {
     if (!isOpen) return null;
     return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
         />
-    </div>);
+
+        <div className="relative w-full max-w-2xl transform rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-2xl backdrop-blur-md">
+            <header className="mb-6">
+                <h1 className="text-3xl font-bold text-slate-900">Edit Artifact</h1>
+                <p className="mt-2 text-sm text-slate-600">Update the details of the artifact below.</p>
+            </header>
+
+            {isLodading ? <LoadingSpinner /> : (<form onSubmit={(e) => {
+                e.preventDefault();
+                onConfirm?.();
+            }}
+                className=" grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div className="grid gap-2">
+                    <label htmlFor="title" className="text-sm font-medium text-slate-700">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="e.g., Ayutthaya"
+                    />
+                </div>
+                <div className="grid gap-2">
+                    <label htmlFor="artStyle" className="text-sm font-medium text-slate-700">Art Style</label>
+                    <input
+                        type="text"
+                        id="artStyle"
+                        value={artStyle}
+                        onChange={(e) => setArtStyle(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="e.g., Ayutthaya"
+                    />
+                </div>
+
+                <div className="grid gap-2">
+                    <label htmlFor="description" className="text-sm font-medium text-slate-700">Description</label>
+                    <textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200 resize-none"
+                        placeholder="Enter a description..."
+                        rows={3}
+                    />
+                </div>
+
+                <div className="grid gap-2">
+                    <label htmlFor="location" className="text-sm font-medium text-slate-700">Location</label>
+                    <input
+                        type="text"
+                        id="location"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="e.g., Museum"
+                    />
+                </div>
+
+
+                <div className="grid gap-2">
+                    <label htmlFor="locationFound" className="text-sm font-medium text-slate-700">Location Found</label>
+                    <input
+                        type="text"
+                        id="locationFound"
+                        value={locationFound}
+                        onChange={(e) => setLocationFound(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="e.g., Bangkok, Thailand"
+                    />
+                </div>
+
+                <div className="grid gap-2">
+                    <label htmlFor="material" className="text-sm font-medium text-slate-700">Material</label>
+                    <input
+                        type="text"
+                        id="material"
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="e.g., Bronze"
+                    />
+                </div>
+
+                <div className="grid gap-2">
+                    <label htmlFor="imageUrl" className="text-sm font-medium text-slate-700">Image URL</label>
+                    <input
+                        type="url"
+                        id="imageUrl"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        placeholder="https://example.com/image.jpg"
+                    />
+                </div>
+
+
+                {/* Buttons */}
+                <div className="col-span-1 md:col-span-2 flex gap-3">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="cursor-pointer flex-1 rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="cursor-pointer flex-1 rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        Save
+                    </button>
+                </div>
+            </form>)}
+
+        </div>
+    </div >);
 }
 
 export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => {
@@ -23,7 +160,6 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, itemName }
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
-
             {/* Modal Content */}
             <div className="relative w-full max-w-md transform rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-2xl backdrop-blur-md">
                 {/* Close button */}
