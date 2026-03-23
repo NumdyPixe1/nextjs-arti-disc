@@ -19,7 +19,9 @@ export const POST = async (req: Request) => {
     try {
         // 1. รับข้อมูล JSON จาก Body ของ Postman
         const body = await req.json();
-        const { title, art_style, material, location_found, location, description, image_url } = body; 0
+        const { title, art_style, material,
+            location_found, location, description,
+            image_url } = body;
         // 2. ตรวจสอบข้อมูลเบื้องต้น
         if (!title || title.trim() === "") {
             return NextResponse.json(

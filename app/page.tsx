@@ -24,24 +24,6 @@ export default function HomePage() {
       } else {
         console.error("เกิดข้อผิดพลาด:", data.error);
       }
-      // --- Chat Gemini --- 
-      /* const res = await fetch("/api/gemini-ai", {
-         method: "POST",
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ query }),
-       });
-       //
-       if (!res.ok) {
-         const errorText = await res.json();
-         console.error("Server error:", errorText);
-         return;
-       }
-       //
-       const data = await res.json();
-       if (data.result) {
-         console.log(data.result);
-         setResult(data.result);
-     }*/
     }
     catch (error) {
       console.error("Search failed:", error);
@@ -52,18 +34,6 @@ export default function HomePage() {
   }
   return (
     <main className=" h-screen  font-sans ">
-      {/* --- Chat Gemini --- 
-      {results &&
-        <div className="fixed left-4 top-1/2 -translate-y-1/2 z-40 w-72 lg:w-80">
-          <div className="p-6 bg-white rounded-2xl shadow-xl border border-blue-50">
-            <div className="max-h-[50vh] overflow-y-auto pr-3">
-              <p className=" text-black text-sm leading-relaxed">
-                {results}
-              </p>
-            </div>
-          </div>
-        </div>
-      } */}
       <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center ">
         <SearchBar onSearch={handleSearch} loading={loading} />
       </div>
@@ -77,6 +47,7 @@ export default function HomePage() {
 
       {/* Section 2: Data Listing Grid */}
       <section className="h-screen w-full snap-start bg-[#FDF8F1] flex items-center justify-center">
+        {/* ถ้าไม่มีผลลัพธ์และไม่ได้โหลด ให้แสดง Artifacts ทั้งหมด */}
         {results.length === 0 && !loading && (<Artifacts />)}
 
         {/* Loading */}
