@@ -12,7 +12,6 @@ export const searchAction = async (query: string) => {
             throw new Error("Not found Gemini API Key");
         }
 
-
         const genAI = new GoogleGenerativeAI(apiKey!);
         const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
 
@@ -29,8 +28,8 @@ export const searchAction = async (query: string) => {
 
         if (error) throw error;
 
+        // console.log(`มีการใช้ ${model}`);
         return { results: data };
-
     } catch (error: any) {
         console.error("Search Error:", error);
         return { error: error.message };

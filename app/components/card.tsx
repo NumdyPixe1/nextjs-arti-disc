@@ -26,7 +26,6 @@ export const Card = ({ title, image_file, art, location_found, href }: Props) =>
                         <span className="text-sm text-gray-400">ไม่มีรูปภาพ</span>
                     </div>
                 )}
-                {/* <img className=" w-full h-full object-cover" src={image_url} alt={title} /> */}
                 <div className="absolute inset-0 bg-linear-to-t rounded-2xl from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="flex flex-row absolute top-4 left-4">
                         <LocalIcon />

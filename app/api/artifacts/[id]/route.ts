@@ -13,20 +13,52 @@ export const GET = async (req: Request, { params }: { params: { id: number } }) 
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
-        return NextResponse.json(data);
+        return NextResponse.json({ data, error });
     }
-    catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+    catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 
 export const PUT = async (req: Request, { params }: { params: { id: number } }) => {
     const { id } = await params;
     try {
-        const body = await req.json();
+        const formData = await req.formData();
+
+        // 1. ดึงข้อมูลพื้นฐาน
+        const updateData: any = {
+            title: formData.get("title"),
+            art_style: formData.get("art_style"),
+            material: formData.get("material"),
+            location_found: formData.get("location_found"),
+            location: formData.get("location"),
+            description: formData.get("description"),
+        };
+        // 2. จัดการรูปภาพ (ถ้ามีการส่งไฟล์ใหม่มา)
+        const imageFile = formData.get("image_file") as File;
+
+        if (imageFile) {
+            const fileExt = imageFile.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+
+            // อัปโหลดขึ้น Storage 'artifact-images'
+            const { error: uploadError } = await supabase.storage
+                .from('artifact-images')
+                .upload(fileName, imageFile);
+
+            if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+
+            // ดึง URL ใหม่มาใช้
+            const { data: { publicUrl } } = supabase.storage
+                .from('artifact-images')
+                .getPublicUrl(fileName);
+
+            updateData.image_file = publicUrl; // เก็บ URL ใหม่ลงใน Object ที่จะอัปเดต
+        }
+
         const { data, error } = await supabase
             .from('Artifacts')
-            .update(body) // ส่งก้อน JSON ที่ต้องการแก้เข้าไปเลย
+            .update(updateData) // ส่งก้อน JSON ที่ต้องการแก้เข้าไปเลย
             .eq('id', id)
             .select(); // .select() เพื่อให้ได้ข้อมูลแถวที่อัปเดตกลับมา
         if (error) {

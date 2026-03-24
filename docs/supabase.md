@@ -8,7 +8,7 @@ RETURNS TABLE (
   id bigint,
   title text,
   description text,
-  image_url text,
+  image_file text,
   location_found text,
   art_style text,
   similarity float
@@ -21,7 +21,7 @@ BEGIN
     "Artifacts".id,
     "Artifacts".title,
     "Artifacts".description,
-    "Artifacts".image_url,
+    "Artifacts".image_file,
     "Artifacts".location_found,
     "Artifacts".art_style,
     1 - ("Artifacts".embedding <=> query_embedding) AS similarity

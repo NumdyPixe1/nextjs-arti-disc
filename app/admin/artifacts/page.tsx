@@ -27,7 +27,7 @@ export default function ManagerArtifactsPage() {
     const [description, setDescription] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [material, setMaterial] = useState('');
-    // 
+    // Edit
     const [editTitle, setEditTitle] = useState('');
     const [editArtStyle, setEditArtStyle] = useState('');
     const [editLocation, setEditLocation] = useState('');
@@ -64,34 +64,40 @@ export default function ManagerArtifactsPage() {
     const handleEdit = async (item: any, e: React.FormEvent) => {
         e.stopPropagation();
         setEditArtifact(item.id);
+
         // เมื่อกด edit ให้เอาข้อมูลของ item ที่กดมาใส่ใน state ของ form edit เพื่อให้แสดงใน modal
         setEditTitle(item.title || '');
         setEditArtStyle(item.art_style || '');
         setEditLocation(item.location || '');
         setEditLocationFound(item.location_found || '');
         setEditDescription(item.description || '');
-        setEditImageFile(item.image_url || '');
+        setEditImageFile(item.image_file || null);
         setEditMaterial(item.material || '');
 
         setIsEditModalOpen(true);
     }
     const saveEdit = async () => {
         if (editArtifact === null) return;
+
         setLoadingSave(true);
         try {
-            const updatedData = {
-                title: editTitle,
-                art_style: editArtStyle,
-                location: editLocation,
-                location_found: editLocationFound,
-                description: editDescription,
-                image: editImageFile,
-                material: editMaterial
+            const formData = new FormData();
+
+            formData.append('title', editTitle);
+            formData.append('description', editDescription);
+            formData.append('material', editMaterial);
+            formData.append('art_style', editArtStyle);
+            formData.append('location', editLocation);
+            formData.append('location_found', editLocationFound);
+            // ตรวจสอบว่า editImageFile เป็น File Object หรือไม่ (ถ้าผู้ใช้เลือกไฟล์ใหม่)
+            if (editImageFile instanceof File) {
+                formData.append("image_file", editImageFile);
             }
             //editArtifact(id, data)
-            await artifactService.editArtifact(editArtifact, updatedData);
+            const response = await artifactService.editArtifact(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
-            setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedData } : item));
+            const updatedItem = response.data[0];
+            setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedItem } : item));
             setIsEditModalOpen(false);
             setEditArtifact(null);
         }
@@ -132,18 +138,17 @@ export default function ManagerArtifactsPage() {
     }
 
     const add = async () => {
-        const formData = new FormData();
         setLoading(true);
         setMessage('');
-        // 1. ใส่ข้อมูล Text ทั่วไป
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('material', material);
-        formData.append('art_style', artStyle);
-        formData.append('location', location);
-        formData.append('location_found', locationFound);
-
         try {
+            const formData = new FormData();
+            // 1. ใส่ข้อมูล Text ทั่วไป
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('material', material);
+            formData.append('art_style', artStyle);
+            formData.append('location', location);
+            formData.append('location_found', locationFound);
             if (imageFile) {
                 formData.append('image_file', imageFile);
                 console.log("Attached file to FormData:", imageFile.name);
@@ -175,11 +180,6 @@ export default function ManagerArtifactsPage() {
         }
     }
 
-    // const handleUploadImage = (file: any) => {
-    //     if () {
-
-    //     }
-    // }
     return (
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
             {/* Add Modal */}

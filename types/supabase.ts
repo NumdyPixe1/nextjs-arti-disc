@@ -42,10 +42,9 @@ export type Database = {
       Artifacts: {
         Row: {
           art_style: string | null
-          aspect_ratio: number | null
           created_at: string
           description: string | null
-          embedding: number[] | null
+          embedding: string | null
           id: number
           image_file: string | null
           location: string | null
@@ -55,10 +54,9 @@ export type Database = {
         }
         Insert: {
           art_style?: string | null
-          aspect_ratio?: number | null
           created_at?: string
           description?: string | null
-          embedding?: number[] | null
+          embedding?: string | null
           id?: number
           image_file?: string | null
           location?: string | null
@@ -68,10 +66,9 @@ export type Database = {
         }
         Update: {
           art_style?: string | null
-          aspect_ratio?: number | null
           created_at?: string
           description?: string | null
-          embedding?: number[] | null
+          embedding?: string | null
           id?: number
           image_file?: string | null
           location?: string | null
@@ -86,7 +83,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_artifacts: {
+        Args: {
+          match_count: number
+          match_threshold: number
+          query_embedding: string
+        }
+        Returns: {
+          art_style: string
+          description: string
+          id: number
+          image_file: string
+          location_found: string
+          similarity: number
+          title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

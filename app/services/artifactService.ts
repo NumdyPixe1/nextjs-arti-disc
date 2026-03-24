@@ -1,3 +1,4 @@
+import supabase from "@/lib/supabase-client";
 export const artifactService = {
 
     addArtifact: async (formData: FormData) => {
@@ -31,23 +32,24 @@ export const artifactService = {
 
     getArtifactById: async (id: number) => {
         try {
-            const response = await fetch(`/api/artifacts/${id}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch artifacts: ${response.status} `);
-            }
-            return response.json();
-        } catch (error) {
+            const { data, error } = await supabase
+                .from('Artifacts')
+                .select('*')
+                .eq('id', id)
+                .single();
+            return { data, error };
+        } catch (error: any) {
             console.error('Failed to fetch artifact:', error);
+            return { data: null, error: error.message }
         }
     },
 
-    editArtifact: async (id: number, data: any) => {
+    editArtifact: async (id: number, formData: FormData) => {
         try {
             const response = await fetch(`/api/artifacts/${id}`,
                 {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: formData
                 }
             );
             if (!response.ok) {

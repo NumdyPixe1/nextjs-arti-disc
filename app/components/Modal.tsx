@@ -121,7 +121,7 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
                 </div>
 
                 <div className="grid gap-2">
-                    <label htmlFor="image" className="text-sm font-medium text-slate-700">Image</label>
+                    <label htmlFor="imageFile" className="text-sm font-medium text-slate-700">Image</label>
                     <input
                         type="file"
                         accept="image/*"

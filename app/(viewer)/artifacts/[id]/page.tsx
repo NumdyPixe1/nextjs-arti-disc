@@ -1,15 +1,15 @@
 
-import { getArtifact } from "@/lib/artifacts";
-import Image from "next/image";
 
+import Image from "next/image";
+import { artifactService } from '@/app/services/artifactService';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
     // ดึงข้อมูล
-    const { data: item, error } = await getArtifact({ id: Number(id) });
-
+    const { data: item, error } = await artifactService.getArtifactById(id);
+    console.log(item);
     if (error || !item) {
         return <NotFoundPage />;
     }
@@ -26,7 +26,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                             className="object-contain p-4"
                             fill
                             sizes="(max-w-768px) 100vw, 800px"
-                            src={item.image_url ?? "/img/no-photos.png"}
+                            src={item.image_file ?? "/img/no-photos.png"}
                             alt={item.title ?? "โบราณวัตถุ"}
                             priority
                         />
@@ -36,7 +36,6 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     <div className="space-y-6">
                         <div>
                             <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">{item.title}</h2>
-                            <p className="text-white/50">{item.location_found}</p>
                         </div>
 
                         <div className="border-t border-white/10 pt-6 pb-6">
@@ -48,11 +47,12 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                                 </div>
                                 <div className="flex justify-between">
                                     <span>สถานที่ค้นพบ:</span>
-                                    <span className="font-medium text-white">{item.location_found ?? "ไม่ระบุ"}</span>
+                                    <span className="font-medium text-white text-right break-words max-w-[60%]">
+                                        {item.location_found ?? "ไม่ระบุ"}</span>
                                 </div>
                             </div>
                         </div>
-                        <AiDescription data={item} />
+                        {/* <AiDescription data={item} /> */}
                     </div>
                 </div>
 

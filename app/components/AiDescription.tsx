@@ -8,7 +8,6 @@ export const AiDescription = ({ data }: { data: any }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-
     if (!data?.id) {
         setError("ไม่มีข้อมูลโบราณวัตถุให้วิเคราะห์");
         setLoading(false);
@@ -59,12 +58,12 @@ export const AiDescription = ({ data }: { data: any }) => {
 
     return (
         <div className="mt-8 border-t border-white/10 pt-6">
-            <h3 className="text-lg font-bold text-white mb-4">คำอธิบายจาก AI</h3>
+            <h3 className="text-lg font-bold text-white mb-4">ผู้ช่วยอัจฉริยะ</h3>
 
             {loading ? (
                 <div className="flex flex-col items-center justify-center p-8 bg-slate-800/40 rounded-2xl animate-pulse border border-white/10">
                     <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-3"></div>
-                    <p className="text-cyan-200 font-medium">Analyric AI กำลังวิเคราะห์ข้อมูลและรูปภาพ...</p>
+                    <p className="text-cyan-200 font-medium">กำลังวิเคราะห์ข้อมูลและรูปภาพ...</p>
                 </div>
             ) : error ? (
                 <div className="bg-rose-900/30 border border-rose-400/30 p-6 rounded-2xl text-center">

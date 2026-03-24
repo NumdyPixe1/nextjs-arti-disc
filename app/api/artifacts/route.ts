@@ -46,7 +46,7 @@ export const POST = async (req: Request) => {
             const fileExt = imageFile.name.split('.').pop();
             const fileName = `${Date.now()}.${fileExt}`;
 
-            // 2. อัปโหลด (ชื่อ bucket ต้องตรงกับในรูปที่คุณส่งมาเป๊ะๆ)
+            // 2. อัปโหลด
             const { data, error } = await supabase.storage
                 .from('artifact-images') // ตัวพิมพ์เล็กทั้งหมดตามรูป
                 .upload(fileName, imageFile, {
