@@ -16,7 +16,8 @@ export const GET = async () => {
 
         // --- Embedding Vector ---
         const { data: artifacts, error: fetchError } = await supabase
-            .from('Artifacts').select('*');
+            .from('Artifacts')
+            .select('*');
         //.is('embedding', null)
         if (!artifacts || artifacts.length === 0) {
             return NextResponse.json({ message: "No artifacts found without embeddings." }, { status: 404 });
@@ -35,7 +36,7 @@ export const GET = async () => {
                 .from('Artifacts')
                 .update({
                     // Array เชื่อมกับคอมม่าและล้อมด้วยวงเล็บเหลี่ยมเพื่อให้ตรงกับรูปแบบที่เก็บในฐานข้อมูล
-                    embedding: vector
+                    embedding: `[${vector.join(',')}]`
                 })
                 .eq('id', item.id);
 
