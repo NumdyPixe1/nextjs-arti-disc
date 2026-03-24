@@ -7,13 +7,15 @@ interface Props {
     itemName?: string;
     isLodading?: boolean;
 }
-interface EditModalProps extends Props {
+interface DataProps extends Props {
+    message?: string;
+    messageType?: string;
     title: string;
     locationFound: string;
     artStyle: string;
     location: string;
     description: string;
-    imageUrl: string;
+    imageFile: File | null;
     material: string;
 
     setTitle: (value: string) => void;
@@ -21,11 +23,13 @@ interface EditModalProps extends Props {
     setArtStyle: (value: string) => void;
     setLocation: (value: string) => void;
     setDescription: (value: string) => void;
-    setImageUrl: (value: string) => void;
+    setImageFile: (file: File | null) => void;
     setMaterial: (value: string) => void;
 }
 
-export const EditModal = ({ isLodading, isOpen, onClose, onConfirm, title, locationFound, artStyle, location, description, imageUrl, material, setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageUrl, setMaterial }: EditModalProps) => {
+export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
+    title, locationFound, artStyle, location, description, imageFile, material,
+    setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageFile, setMaterial }: DataProps) => {
     if (!isOpen) return null;
     return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -117,14 +121,18 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm, title, locat
                 </div>
 
                 <div className="grid gap-2">
-                    <label htmlFor="imageUrl" className="text-sm font-medium text-slate-700">Image URL</label>
+                    <label htmlFor="image" className="text-sm font-medium text-slate-700">Image</label>
                     <input
-                        type="url"
-                        id="imageUrl"
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
+                        type="file"
+                        accept="image/*"
+                        id="imageFile"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file)
+                                setImageFile(file);
+                        }
+                        }
                         className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                        placeholder="https://example.com/image.jpg"
                     />
                 </div>
 
@@ -151,7 +159,7 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm, title, locat
     </div >);
 }
 
-export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => {
+export const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => {
     if (!isOpen) return null;
 
     return (
@@ -213,5 +221,143 @@ export const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, itemName }
             </div>
         </div>
     );
-};
+}
+
+export const AddModal = ({ messageType, message, isLodading, isOpen, onClose, onConfirm,
+    title, locationFound, artStyle, location, description, imageFile, material,
+    setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageFile, setMaterial
+}: DataProps) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={onClose}
+            />
+            <div className="relative w-full max-w-2xl transform rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-2xl backdrop-blur-md">
+
+                <button
+                    onClick={onClose}
+                    className="cursor-pointer absolute right-4 top-4 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+                >
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+
+                <header className="mb-6">
+                    <h1 className="text-3xl font-bold text-slate-900">Add New Artifact</h1>
+                    <p className="mt-2 text-sm text-slate-600">Fill in the details below to register a new artifact in the collection.</p>
+                </header>
+
+                <form onSubmit={onConfirm} className=" grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid gap-2">
+                        <label htmlFor="title" className="text-sm font-medium text-slate-700">Title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Golden Buddha Statue"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="artStyle" className="text-sm font-medium text-slate-700">Art Style</label>
+                        <input
+                            type="text"
+                            id="artStyle"
+                            value={artStyle}
+                            onChange={(e) => setArtStyle(e.target.value)}
+                            required
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Impressionism"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="location" className="text-sm font-medium text-slate-700">Location</label>
+                        <input
+                            type="text"
+                            id="location"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            required
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Bangkok National Museum"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="locationFound" className="text-sm font-medium text-slate-700">Location Found</label>
+                        <input
+                            type="text"
+                            id="locationFound"
+                            value={locationFound}
+                            onChange={(e) => setLocationFound(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Ayutthaya"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="image" className="text-sm font-medium text-slate-700">Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            id="imageFile"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file)
+                                    setImageFile(file);
+                            }
+                            }
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="material" className="text-sm font-medium text-slate-700">Material</label>
+                        <input
+                            type="text"
+                            id="material"
+                            value={material}
+                            onChange={(e) => setMaterial(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Bronze, Wood, Stone"
+                        />
+                    </div>
+
+                    <div className="grid gap-2 md:col-span-2">
+                        <label htmlFor="description" className="text-sm font-medium text-slate-700">Description</label>
+                        <textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            rows={3}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="Describe the artifact..."
+                        />
+                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                        <button
+                            type="submit"
+                            disabled={isLodading}
+                            className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+                        >
+                            {isLodading ? 'Submitting...' : 'Submit Artifact'}
+                        </button>
+                        {message && (
+                            <p className={`text-sm ${messageType === 'success' ? 'text-emerald-700' : 'text-rose-600'}`}>
+                                {message}
+                            </p>
+                        )}
+                    </div>
+                </form>
+            </div>
+        </div>)
+}
 

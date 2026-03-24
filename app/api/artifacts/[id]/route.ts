@@ -5,7 +5,11 @@ import { NextResponse } from "next/server";
 export const GET = async (req: Request, { params }: { params: { id: number } }) => {
     const { id } = await params;
     try {
-        const { data, error } = await supabase.from('Artifacts').select('*').eq('id', id).single(); // .single() เพื่อให้ได้ข้อมูลแค่แถวเดียว
+        const { data, error } = await supabase
+            .from('Artifacts')
+            .select('*')
+            .eq('id', id)
+            .single(); // .single() เพื่อให้ได้ข้อมูลแค่แถวเดียว
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }

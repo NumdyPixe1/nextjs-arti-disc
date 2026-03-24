@@ -1,17 +1,17 @@
-// แปลงคำค้นหาเป็น Vector
+// *** แปลงคำค้นหาเป็น Vector ***
+"use server"
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
 import supabase from "@/lib/supabase-client";
 
-export const POST = async (req: Request) => {
+export const searchAction = async (query: string) => {
     try {
-        const { query } = await req.json(); // รับคำค้นหาจากผู้ใช้
+        if (!query)
+            return { error: "กรุณาใส่คำค้นหา" };
         const apiKey = process.env.GOOGLE_GEMINI_API;
         if (!apiKey) {
-            return NextResponse.json({ error: "Not found Gemini API Key ในระบบ" }, { status: 500 });
+            throw new Error("Not found Gemini API Key");
         }
 
-        if (!query) return NextResponse.json({ error: "กรุณาใส่คำค้นหา" }, { status: 400 });
 
         const genAI = new GoogleGenerativeAI(apiKey!);
         const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
@@ -29,10 +29,10 @@ export const POST = async (req: Request) => {
 
         if (error) throw error;
 
-        return NextResponse.json({ results: data });
+        return { results: data };
 
     } catch (error: any) {
         console.error("Search Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return { error: error.message };
     }
 }

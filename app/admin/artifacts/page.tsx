@@ -1,9 +1,8 @@
 
 "use client";
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
-import { DeleteConfirmationModal, EditModal } from '@/app/components/Modal';
+import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
 import { artifactService } from '@/app/services/artifactService';
-import { s } from 'motion/react-client';
 import { useState, useEffect } from 'react';
 
 export default function ManagerArtifactsPage() {
@@ -15,7 +14,8 @@ export default function ManagerArtifactsPage() {
         item.title?.toLowerCase().includes(query.toLowerCase()) || item.art_style?.toLowerCase().includes(query.toLowerCase()) ||
         item.material?.toLowerCase().includes(query.toLowerCase()) || item.id?.toString().includes(query)
     )
-
+    //Modal 
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -25,16 +25,15 @@ export default function ManagerArtifactsPage() {
     const [location, setLocation] = useState('');
     const [locationFound, setLocationFound] = useState('');
     const [description, setDescription] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [material, setMaterial] = useState('');
-
     // 
     const [editTitle, setEditTitle] = useState('');
     const [editArtStyle, setEditArtStyle] = useState('');
     const [editLocation, setEditLocation] = useState('');
     const [editLocationFound, setEditLocationFound] = useState('');
     const [editDescription, setEditDescription] = useState('');
-    const [editImageUrl, setEditImageUrl] = useState('');
+    const [editImageFile, setEditImageFile] = useState<File | null>(null);;
     const [editMaterial, setEditMaterial] = useState('');
 
     const [loading, setLoading] = useState(false);
@@ -71,7 +70,7 @@ export default function ManagerArtifactsPage() {
         setEditLocation(item.location || '');
         setEditLocationFound(item.location_found || '');
         setEditDescription(item.description || '');
-        setEditImageUrl(item.image_url || '');
+        setEditImageFile(item.image_url || '');
         setEditMaterial(item.material || '');
 
         setIsEditModalOpen(true);
@@ -86,7 +85,7 @@ export default function ManagerArtifactsPage() {
                 location: editLocation,
                 location_found: editLocationFound,
                 description: editDescription,
-                image_url: editImageUrl,
+                image: editImageFile,
                 material: editMaterial
             }
             //editArtifact(id, data)
@@ -126,18 +125,34 @@ export default function ManagerArtifactsPage() {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleAdd = async (e: React.FormEvent) => {
         // ป้องกันการรีเฟรชหน้าเมื่อ submit form
         e.preventDefault();
+        setIsAddModalOpen(true)
+    }
+
+    const add = async () => {
+        const formData = new FormData();
         setLoading(true);
         setMessage('');
+        // 1. ใส่ข้อมูล Text ทั่วไป
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('material', material);
+        formData.append('art_style', artStyle);
+        formData.append('location', location);
+        formData.append('location_found', locationFound);
+
         try {
-            await artifactService.createArtifact({
-                // use state ที่ผูกกับ input form มาใส่ตรงนี้เลย
-                title, art_style: artStyle, material,
-                location_found: locationFound, location, description,
-                image_url: imageUrl
-            });
+            if (imageFile) {
+                formData.append('image_file', imageFile);
+                console.log("Attached file to FormData:", imageFile.name);
+            }
+            else {
+                console.log("No file selected!");
+            }
+            await artifactService.addArtifact(formData);
+
             // Reset form
             setMessageType('success');
             setMessage('Artifact added successfully!');
@@ -146,9 +161,10 @@ export default function ManagerArtifactsPage() {
             setLocation('');
             setLocationFound('');
             setDescription('');
-            setImageUrl('');
+            setImageFile(null);
             setMaterial('');
-            // Refresh artifacts list
+
+            // 
             const updatedData = await artifactService.getAllArtifacts();
             setGetArtifacts(updatedData);
         } catch (error) {
@@ -157,121 +173,42 @@ export default function ManagerArtifactsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }
 
+    // const handleUploadImage = (file: any) => {
+    //     if () {
+
+    //     }
+    // }
     return (
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
-            <section className="mx-auto w-full max-w-2xl rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-lg backdrop-blur-sm">
-                <header className="mb-6">
-                    <h1 className="text-3xl font-bold text-slate-900">Add New Artifact</h1>
-                    <p className="mt-2 text-sm text-slate-600">Fill in the details below to register a new artifact in the collection.</p>
-                </header>
+            {/* Add Modal */}
+            {isAddModalOpen ? (<AddModal
+                isLodading={loadingSave}
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onConfirm={add}
+                message={message}
+                messageType={messageType}
+                //
+                title={title}
+                artStyle={artStyle}
+                location={location}
+                locationFound={locationFound}
+                description={description}
+                imageFile={imageFile}
+                material={material}
 
-                <form onSubmit={handleSubmit} className=" grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div className="grid gap-2">
-                        <label htmlFor="title" className="text-sm font-medium text-slate-700">Title</label>
-                        <input
-                            type="text"
-                            id="title"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="e.g., Golden Buddha Statue"
-                        />
-                    </div>
+                setTitle={setTitle}
+                setArtStyle={setArtStyle}
+                setLocation={setLocation}
+                setLocationFound={setLocationFound}
+                setDescription={setDescription}
+                setImageFile={setImageFile}
+                setMaterial={setMaterial}
+            />) : null}
 
-                    <div className="grid gap-2">
-                        <label htmlFor="artStyle" className="text-sm font-medium text-slate-700">Art Style</label>
-                        <input
-                            type="text"
-                            id="artStyle"
-                            value={artStyle}
-                            onChange={(e) => setArtStyle(e.target.value)}
-                            required
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="e.g., Impressionism"
-                        />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <label htmlFor="location" className="text-sm font-medium text-slate-700">Location</label>
-                        <input
-                            type="text"
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            required
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="e.g., Bangkok National Museum"
-                        />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <label htmlFor="locationFound" className="text-sm font-medium text-slate-700">Location Found</label>
-                        <input
-                            type="text"
-                            id="locationFound"
-                            value={locationFound}
-                            onChange={(e) => setLocationFound(e.target.value)}
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="e.g., Ayutthaya"
-                        />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <label htmlFor="imageUrl" className="text-sm font-medium text-slate-700">Image URL</label>
-                        <input
-                            type="url"
-                            id="imageUrl"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="https://example.com/image.jpg"
-                        />
-                    </div>
-
-                    <div className="grid gap-2">
-                        <label htmlFor="material" className="text-sm font-medium text-slate-700">Material</label>
-                        <input
-                            type="text"
-                            id="material"
-                            value={material}
-                            onChange={(e) => setMaterial(e.target.value)}
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="e.g., Bronze, Wood, Stone"
-                        />
-                    </div>
-
-                    <div className="grid gap-2 md:col-span-2">
-                        <label htmlFor="description" className="text-sm font-medium text-slate-700">Description</label>
-                        <textarea
-                            id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows={3}
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            placeholder="Describe the artifact..."
-                        />
-                    </div>
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-                        >
-                            {loading ? 'Submitting...' : 'Submit Artifact'}
-                        </button>
-                        {message && (
-                            <p className={`text-sm ${messageType === 'success' ? 'text-emerald-700' : 'text-rose-600'}`}>
-                                {message}
-                            </p>
-                        )}
-                    </div>
-                </form>
-            </section>
             {/* Edit Modal */}
-
             {isEditModalOpen ? (<EditModal
                 isLodading={loadingSave}
                 isOpen={isEditModalOpen}
@@ -284,7 +221,7 @@ export default function ManagerArtifactsPage() {
                 location={editLocation}
                 locationFound={editLocationFound}
                 description={editDescription}
-                imageUrl={editImageUrl}
+                imageFile={editImageFile}
                 material={editMaterial}
                 // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
                 setTitle={setEditTitle}
@@ -292,13 +229,13 @@ export default function ManagerArtifactsPage() {
                 setLocation={setEditLocation}
                 setLocationFound={setEditLocationFound}
                 setDescription={setEditDescription}
-                setImageUrl={setEditImageUrl}
+                setImageFile={setEditImageFile}
                 setMaterial={setEditMaterial}
             />) : null}
 
             {/* Delete Confirmation Modal */}
             {isDeleteModalOpen ? (
-                <DeleteConfirmationModal
+                <DeleteModal
                     isOpen={isDeleteModalOpen}
                     onClose={() => setIsDeleteModalOpen(false)}
                     onConfirm={confirmDelete}
@@ -313,10 +250,15 @@ export default function ManagerArtifactsPage() {
                     <h2 className="text-2xl font-bold text-slate-900">Artifacts Table</h2>
                     <p className="text-sm text-slate-500">List of artifacts from the database.</p>
                 </header>
-                <input type="text"
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search artifacts..."
-                    className="mb-5 rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
+                <div className='gap-10 flex'>
+                    <button onClick={(e) => handleAdd(e)} className="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
+                        Add Artifact
+                    </button>
+                    <input type="text"
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Search artifacts..."
+                        className="mb-5 rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
+                </div>
 
                 {artifactsLoading ? (<LoadingSpinner />)
                     : getArtifacts.length === 0 ? (<p className="text-sm text-slate-500">No artifacts found.</p>)

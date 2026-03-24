@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
       }, {
         protocol: 'https',
         hostname: 'seaarts.sac.or.th'
+      }, {
+        protocol: 'https',
+        hostname: 'zfcjarjlreqtvbtwzzyp.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       }
 
     ],

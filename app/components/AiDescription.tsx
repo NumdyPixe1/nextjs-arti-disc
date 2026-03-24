@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { analyzeArtifact } from "../actions/analyric-actions";
+import { analyzeArtifact } from "../actions/analyricActions";
 
 // หยิบ data จาก props มาแสดงผลในนี้
 export const AiDescription = ({ data }: { data: any }) => {

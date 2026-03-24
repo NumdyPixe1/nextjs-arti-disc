@@ -47,7 +47,7 @@ export type Database = {
           description: string | null
           embedding: number[] | null
           id: number
-          image_url: string | null
+          image_file: string | null
           location: string | null
           location_found: string | null
           material: string | null
@@ -60,7 +60,7 @@ export type Database = {
           description?: string | null
           embedding?: number[] | null
           id?: number
-          image_url?: string | null
+          image_file?: string | null
           location?: string | null
           location_found?: string | null
           material?: string | null
@@ -73,7 +73,7 @@ export type Database = {
           description?: string | null
           embedding?: number[] | null
           id?: number
-          image_url?: string | null
+          image_file?: string | null
           location?: string | null
           location_found?: string | null
           material?: string | null

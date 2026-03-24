@@ -32,7 +32,7 @@ export const Artifacts = ({ search_data }: Props) => {
                 <Card
                     key={item.id}
                     title={item.title ?? "ไม่ระบุ"}
-                    image_url={item.image_url ?? "ไม่ระบุ"}
+                    image_file={item.image_file ?? "ไม่ระบุ"}
                     art={item.art_style ?? "ไม่ระบุ"}
                     location_found={item.location_found ?? "ไม่ระบุ"}
                     href={`/artifact/${item.id}`}

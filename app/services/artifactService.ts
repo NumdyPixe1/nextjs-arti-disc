@@ -1,12 +1,11 @@
 export const artifactService = {
 
-    createArtifact: async (data: any) => {
+    addArtifact: async (formData: FormData) => {
         try {
             const response = await fetch('/api/artifacts',
                 {
-                    method: 'POST', headers:
-                        { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    method: 'POST',
+                    body: formData
                 });
             if (!response.ok) {
                 throw new Error(`Failed to create artifact: ${response.status}`);
@@ -17,6 +16,7 @@ export const artifactService = {
             console.error('Failed to create artifact:', error);
         }
     },
+
     getAllArtifacts: async () => {
         try {
             const response = await fetch('/api/artifacts');
@@ -62,7 +62,9 @@ export const artifactService = {
 
     deleteArtifact: async (id: number) => {
         try {
-            const response = await fetch(`api/artifacts/${id}`, { method: 'DELETE' });
+            const response = await fetch(`/api/artifacts/${id}`, {
+                method: 'DELETE'
+            });
             if (!response.ok) {
                 throw new Error(`Failed to delete artifact: ${response.status}`);
             }

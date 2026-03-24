@@ -4,6 +4,7 @@ import { Artifacts } from "./components/Artifacts";
 import { useState } from "react";
 import { SearchBar } from "./components/SearchBar";
 import { Loading } from "./components/Loading";
+import { searchAction } from "./actions/searchAction";
 export default function HomePage() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -12,17 +13,13 @@ export default function HomePage() {
     console.log("query: ", query);
     setLoading(true);
     try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
-      });
-      const data = await response.json();
-      if (data.results) {
-        setResults(data.results);
-        console.log("พบข้อมูลที่ใกล้เคียง:", data.results);
-      } else {
-        console.error("เกิดข้อผิดพลาด:", data.error);
+      const response = await searchAction(query);
+      if (response.results) {
+        setResults(response.results);
+        console.log("พบข้อมูลที่ใกล้เคียง:", response.results);
+      }
+      else {
+        console.error("เกิดข้อผิดพลาด:", response.error);
       }
     }
     catch (error) {
@@ -48,21 +45,24 @@ export default function HomePage() {
       {/* Section 2: Data Listing Grid */}
       <section className="h-screen w-full snap-start bg-[#FDF8F1] flex items-center justify-center">
         {/* ถ้าไม่มีผลลัพธ์และไม่ได้โหลด ให้แสดง Artifacts ทั้งหมด */}
-        {results.length === 0 && !loading && (<Artifacts />)}
+        {results.length === 0 && !loading && <Artifacts />}
 
         {/* Loading */}
-        {loading && (<div className="text-center py-20">
-          <Loading />
-        </div>)}
+        {loading && (
+          <div className="text-center py-20">
+            <Loading />
+          </div>
+        )}
 
-        {/* Found Results */}
-        {results.length > 0 && !loading && (
+        {/* Search result status */}
+        {/* {!loading && results.length === 0 && (
+          <h2 className="text-white text-2xl font-bold mb-8">ไม่พบข้อมูลที่เกี่ยวข้อง</h2>
+        )} */}
+
+        {!loading && results.length > 0 && (
           <div className="w-full max-w-7xl mx-auto flex flex-col items-center">
             <h2 className="text-white text-2xl font-bold mb-8">พบข้อมูลที่เกี่ยวข้อง</h2>
-
-            {/* ส่ง results เข้าไปทีเดียวเลย Artifacts จะไป map ข้างในเอง */}
             <Artifacts search_data={results} />
-
           </div>
         )}
       </section>

@@ -8,6 +8,7 @@ interface Props {
     loading?: boolean;
 }
 
+// รับคำค้นหา
 export const SearchBar = ({ onSearch, loading }: Props) => {
     const [query, setQuery] = useState("");
 
@@ -40,6 +41,7 @@ export const SearchBar = ({ onSearch, loading }: Props) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
+                {/*  */}
                 <button
                     type="submit"
                     className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-xl ml-2 h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2"
