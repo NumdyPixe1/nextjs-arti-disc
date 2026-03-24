@@ -10,6 +10,7 @@ interface Props {
     href: string;
 }
 export const Card = ({ title, image_file, art, location_found, href }: Props) => {
+    const supabaseUrl = "https://zfcjarjlreqtvbtwzzyp.supabase.co/storage/v1/object/public/artifact-images/";
     return (
         <Link href={href}>
             <div className=" overflow-hidden relative  w-64 h-72 group bg-white rounded-2xl flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300">
@@ -17,7 +18,7 @@ export const Card = ({ title, image_file, art, location_found, href }: Props) =>
                     <Image
                         fill
                         className="object-cover"
-                        src={image_file}
+                        src={image_file.startsWith('http') ? image_file : `${supabaseUrl}${image_file}`}
                         alt={title}
                         loading="lazy"
                     />
