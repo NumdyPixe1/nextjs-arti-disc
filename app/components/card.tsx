@@ -18,6 +18,7 @@ export const Card = ({ title, image_file, art, location_found, href }: Props) =>
                     <Image
                         fill
                         className="object-cover"
+                        //https://supabase...
                         src={image_file.startsWith('http') ? image_file : `${supabaseUrl}${image_file}`}
                         alt={title}
                         loading="lazy"

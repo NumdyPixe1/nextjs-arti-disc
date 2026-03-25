@@ -35,8 +35,9 @@ export const GET = async () => {
             const { error: updateError } = await supabase
                 .from('Artifacts')
                 .update({
-                    // Array เชื่อมกับคอมม่าและล้อมด้วยวงเล็บเหลี่ยมเพื่อให้ตรงกับรูปแบบที่เก็บในฐานข้อมูล
-                    embedding: `[${vector.join(',')}]`
+                    /* แปลง Array ให้เป็น string และเอาเครื่องหมาย , มาเชื่อมตัวเลข แล้วครอบด้วยวงเล็บ
+                    Ex. "[0.123,0.456,-0.789]" */
+                    embedding: `[${vector.join(',')}]` as any
                 })
                 .eq('id', item.id);
 

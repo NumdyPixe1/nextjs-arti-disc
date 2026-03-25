@@ -38,12 +38,11 @@ export default function ManagerArtifactsPage() {
 
     const [loading, setLoading] = useState(false);
     const [loadingSave, setLoadingSave] = useState(false);
-    // เปิดมาก็โหลดเลย
     const [artifactsLoading, setArtifactsLoading] = useState(true);
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
 
-    // Get all artifacts
+    // ################## Get all artifacts ##################
     useEffect(() => {
         const loadArtifacts = async () => {
             setArtifactsLoading(true);
@@ -59,7 +58,29 @@ export default function ManagerArtifactsPage() {
         loadArtifacts();
     }, []);
 
+    // ################## Page ##################
+    const [currentPageNumber, setCurrentPageNumber] = useState(1);
+    const totalValuesPerPage = 10;
+
+    const goOnNextPage = () => {
+        //ถ้าอยู่ page 1 ย้อนกลับไม่ได้
+        if (currentPageNumber === 1) return;
+        // page 2 - 1 = page 1
+        setCurrentPageNumber((prev) => prev + 1);
+    }
+    const goOnPrevPage = () => {
+        // ถ้าอยู่
+        if (currentPageNumber === getArtifacts.length / totalValuesPerPage) return;
+        setCurrentPageNumber((prev) => prev - 1);
+    }
+    const handleSelectPage = (page: number) => {
+        setCurrentPageNumber(page)
+    }
+
     // ################## Handlers ##################
+    const handleEmbedding = async (item: any, e: React.FormEvent) => {
+        e.stopPropagation();
+    }
 
     const handleEdit = async (item: any, e: React.FormEvent) => {
         e.stopPropagation();
@@ -184,13 +205,13 @@ export default function ManagerArtifactsPage() {
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
             {/* Add Modal */}
             {isAddModalOpen ? (<AddModal
-                isLodading={loadingSave}
+                isLodading={loading}
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onConfirm={add}
                 message={message}
                 messageType={messageType}
-                //
+
                 title={title}
                 artStyle={artStyle}
                 location={location}
@@ -215,7 +236,7 @@ export default function ManagerArtifactsPage() {
                 onClose={() => setIsEditModalOpen(false)}
                 onConfirm={saveEdit}
                 itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
-                //   ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
+                // ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
                 title={editTitle}
                 artStyle={editArtStyle}
                 location={editLocation}
@@ -250,14 +271,19 @@ export default function ManagerArtifactsPage() {
                     <h2 className="text-2xl font-bold text-slate-900">Artifacts Table</h2>
                     <p className="text-sm text-slate-500">List of artifacts from the database.</p>
                 </header>
-                <div className='gap-10 flex'>
+                <div className=' gap-10 flex mb-5'>
                     <button onClick={(e) => handleAdd(e)} className="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
-                        Add Artifact
+                        + Add Artifact
                     </button>
                     <input type="text"
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search artifacts..."
-                        className="mb-5 rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
+                        className=" rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
+                    <div className='flex-1 flex justify-end'>
+                        <button className=' cursor-pointer rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700'>
+                            🧠 Embedding</button>
+                    </div>
+
                 </div>
 
                 {artifactsLoading ? (<LoadingSpinner />)
@@ -273,7 +299,7 @@ export default function ManagerArtifactsPage() {
                                         <th className="px-4 py-2 border border-slate-200">Location Found</th>
                                         <th className="px-4 py-2 border border-slate-200">Location</th>
                                         {/* <th className="px-4 py-2 border border-slate-200">Description</th> */}
-                                        <th className="px-4 py-2 border border-slate-200">Created</th>
+                                        {/* <th className="px-4 py-2 border border-slate-200">Created</th> */}
                                         <th className="px-4 py-2 border border-slate-200"></th>
                                     </tr>
                                 </thead>
@@ -288,8 +314,8 @@ export default function ManagerArtifactsPage() {
                                             <td className="px-4 py-2 border border-slate-200">{item.location_found || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.location || '-'}</td>
                                             {/* <td className="px-4 py-2 border border-slate-200 max-w-xs truncate">{item.description || '-'}</td> */}
-                                            <td className="px-4 py-2 border border-slate-200">{item.created_at ? new Date(item.created_at).toLocaleString() : '-'}</td>
-                                            <td className="gap-4 flex px-4 py-2 border border-slate-200">
+                                            {/* <td className="px-4 py-2 border border-slate-200">{item.created_at ? new Date(item.created_at).toLocaleString() : '-'}</td> */}
+                                            <td className=" justify-center gap-4 flex px-4 py-2 border border-slate-200">
                                                 <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
                                                     onClick={(e) => handleEdit(item, e)}>
                                                     Edit
@@ -303,6 +329,14 @@ export default function ManagerArtifactsPage() {
                                     ))}
                                 </tbody>
                             </table>
+                            <div className='flex'>
+                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300' onClick={goOnNextPage}>Next</button>
+                                <p className='text-black'>{currentPageNumber}</p>
+                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300'
+                                    disabled={currentPageNumber === 1}
+                                    onClick={goOnPrevPage}>
+                                    Prev</button>
+                            </div>
                         </div>
                         )}
             </section>
