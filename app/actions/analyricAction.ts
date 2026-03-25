@@ -12,10 +12,10 @@ export const analyzeArtifact = async (dbData: any) => {
         }
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
-        console.log("กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view");
         const prompt = baseInstruction(dbData);
+        console.log("กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view");
 
-        // ส่งข้อมูลไปให้ Gemini วิเคราะห์
+        // --- ส่งข้อมูลไปให้ Gemini วิเคราะห์ ---
         const result = await model.generateContent([
             prompt,
         ]);

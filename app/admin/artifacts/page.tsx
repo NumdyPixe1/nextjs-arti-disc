@@ -1,9 +1,11 @@
 
+// Full View
 "use client";
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
 import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
-import { artifactService } from '@/app/services/artifactService';
+import { artifactAction } from '@/app/actions/artifactAction';
 import { useState, useEffect } from 'react';
+import { Alert } from '@/app/components/Alert';
 
 export default function ManagerArtifactsPage() {
     const [query, setQuery] = useState('');
@@ -35,51 +37,85 @@ export default function ManagerArtifactsPage() {
     const [editDescription, setEditDescription] = useState('');
     const [editImageFile, setEditImageFile] = useState<File | null>(null);;
     const [editMaterial, setEditMaterial] = useState('');
-
-    const [loading, setLoading] = useState(false);
+    // Clear Form
+    const clearForm = () => {
+        setTitle('');
+        setArtStyle('');
+        setLocation('');
+        setLocationFound('');
+        setDescription('');
+        setImageFile(null);
+        setMaterial('');
+    }
+    const [loadingAdd, setLoadingAdd] = useState(false);
     const [loadingSave, setLoadingSave] = useState(false);
-    const [artifactsLoading, setArtifactsLoading] = useState(true);
+    const [loadingTable, setLoadingTable] = useState(true);
     const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
+    const [messageType, setMessageType] = useState<'success' | 'error' | 'info' | 'nothing'>('nothing');
 
     // ################## Get all artifacts ##################
     useEffect(() => {
         const loadArtifacts = async () => {
-            setArtifactsLoading(true);
+            setLoadingTable(true);
             try {
-                const data = await artifactService.getAllArtifacts();
+                const data = await artifactAction.getAllArtifacts();
                 setGetArtifacts(data);
             } catch (error) {
                 console.error('Failed to load artifacts:', error);
             } finally {
-                setArtifactsLoading(false);
+                setLoadingTable(false);
             }
         };
         loadArtifacts();
     }, []);
 
     // ################## Page ##################
-    const [currentPageNumber, setCurrentPageNumber] = useState(1);
-    const totalValuesPerPage = 10;
+    // const [currentPageNumber, setCurrentPageNumber] = useState(1);
+    // const totalValuesPerPage = 10;
+    // // หาจำนวนทั้งหมด
+    // const allPage = Math.ceil(getArtifacts.length / totalValuesPerPage)
+    // // หาตำแหน่งเริ่มต้น (Index) ของหน้านั้นๆ
+    // const indexOfLastItem = currentPageNumber * totalValuesPerPage;
+    // const indexOfFirstPage = indexOfLastItem - totalValuesPerPage;
+    // const currentItems = getArtifacts.slice(indexOfFirstPage, indexOfLastItem);
 
-    const goOnNextPage = () => {
-        //ถ้าอยู่ page 1 ย้อนกลับไม่ได้
-        if (currentPageNumber === 1) return;
-        // page 2 - 1 = page 1
-        setCurrentPageNumber((prev) => prev + 1);
-    }
-    const goOnPrevPage = () => {
-        // ถ้าอยู่
-        if (currentPageNumber === getArtifacts.length / totalValuesPerPage) return;
-        setCurrentPageNumber((prev) => prev - 1);
-    }
-    const handleSelectPage = (page: number) => {
-        setCurrentPageNumber(page)
-    }
+    // const goOnNextPage = () => {
+    //     //ถ้าอยู่ page 1 ย้อนกลับไม่ได้
+    //     if (currentPageNumber === 1) return;
+    //     // page 2 - 1 = page 1
+    //     setCurrentPageNumber((prev) => prev + 1);
+    // }
+    // const goOnPrevPage = () => {
+    //     // ถ้าอยู่
+    //     if (currentPageNumber === getArtifacts.length / totalValuesPerPage) return;
+    //     setCurrentPageNumber((prev) => prev - 1);
+    // }
+    // const handleSelectPage = (page: number) => {
+    //     setCurrentPageNumber(page)
+    // }
 
     // ################## Handlers ##################
-    const handleEmbedding = async (item: any, e: React.FormEvent) => {
-        e.stopPropagation();
+    const embedding = async () => {
+        if (loadingTable) return;
+        try {
+            setLoadingTable(true);
+            const result = await artifactAction.embeddingAction();
+            if (result?.success) {
+                setMessageType("success");
+                setMessage(result?.success);
+                // ตรงนี้ถ้าใช้ Server Action ระบบจะ Revalidate หน้าให้อัตโนมัติอยู่แล้ว
+            } else {
+                setMessageType("info");
+                setMessage(result?.message);
+            }
+        }
+        catch (error) {
+            setMessage(`Failed to Embedding:${error}`);
+            setMessageType('error');
+        } finally {
+            setLoadingTable(false);
+        }
+        console.log(messageType);
     }
 
     const handleEdit = async (item: any, e: React.FormEvent) => {
@@ -115,7 +151,7 @@ export default function ManagerArtifactsPage() {
                 formData.append("image_file", editImageFile);
             }
             //editArtifact(id, data)
-            const response = await artifactService.editArtifact(editArtifact, formData);
+            const response = await artifactAction.editArtifact(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
             const updatedItem = response.data[0];
             setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedItem } : item));
@@ -141,7 +177,7 @@ export default function ManagerArtifactsPage() {
     const confirmDelete = async () => {
         if (deleteArtifact !== null) {
             try {
-                await artifactService.deleteArtifact(deleteArtifact);
+                await artifactAction.deleteArtifact(deleteArtifact);
                 // อัปเดต UI หลังลบสำเร็จ
                 setGetArtifacts(prev => prev.filter(item => item.id !== deleteArtifact))
                 setIsDeleteModalOpen(false);
@@ -159,7 +195,7 @@ export default function ManagerArtifactsPage() {
     }
 
     const add = async () => {
-        setLoading(true);
+        setLoadingAdd(true);
         setMessage('');
         try {
             const formData = new FormData();
@@ -177,27 +213,20 @@ export default function ManagerArtifactsPage() {
             else {
                 console.log("No file selected!");
             }
-            await artifactService.addArtifact(formData);
+            await artifactAction.addArtifact(formData);
 
             // Reset form
-            setMessageType('success');
-            setMessage('Artifact added successfully!');
-            setTitle('');
-            setArtStyle('');
-            setLocation('');
-            setLocationFound('');
-            setDescription('');
-            setImageFile(null);
-            setMaterial('');
-
+            // setMessageType('success');
+            // setMessage('Artifact added successfully!');
+            clearForm();
             // 
-            const updatedData = await artifactService.getAllArtifacts();
+            const updatedData = await artifactAction.getAllArtifacts();
             setGetArtifacts(updatedData);
         } catch (error) {
             setMessageType('error');
             setMessage('An error occurred while adding the artifact.');
         } finally {
-            setLoading(false);
+            setLoadingAdd(false);
         }
     }
 
@@ -205,12 +234,12 @@ export default function ManagerArtifactsPage() {
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
             {/* Add Modal */}
             {isAddModalOpen ? (<AddModal
-                isLodading={loading}
+                isLodading={loadingAdd}
                 isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
+                onClose={() => { setIsAddModalOpen(false); clearForm(); }}
                 onConfirm={add}
-                message={message}
-                messageType={messageType}
+                // message={message}
+                // messageType={messageType}
 
                 title={title}
                 artStyle={artStyle}
@@ -280,13 +309,16 @@ export default function ManagerArtifactsPage() {
                         placeholder="Search artifacts..."
                         className=" rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
                     <div className='flex-1 flex justify-end'>
-                        <button className=' cursor-pointer rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700'>
+                        <button disabled={loadingTable} onClick={async () => { await embedding(); setLoadingTable(false); }} className=' cursor-pointer rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700'>
                             🧠 Embedding</button>
                     </div>
 
                 </div>
+                {messageType === 'info' ? (<Alert
+                    message={message}
+                    messageType={messageType} />) : null}
 
-                {artifactsLoading ? (<LoadingSpinner />)
+                {loadingTable ? (<LoadingSpinner />)
                     : getArtifacts.length === 0 ? (<p className="text-sm text-slate-500">No artifacts found.</p>)
                         : (<div className="overflow-x-auto">
                             <table className="text-slate-900 w-full text-left text-sm border-collapse">
@@ -329,14 +361,15 @@ export default function ManagerArtifactsPage() {
                                     ))}
                                 </tbody>
                             </table>
-                            <div className='flex'>
-                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300' onClick={goOnNextPage}>Next</button>
-                                <p className='text-black'>{currentPageNumber}</p>
+                            {/* <div className='flex'>
+                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300'
+                                    disabled={currentPageNumber >= allPage} onClick={goOnNextPage}>Next</button>
+                                <span className='text-black'>{currentPageNumber} of {allPage}</span>
                                 <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300'
                                     disabled={currentPageNumber === 1}
                                     onClick={goOnPrevPage}>
                                     Prev</button>
-                            </div>
+                            </div> */}
                         </div>
                         )}
             </section>

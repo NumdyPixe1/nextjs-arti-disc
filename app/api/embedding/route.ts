@@ -6,7 +6,7 @@ import supabase from "@/lib/supabase-client";
 
 const apiKey = process.env.GOOGLE_GEMINI_API;
 
-export const GET = async () => {
+export const POST = async () => {
     try {
         if (!apiKey) {
             throw new Error("Gemini API Key not found");
@@ -15,14 +15,18 @@ export const GET = async () => {
         const embedModel = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
 
         // --- Embedding Vector ---
-        const { data: artifacts, error: fetchError } = await supabase
+        let successCount = 0;
+        const { data: artifacts } = await supabase
             .from('Artifacts')
-            .select('*');
-        //.is('embedding', null)
+            .select('*')
+            .is('embedding', null);
         if (!artifacts || artifacts.length === 0) {
-            return NextResponse.json({ message: "No artifacts found without embeddings." }, { status: 404 });
+            return NextResponse.json({ message: "No artifacts found without embeddings." }
+                // ไม่มีข้อมูลที่ต้องทำ Embedding
+            );
         }
-        console.log(`Processing Gemini Embeddings ${artifacts.length} Items...`);
+
+        console.log(`Processing Gemini Embeddings ${artifacts.length} items...`);
 
         for (const item of artifacts) {
             const textToEmbed = `Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`;
@@ -40,12 +44,17 @@ export const GET = async () => {
                     embedding: `[${vector.join(',')}]` as any
                 })
                 .eq('id', item.id);
-
             // Error
-            if (updateError) console.error(`ID ${item.id} Broken:`, updateError.message);
+            if (updateError) {
+                console.error(`ID ${item.id} Broken:`, updateError.message)
+            } else {
+                successCount++;
+            }
         }
-
-        return NextResponse.json({ message: "Gemini embedding completed!" });
+        return NextResponse.json({
+            message: `Embedding created successfully! Updated ${successCount} items.`
+            // สร้าง Embedding สำเร็จ! อัปเดตไป  รายการ
+        });
     }
     catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });

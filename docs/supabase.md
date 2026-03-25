@@ -1,6 +1,7 @@
-<!-- ALTER SEQUENCE "Artifacts_id_seq" RESTART WITH 9;
- -->
-** Create Function **
+ <!--  -->
+ ALTER SEQUENCE "Artifacts_id_seq" RESTART WITH 9;
+ 
+<!-- ** Create Function ** -->
 CREATE OR REPLACE FUNCTION match_artifacts (
   query_embedding vector(3072),
   match_threshold float,

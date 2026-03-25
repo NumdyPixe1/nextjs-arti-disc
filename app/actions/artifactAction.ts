@@ -1,5 +1,5 @@
 import supabase from "@/lib/supabase-client";
-export const artifactService = {
+export const artifactAction = {
 
     addArtifact: async (formData: FormData) => {
         try {
@@ -74,6 +74,29 @@ export const artifactService = {
         } catch (error) {
             console.error('Failed to delete artifact:', error);
         }
+    },
+
+    embeddingAction: async () => {
+        try {
+            const response = await fetch('/api/embedding', {
+                method: 'POST'
+            });
+            if (!response.ok) {
+                throw new Error(`Action: Failed to fetch embedding: ${response.status} `);
+            }
+            const result = await response.json();
+            // alert(`Update completed: ${result.count} item`);
+            return result;
+        }
+        catch (error) {
+            console.error('Action: Failed to embedding:', error);
+        }
     }
+
+
+
+
+
+
 
 }

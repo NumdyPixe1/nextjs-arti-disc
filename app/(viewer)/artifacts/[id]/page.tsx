@@ -1,14 +1,14 @@
 
-
+// Main Page
 import Image from "next/image";
-import { artifactService } from '@/app/services/artifactService';
+import { artifactAction } from '@/app/actions/artifactAction';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
     // ดึงข้อมูล
-    const { data: item, error } = await artifactService.getArtifactById(id);
+    const { data: item, error } = await artifactAction.getArtifactById(id);
     console.log(item);
     if (error || !item) {
         return <NotFoundPage />;
