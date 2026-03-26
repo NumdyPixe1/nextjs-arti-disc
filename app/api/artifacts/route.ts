@@ -13,8 +13,8 @@ export const GET = async (req: Request) => {
         }
         return NextResponse.json(data);
     }
-    catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+    catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 

@@ -1,9 +1,10 @@
+// UI Search Bar & Call back คำค้นหา
 "use client"
 import { useScroll, motion, useTransform, useSpring } from "framer-motion";
 import { useState } from "react";
 
 interface Props {
-    //รับ para 1 ตัว ชื่อ query | รับค่าเข้าโดยไม่ต้องส่งค่าออก
+    //รับ param 1 ตัว ชื่อ query เท่านั้น และ รับค่าเข้าโดยไม่ต้องส่งค่าออก
     onSearch: (query: string) => void
     loading?: boolean;
 }
@@ -12,9 +13,12 @@ interface Props {
 export const SearchBar = ({ onSearch, loading }: Props) => {
     const [query, setQuery] = useState("");
 
+    // กดค้นหา
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        // ไม่มีคำค้นหา ให้ return
         if (!query.trim()) return;
+        // Callback คำค้นหา ไป Home page
         onSearch(query);
     }
 

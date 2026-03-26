@@ -18,13 +18,15 @@ export const artifactAction = {
         }
     },
 
-    getAllArtifacts: async () => {
-        try {
-            const response = await fetch('/api/artifacts');
+    getAllArtifacts: async (page: number, limit: number = 10) => {
+        const offset = page * limit
+        try {//                           
+            const response = await fetch(`/api/artifacts?offset=${offset}&limit=${limit}`);
+
             if (!response.ok) {
                 throw new Error(`Failed to fetch artifacts: ${response.status} `);
             }
-            return response.json();
+            return await response.json();
         } catch (error) {
             console.error('Failed to fetch artifacts:', error);
         }
@@ -85,7 +87,6 @@ export const artifactAction = {
                 throw new Error(`Action: Failed to fetch embedding: ${response.status} `);
             }
             const result = await response.json();
-            // alert(`Update completed: ${result.count} item`);
             return result;
         }
         catch (error) {

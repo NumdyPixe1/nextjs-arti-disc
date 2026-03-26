@@ -10,16 +10,24 @@ interface Props {
     href: string;
 }
 export const Card = ({ title, image_file, art, location_found, href }: Props) => {
-    const supabaseUrl = "https://zfcjarjlreqtvbtwzzyp.supabase.co/storage/v1/object/public/artifact-images/";
+
+    const checkImageSrc = () => {
+        // เช็คก่อนว่า image_file มีค่าไหม และไม่ใช่คำว่า "ไม่ระบุ"
+        if (!image_file || image_file === "ไม่ระบุ") {
+            return "/img/no-photos.png";
+        }
+        return image_file;
+    };
+
     return (
         <Link href={href}>
             <div className=" overflow-hidden relative  w-64 h-72 group bg-white rounded-2xl flex flex-col cursor-pointer hover:shadow-lg transition-shadow duration-300">
                 {image_file ? (
                     <Image
                         fill
-                        className="object-cover"
+                        className="object-cover w-full h-full"
                         //https://supabase...
-                        src={image_file.startsWith('http') ? image_file : `${supabaseUrl}${image_file}`}
+                        src={checkImageSrc()}
                         alt={title}
                         loading="lazy"
                     />

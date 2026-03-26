@@ -27,8 +27,6 @@ export const searchAction = async (query: string) => {
         });
 
         if (error) throw error;
-
-        // console.log(`มีการใช้ ${model}`);
         return { results: data };
     } catch (error: any) {
         console.error("Search Error:", error);
