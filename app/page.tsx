@@ -32,7 +32,7 @@ export default function HomePage() {
 
   }
   return (
-    <main className=" min-h-screen bg-[#FDF8F1] font-sans ">
+    <main className=" min-h-screen bg-[#F0EEEB] font-sans ">
       <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center ">
         <SearchBar onSearch={handleSearch} loading={loading} />
       </div>
