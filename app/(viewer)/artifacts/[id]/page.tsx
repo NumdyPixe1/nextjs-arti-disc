@@ -61,7 +61,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
 
                             </div>
                         </div>
-                        {/* <AiDescription data={data} /> */}
+                        <AiDescription data={data} />
                     </div>
                 </div>
 

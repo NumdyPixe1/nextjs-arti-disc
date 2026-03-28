@@ -1,14 +1,19 @@
 import supabase from "@/lib/supabase-client";
 import { NextResponse } from "next/server";
 
+// กำหนด Type ของ context ให้ถูกต้องตามมาตรฐาน Next.js 15
+type RouteContext = {
+    params: Promise<{ id: string }>;
+};
+
 // http://localhost:3000/api/artifacts/{id}
-export const GET = async (req: Request, { params }: { params: { id: number } }) => {
+export const GET = async (req: Request, { params }: RouteContext) => {
     const { id } = await params;
     try {
         const { data, error } = await supabase
             .from('Artifacts')
             .select('*')
-            .eq('id', id)
+            .eq('id', parseInt(id))
             .single(); // .single() เพื่อให้ได้ข้อมูลแค่แถวเดียว
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
@@ -20,7 +25,7 @@ export const GET = async (req: Request, { params }: { params: { id: number } }) 
     }
 }
 
-export const PUT = async (req: Request, { params }: { params: { id: number } }) => {
+export const PUT = async (req: Request, { params }: RouteContext) => {
     const { id } = await params;
     try {
         const formData = await req.formData();
@@ -59,7 +64,7 @@ export const PUT = async (req: Request, { params }: { params: { id: number } }) 
         const { data, error } = await supabase
             .from('Artifacts')
             .update(updateData) // ส่งก้อน JSON ที่ต้องการแก้เข้าไปเลย
-            .eq('id', id)
+            .eq('id', parseInt(id))
             .select(); // .select() เพื่อให้ได้ข้อมูลแถวที่อัปเดตกลับมา
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
@@ -72,14 +77,14 @@ export const PUT = async (req: Request, { params }: { params: { id: number } }) 
 }
 
 
-export const DELETE = async (req: Request, { params }: { params: { id: number } }) => {
+export const DELETE = async (req: Request, { params }: RouteContext) => {
     try {
         const { id } = await params;
         // สั่งลบใน Supabase โดยระบุเงื่อนไข .eq('id', id)
         const { error } = await supabase
             .from('Artifacts')
             .delete()
-            .eq('id', id);
+            .eq('id', parseInt(id));
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
