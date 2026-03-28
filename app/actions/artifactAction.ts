@@ -18,12 +18,12 @@ export const artifactAction = {
         }
     },
 
-    getAllArtifacts: async (page: number, limit: number = 10) => {
-        const offset = page * limit
+    getAllArtifacts: async (page: number, limit: number) => {
         try {//                           
-            const response = await fetch(`/api/artifacts?offset=${offset}&limit=${limit}`);
+            const response = await fetch(`/api/artifacts?offset=${page}&limit=${limit}`);
 
             if (!response.ok) {
+                console.error('Failed to fetch artifacts');
                 throw new Error(`Failed to fetch artifacts: ${response.status} `);
             }
             return await response.json();

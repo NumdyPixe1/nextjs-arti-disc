@@ -1,6 +1,6 @@
 "use client"
 
-import { Artifacts } from "./components/artifacts";
+import { ArtifactsList } from "./components/artifactsList";
 import { useState } from "react";
 import { SearchBar } from "./components/searchBar";
 import { searchAction } from "./actions/searchAction";
@@ -51,7 +51,7 @@ export default function HomePage() {
         )} */}
 
         {/* ส่ง results เข้าไป ถ้าว่างมันจะโหลดหน้าแรกเอง ถ้ามีมันจะโชว์ผลการค้นหา */}
-        <Artifacts query={results.length > 0 ? results : undefined} />
+        <ArtifactsList query={results.length > 0 ? results : undefined} />
       </section>
     </main>
   );

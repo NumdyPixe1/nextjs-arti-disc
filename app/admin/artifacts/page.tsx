@@ -58,7 +58,7 @@ export default function ManagerArtifactsPage() {
         const loadArtifacts = async () => {
             setLoadingTable(true);
             try {
-                const data = await artifactAction.getAllArtifacts(0);
+                const data = await artifactAction.getAllArtifacts(0, 100);
                 setGetArtifacts(data);
             } catch (error) {
                 console.error('Failed to load artifacts:', error);
@@ -132,8 +132,12 @@ export default function ManagerArtifactsPage() {
             setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedItem } : item));
             setIsEditModalOpen(false);
             setEditArtifact(null);
+            setMessageType('info');
+            setMessage('Artifact edited successfully!');
         }
         catch (error) {
+            setMessageType('error');
+            setMessage('Failed to save edit!');
             console.error('Failed to save edit:', error);
         } finally {
             setLoadingSave(false);
@@ -171,7 +175,6 @@ export default function ManagerArtifactsPage() {
 
     const add = async () => {
         setLoadingAdd(true);
-        setMessage('');
         try {
             const formData = new FormData();
             // 1. ใส่ข้อมูล Text ทั่วไป
@@ -190,12 +193,11 @@ export default function ManagerArtifactsPage() {
             }
             await artifactAction.addArtifact(formData);
 
-            // Reset form
-            // setMessageType('success');
-            // setMessage('Artifact added successfully!');
+            setMessageType('success');
+            setMessage('Artifact added successfully!');
             clearForm();
             //
-            const updatedData = await artifactAction.getAllArtifacts(0);
+            const updatedData = await artifactAction.getAllArtifacts(0, getArtifacts.length + 1);
             setGetArtifacts(updatedData);
         } catch (error) {
             setMessageType('error');
