@@ -26,7 +26,7 @@ export const POST = async () => {
             );
         }
 
-        console.log(`Processing Gemini Embeddings ${artifacts.length} items...`);
+        console.log(`%Processing Gemini Embeddings ${artifacts.length} items...`, "color: blue;");
 
         for (const item of artifacts) {
             const textToEmbed = `Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`;

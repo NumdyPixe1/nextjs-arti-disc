@@ -25,7 +25,6 @@ export const Artifacts = ({ query }: Props) => {
             console.log("Loading");
             const limit = 10;
             const newData = await artifactAction.getAllArtifacts(page, limit);
-            console.log('From Artifacts.tsx:', newData);
             // ดึงข้อมูลหมดแล้ว หรือ ไม่มีข้อมูล
             if (newData.length < limit || !newData) {
                 setHasMore(false);

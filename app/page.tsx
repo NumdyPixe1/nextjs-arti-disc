@@ -32,7 +32,7 @@ export default function HomePage() {
 
   }
   return (
-    <main className=" min-h-screen bg-[#F0EEEB] font-sans ">
+    <main className="min-h-screen bg-[#F0EEEB] font-ibm-thai ">
       <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center ">
         <SearchBar onSearch={handleSearch} loading={loading} />
       </div>
@@ -40,7 +40,7 @@ export default function HomePage() {
       {/* Section 1: Visual Search Focus */}
       <section className="h-screen w-full snap-start flex items-center justify-center">
         <div className="flex flex-col ">
-          <h1 className="text-[#1A1A1A] mb-60  text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
+          <h1 className="text-[#1A1A1A] mb-60 text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
         </div>
       </section>
 

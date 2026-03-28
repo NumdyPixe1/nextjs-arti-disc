@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFoundPage() {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="font-ibm-thai flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
             <div className="text-center px-6">
                 {/* Icon
                 <div className="mb-6 flex justify-center">

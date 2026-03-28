@@ -13,7 +13,7 @@ export const analyzeArtifact = async (data: any) => {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
         const prompt = baseInstruction(data);
-        console.log("กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view");
+        console.log("%กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view", "color: blue");
 
         // --- ส่งข้อมูลไปให้ Gemini วิเคราะห์ ---
         const result = await model.generateContent([
@@ -25,10 +25,10 @@ export const analyzeArtifact = async (data: any) => {
         const jsonMatch = response.match(/\{[\s\S]*\}/);
         // ถ้าไม่มีปีกกาให้ใช้ข้อความทั้งหมดแล้วลบ ```json ออก
         const cleanedJson = jsonMatch ? jsonMatch[0] : response.replace(/```json|```/g, "").trim();
-        console.log("เสร็จสิ้นการวิเคราะห์");
+        console.log("%เสร็จสิ้นการวิเคราะห์ด้วย AI", "color: green;");
         return JSON.parse(cleanedJson);
     }
     catch (error: any) {
-        console.error("Connection Gemini Failed:", error);
+        console.error("%Connection Gemini Failed:", "color: red;", error);
     }
 }

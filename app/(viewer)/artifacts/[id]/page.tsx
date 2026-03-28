@@ -8,14 +8,14 @@ import { AiDescription } from "@/app/components/AiDescription";
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
     // ดึงข้อมูล
-    const { data: item, error } = await artifactAction.getArtifactById(id);
-    console.log(item);
-    if (error || !item) {
+    const { data, error } = await artifactAction.getArtifactById(id);
+    console.log(data);
+    if (error || !data) {
         return <NotFoundPage />;
     }
 
     return (
-        <div className="min-h-screen bg-[#F0EEEB] text-[#13181B]">
+        <div className="font-ibm-thai min-h-screen bg-[#F0EEEB] text-[#13181B]">
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 {/* ส่วนบน: ข้อมูลหลัก */}
@@ -26,8 +26,8 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                             className="object-contain p-4"
                             fill
                             sizes="(max-w-768px) 100vw, 800px"
-                            src={item.image_file ?? "/img/no-photos.png"}
-                            alt={item.title ?? "โบราณวัตถุ"}
+                            src={data.image_file ?? "/img/no-photos.png"}
+                            alt={data.title ?? "โบราณวัตถุ"}
                             priority
                         />
                     </div>
@@ -35,24 +35,33 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     {/* Info */}
                     <div className="space-y-6">
                         <div>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-2">{item.title}</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-2">{data.title}</h2>
                         </div>
 
                         <div className="border-t border-[#CCD5DA] pt-6 pb-6">
                             <h3 className="text-lg font-semibold mb-3">ข้อมูลโบราณวัตถุ</h3>
                             <div className="space-y-2 text-[#13181B]">
+
+                                {/*  */}
                                 <div className="flex justify-between">
-                                    <span>ประเภท:</span>
-                                    <span className="font-medium text-[#13181B]">{item.art_style ?? "ไม่ระบุ"}</span>
+                                    <span>สมัย:</span>
+                                    <span className="font-medium text-[#13181B]">{data.art_style ?? "ไม่ระบุ"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>สถานที่ค้นพบ:</span>
                                     <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
-                                        {item.location_found ?? "ไม่ระบุ"}</span>
+                                        {data.location_found ?? "ไม่ระบุ"}</span>
                                 </div>
+                                <div className="flex justify-between">
+                                    <span>จัดแสดงที่:</span>
+                                    <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
+                                        {data.location ?? "ไม่ระบุ"}</span>
+                                </div>
+
+
                             </div>
                         </div>
-                        <AiDescription data={item} />
+                        {/* <AiDescription data={data} /> */}
                     </div>
                 </div>
 
