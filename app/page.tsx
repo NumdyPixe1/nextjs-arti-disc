@@ -1,8 +1,8 @@
 "use client"
 
-import { Artifacts } from "./components/Artifacts";
+import { Artifacts } from "./components/artifacts";
 import { useState } from "react";
-import { SearchBar } from "./components/SearchBar";
+import { SearchBar } from "./components/searchBar";
 import { searchAction } from "./actions/searchAction";
 export default function HomePage() {
 
