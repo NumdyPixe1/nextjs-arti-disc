@@ -5,7 +5,8 @@
 CREATE OR REPLACE FUNCTION match_artifacts (
   query_embedding vector(3072),
   match_threshold float,
-  match_count int
+  match_count int,
+  current_id
 )
 RETURNS TABLE (
   id bigint,
@@ -29,7 +30,7 @@ BEGIN
     "Artifacts".art_style,
     1 - ("Artifacts".embedding <=> query_embedding) AS similarity
   FROM "Artifacts"
-  WHERE 1 - ("Artifacts".embedding <=> query_embedding) > match_threshold
+  WHERE "Artifacts".id != current_id AND 1 - ("Artifacts".embedding <=> query_embedding) > match_threshold
   ORDER BY similarity DESC
   LIMIT match_count;
 END;

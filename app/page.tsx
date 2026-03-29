@@ -1,6 +1,6 @@
 "use client"
 
-import { ArtifactsList } from "./components/artifactsList";
+import { ArtifactsList } from "./components/ArtifactsList";
 import { useState } from "react";
 import { SearchBar } from "./components/searchBar";
 import { searchAction } from "./actions/searchAction";

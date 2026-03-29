@@ -4,13 +4,22 @@ import Image from "next/image";
 import { artifactAction } from '@/app/actions/artifactAction';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
+import { Card } from "@/app/components/card";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
-    // ดึงข้อมูล
-    const { data, error } = await artifactAction.getArtifactById(id);
-    console.log(data);
-    if (error || !data) {
+
+    // ดึงข้อมูลขนานกันทั้งข้อมูลหลักและข้อมูลที่เกี่ยวข้อง
+    const [mainResult, relatedResult] = await Promise.all([
+        artifactAction.getArtifactById(id),
+        artifactAction.getRelatedArtifacts(id, 4)
+    ]);
+
+    const mainData = mainResult.data;
+    const relatedData = relatedResult.data;
+
+
+    if (!mainData) {
         return <NotFoundPage />;
     }
 
@@ -26,8 +35,8 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                             className="object-contain p-4"
                             fill
                             sizes="(max-w-768px) 100vw, 800px"
-                            src={data.image_file ?? "/img/no-photos.png"}
-                            alt={data.title ?? "โบราณวัตถุ"}
+                            src={mainData.image_file ?? "/img/no-photos.png"}
+                            alt={mainData.title ?? "โบราณวัตถุ"}
                             priority
                         />
                     </div>
@@ -35,43 +44,43 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     {/* Info */}
                     <div className="space-y-6">
                         <div>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-2">{data.title}</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-2">{mainData.title}</h2>
                         </div>
 
                         <div className="border-t border-[#CCD5DA] pt-6 pb-6">
                             <h3 className="text-lg font-semibold mb-3">ข้อมูลโบราณวัตถุ</h3>
                             <div className="space-y-2 text-[#13181B]">
 
-                                {/*  */}
                                 <div className="flex justify-between">
                                     <span>สมัย:</span>
-                                    <span className="font-medium text-[#13181B]">{data.art_style ?? "ไม่ระบุ"}</span>
+                                    <span className="font-medium text-[#13181B]">{mainData.art_style ?? "ไม่ระบุ"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>สถานที่ค้นพบ:</span>
                                     <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
-                                        {data.location_found ?? "ไม่ระบุ"}</span>
+                                        {mainData.location_found ?? "ไม่ระบุ"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>จัดแสดงที่:</span>
                                     <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
-                                        {data.location ?? "ไม่ระบุ"}</span>
+                                        {mainData.location ?? "ไม่ระบุ"}</span>
                                 </div>
 
 
                             </div>
                         </div>
-                        <AiDescription data={data} />
+                        {/* <AiDescription data={mainData} /> */}
                     </div>
                 </div>
 
                 {/* ส่วนล่าง: Similar Items */}
                 <div className="border-t border-[#CCD5DA] pt-12">
                     <h2 className="text-2xl font-bold text-[#13181B] mb-8">🔎 โบราณวัตถุที่มีลักษณะใกล้เคียง</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <p className="text-[#13181B] col-span-full text-center py-8">
-                            ระบบค้นหา Vector ยังอยู่ระหว่างการพัฒนา
-                        </p>
+                    <div className="snap-x-mandatory flex gap-6 overflow-x-auto py-4">
+                        {
+                            relatedData ? relatedData.map((item) => (
+                                <Card key={item.id} data={item} href={`/artifacts/${item.id}`} />
+                            )) : <p>Error</p>}
                     </div>
                 </div>
             </div>

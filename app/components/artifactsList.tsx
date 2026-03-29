@@ -116,7 +116,6 @@ export const ArtifactsList = ({ query }: Props) => {
     const isFetchingRef = useRef(false);
 
     const loadMoreArtifacts = useCallback(async () => {
-        // 🛑 กั้นประตูให้แน่นขึ้น
         if (isFetchingRef.current || !hasMore || (query && query.length > 0)) return;
 
         isFetchingRef.current = true; // ล็อคทันที
