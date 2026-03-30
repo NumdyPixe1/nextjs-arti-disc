@@ -33,3 +33,26 @@ export const searchAction = async (query: string) => {
         return { error: error.message };
     }
 }
+
+export const searchByImageAction = async (formData: FormData) => {
+    try {
+        const file = formData.get("image_file") as File;
+        if (!file) return { error: "No image file uploaded" };
+        const response = await fetch(`http://localhost:3000/api/image-embedding`, {
+            method: 'POST',
+            body: formData
+        }
+        );
+        if (!response.ok) {
+            throw new Error(`Failed to update artifact: ${response.status}`);
+        }
+        const data = await response.json();
+
+        console.log("โบราณวัตถุที่คล้ายกัน:", data);
+        return { results: data.results };
+
+    } catch (error: any) {
+        console.error("Search failed:", error.message);
+        return { error: error.message, results: [] };
+    }
+}

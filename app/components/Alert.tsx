@@ -3,6 +3,8 @@ interface Props {
     messageType: 'success' | 'error' | 'nothing' | 'info'
 };
 export const Alert = ({ message, messageType }: Props) => {
+    if (!message || message === 'nothing') return null;
+
     const styles = {
         success: "bg-green-100 border border-green-400 text-green-700",
         error: "bg-red-100 border border-red-400 text-red-700",

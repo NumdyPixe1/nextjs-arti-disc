@@ -1,9 +1,10 @@
+ https://supabase.com/dashboard/project/zfcjarjlreqtvbtwzzyp/integrations/data_api/docs?page=tables-intro
  <!--  -->
  ALTER SEQUENCE "Artifacts_id_seq" RESTART WITH 9;
  
 <!-- ** Create Function ** -->
 CREATE OR REPLACE FUNCTION match_artifacts (
-  query_embedding vector(3072),
+  query_embedding vector(512),
   match_threshold float,
   match_count int,
   current_id

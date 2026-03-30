@@ -32,7 +32,15 @@ export const POST = async () => {
             const textToEmbed = `Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`;
 
             // 2. สร้าง Vector ด้วย Gemini
-            const result = await embedModel.embedContent(textToEmbed);
+            // const result = await embedModel.embedContent(textToEmbed);
+            const result = await embedModel.embedContent({
+                content: {
+                    role: "user", // บางเวอร์ชันต้องการ role
+                    parts: [{ text: textToEmbed }]
+                },
+                taskType: "RETRIEVAL_DOCUMENT", // หรือ "RETRIEVAL_QUERY"
+                outputDimensionality: 512,
+            } as any);
             const vector = result.embedding.values;
 
             // 3. บันทึกลง Supabase (ส่งเป็น string format [x,y,z...])

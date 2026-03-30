@@ -6,6 +6,7 @@ import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
 import { artifactAction } from '@/app/actions/artifactAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
+import Link from 'next/link';
 
 export default function ManagerArtifactsPage() {
     const [query, setQuery] = useState('');
@@ -72,6 +73,8 @@ export default function ManagerArtifactsPage() {
     // ################## Handlers ##################
     const embedding = async () => {
         if (loadingTable) return;
+        setMessageType('nothing');
+        setMessage('');
         try {
             setLoadingTable(true);
             const result = await artifactAction.embeddingAction();
@@ -90,7 +93,6 @@ export default function ManagerArtifactsPage() {
         } finally {
             setLoadingTable(false);
         }
-        console.log(messageType);
     }
 
     const handleEdit = async (item: any, e: React.FormEvent) => {
@@ -209,6 +211,11 @@ export default function ManagerArtifactsPage() {
 
     return (
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
+            <Link href="/#artifacts">
+                <button className="px-8 py-3 border border-white/30 hover:border-white/60 text-[#13181B] hover:text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer">
+                    <p>หน้าหลัก</p>
+                </button>
+            </Link>
             {/* Add Modal */}
             {isAddModalOpen ? (<AddModal
                 isLodading={loadingAdd}

@@ -7,4 +7,6 @@ export type Artifact = {
     location_found?: string;
     location?: string;
     embedding?: number[] | null;
+    image_embedding?: number[] | null
+    similarity?: number;
 }
