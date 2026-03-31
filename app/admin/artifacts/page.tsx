@@ -4,6 +4,7 @@
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
 import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
 import { artifactAction } from '@/app/actions/artifactAction';
+import { embeddingAction } from '@/app/actions/embeddingAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
 import Link from 'next/link';
@@ -77,7 +78,7 @@ export default function ManagerArtifactsPage() {
         setMessage('');
         try {
             setLoadingTable(true);
-            const result = await artifactAction.embeddingAction();
+            const result = await embeddingAction.embeddingAction();
             if (result?.success) {
                 setMessageType("success");
                 setMessage(result?.success);

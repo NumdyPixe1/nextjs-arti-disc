@@ -34,25 +34,39 @@ export const searchAction = async (query: string) => {
     }
 }
 
-export const searchByImageAction = async (formData: FormData) => {
-    try {
-        const file = formData.get("image_file") as File;
-        if (!file) return { error: "No image file uploaded" };
-        const response = await fetch(`http://localhost:3000/api/image-embedding`, {
-            method: 'POST',
-            body: formData
-        }
-        );
-        if (!response.ok) {
-            throw new Error(`Failed to update artifact: ${response.status}`);
-        }
-        const data = await response.json();
+import { pipeline, RawImage } from "@xenova/transformers";
 
-        console.log("โบราณวัตถุที่คล้ายกัน:", data);
-        return { results: data.results };
+export async function searchByImageAction(formData: FormData) {
+    try {
+        // 1. ดึงไฟล์ออกมาจาก FormData (ชื่อต้องตรงกับ 'image_file')
+        const file = formData.get('image_file') as File;
+        if (!file || file.size === 0) throw new Error("No file uploaded");
+
+        // 2. โหลด Model (แนะนำให้ประกาศไว้ข้างนอกหรือใช้ Singleton ถ้าทำได้)
+        const visionModel = await pipeline('image-feature-extraction', 'Xenova/clip-vit-base-patch32');
+
+        // 3. แปลงภาพเป็น Vector
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const image = await RawImage.fromBlob(new Blob([buffer]));
+        const output = await visionModel(image);
+        const imageVector = Array.from(output.data);
+
+        // 4. ค้นหาใน Supabase
+        const { data, error } = await (supabase as any).rpc('match_artifacts', {
+            query_embedding: imageVector,
+            match_threshold: 0.1,
+            match_count: 10,
+            current_id: -1,
+            search_type: 'image' // ✅ อย่าลืมส่ง flag นี้ไปที่ RPC
+        });
+
+        if (error) throw error;
+
+        // 5. ส่งกลับในรูปแบบที่ Client คาดหวัง
+        return { data: data || [] };
 
     } catch (error: any) {
-        console.error("Search failed:", error.message);
-        return { error: error.message, results: [] };
+        console.error("Search Action Error:", error);
+        return { data: [], error: error.message };
     }
 }

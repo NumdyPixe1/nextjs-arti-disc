@@ -5,11 +5,12 @@ import { useState } from "react";
 import { searchAction, searchByImageAction } from "../actions/searchAction";
 import { Button } from "./Button";
 import { ImageSearchModal } from "./Modal";
+import { Artifact } from "@/@types/artifact";
 
 
 interface Props {
     //รับ param 1 ตัว ชื่อ query เท่านั้น และ รับค่าเข้าโดยไม่ต้องส่งค่าออก
-    onResults: (results: any[]) => void;
+    onResults: (results: Artifact[]) => void;
     loading: boolean;
     setLoading: (loading: boolean) => void;
 }
@@ -25,11 +26,13 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [itemName, setItemName] = useState<string>("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const clearForm = () => {
         setPreviewUrl(null);
         setItemName("");
         setWord("");
         setIsModalOpen(false);
+        setSelectedFile(null);
     }
     // ค้นหาด้วยข้อความ
     const handleSubmit = (e: React.FormEvent) => {
@@ -45,13 +48,15 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
         // 2. สร้าง URL ชั่วคราวเพื่อแสดงรูป
         const objectUrl = URL.createObjectURL(file);
         setPreviewUrl(objectUrl);
-        handleSearch(file);
+        setSelectedFile(file);
         setItemName(file.name);
         e.target.value = "";
-        handleSearch(file);
     }
 
     const confrimSearchByImage = () => {
+        if (!selectedFile) return;
+        handleSearch(selectedFile);
+
         clearForm();
     }
 
@@ -67,9 +72,8 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                 formData.append('image_file', query);
                 response = await searchByImageAction(formData);
             }
-
             if (response) {
-                onResults(response.results);
+                onResults(response.results || []); // ส่งผลลัพธ์กลับไปที่ Parent Component
             }
             else {
                 console.error("Search returned no data:", response);
@@ -80,7 +84,6 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
         } finally {
             setLoading(false);
         }
-
     }
 
 

@@ -26,13 +26,12 @@ export const POST = async () => {
             );
         }
 
-        console.log(`%Processing Gemini Embeddings ${artifacts.length} items...`, "color: blue;");
+        console.log(`Processing Gemini Embeddings ${artifacts.length} items...`);
 
         for (const item of artifacts) {
             const textToEmbed = `Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`;
 
             // 2. สร้าง Vector ด้วย Gemini
-            // const result = await embedModel.embedContent(textToEmbed);
             const result = await embedModel.embedContent({
                 content: {
                     role: "user", // บางเวอร์ชันต้องการ role
@@ -52,10 +51,11 @@ export const POST = async () => {
                     embedding: `[${vector.join(',')}]` as any
                 })
                 .eq('id', item.id);
-            // Error
+
             if (updateError) {
                 console.error(`ID ${item.id} Broken:`, updateError.message)
             } else {
+                console.log(`✅ ID ${item.id}: Embedded successfully`);
                 successCount++;
             }
         }
