@@ -7,7 +7,9 @@ export default function HomePage() {
 
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [itemName, setItemName] = useState<string>("");
 
   return (
     <main className="min-h-screen bg-[#F0EEEB] font-ibm-thai ">

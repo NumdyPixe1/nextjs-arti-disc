@@ -1,6 +1,6 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
-
+import { createPortal } from "react-dom";
 interface Props {
     isOpen?: boolean;
     onClose: () => void;
@@ -365,10 +365,19 @@ export const AddModal = ({ isLodading, isOpen, onClose, onConfirm,
         </div>)
 }
 
-export const ImageSearchModal = ({ onClose, onFileChange, previewUrl, itemName, onConfirm }: ImageSearchProps) => {
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+export const ImageSearchModal = ({ isOpen, onClose, onFileChange, previewUrl, itemName, onConfirm }: ImageSearchProps) => {
+    if (!isOpen) return null;
+
+    const [mounted, setMounted] = useState(false);
+
+    // เช็คว่า Component โหลดที่ Browser หรือยัง
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    if (!mounted) return null;
+    return createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="absolute  inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />
             <div className="relative w-full max-w-2xl transform rounded-3xl border border-slate-200 bg-white/95 p-8 shadow-2xl backdrop-blur-md">
@@ -403,13 +412,11 @@ export const ImageSearchModal = ({ onClose, onFileChange, previewUrl, itemName, 
                             type="file"
                             id="imageFile"
                             onChange={(e) => {
-                                // หยิบไฟล์อันแรกจาก input
                                 const file = e.target.files?.[0];
                                 if (file) {
                                     onFileChange(e);
                                 }
                             }}
-
                         />
                     </div>
                     <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
@@ -433,6 +440,7 @@ export const ImageSearchModal = ({ onClose, onFileChange, previewUrl, itemName, 
                 </div>
             </div>
         </div>
+        , document.body
     );
 }
 

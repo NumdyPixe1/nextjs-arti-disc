@@ -7,7 +7,8 @@ CREATE OR REPLACE FUNCTION match_artifacts (
   query_embedding vector(512),
   match_threshold float,
   match_count int,
-  current_id
+  current_id bigint,
+  search_type text DEFAULT 'text' -- ✅ เพิ่มเพื่อเลือกว่าจะค้นหาจากคอลัมน์ไหน
 )
 RETURNS TABLE (
   id bigint,
@@ -29,9 +30,25 @@ BEGIN
     "Artifacts".image_file,
     "Artifacts".location_found,
     "Artifacts".art_style,
-    1 - ("Artifacts".embedding <=> query_embedding) AS similarity
+    -- ✅ คำนวณ similarity โดยเช็ค search_type
+    CASE 
+      WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding)
+      ELSE 1 - ("Artifacts".embedding <=> query_embedding)
+    END::float AS similarity
   FROM "Artifacts"
-  WHERE "Artifacts".id != current_id AND 1 - ("Artifacts".embedding <=> query_embedding) > match_threshold
+  WHERE 
+    "Artifacts".id != current_id 
+    AND (
+      CASE 
+        WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding)
+        ELSE 1 - ("Artifacts".embedding <=> query_embedding)
+      END > match_threshold
+    )
+    -- ✅ ป้องกันการค้นหาในคอลัมน์ที่ข้อมูลยังเป็น NULL
+    AND (
+      (search_type = 'image' AND "Artifacts".image_embedding IS NOT NULL) OR
+      (search_type = 'text' AND "Artifacts".embedding IS NOT NULL)
+    )
   ORDER BY similarity DESC
   LIMIT match_count;
 END;

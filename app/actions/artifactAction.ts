@@ -12,7 +12,8 @@ export const artifactAction = {
             if (!response.ok) {
                 throw new Error(`Failed to create artifact: ${response.status}`);
             }
-            return response.json();
+            const results = await response.json();
+            return results;
         }
         catch (error) {
             console.error('Failed to create artifact:', error);
@@ -27,7 +28,8 @@ export const artifactAction = {
                 console.error('Failed to fetch artifacts');
                 throw new Error(`Failed to fetch artifacts: ${response.status} `);
             }
-            return await response.json();
+            const results = await response.json();
+            return results;
         } catch (error) {
             console.error('Failed to fetch artifacts:', error);
         }

@@ -7,8 +7,8 @@ export const embeddingAction = {
             if (!response.ok) {
                 throw new Error(`Action: Failed to fetch embedding: ${response.status} `);
             }
-            const result = await response.json();
-            return result;
+            const results = await response.json();
+            return results;
         }
         catch (error: any) {
             console.error('Action: Failed to embedding:', error);
@@ -23,8 +23,8 @@ export const embeddingAction = {
             if (!response.ok) {
                 throw new Error(`Action: Failed to fetch image embedding: ${response.status} `);
             }
-            const result = await response.json();
-            return result;
+            const results = await response.json();
+            return results;
         }
         catch (error: any) {
             console.error('Action: Failed to image embedding:', error);

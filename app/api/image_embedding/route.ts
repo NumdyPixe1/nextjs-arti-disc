@@ -35,8 +35,8 @@ export const GET = async (req: Request) => {
                 // 3. จัดการ URL ให้ปลอดภัย
                 const bucketUrl = "https://zfcjarjlreqtvbtwzzyp.supabase.co/storage/v1/object/public/artifact-images/";
 
-                // ตัดช่องว่าง และ Encode เฉพาะส่วนชื่อไฟล์ถ้าจำเป็น หรือ Encode ทั้งหมดอย่างระมัดระวัง
-                let imageUrl = item.image_file.startsWith('http')
+
+                let imageUrl = item.image_file.startsWith('http')  // ตัดช่องว่าง และ Encode เฉพาะส่วนชื่อไฟล์ถ้าจำเป็น หรือ Encode ทั้งหมดอย่างระมัดระวัง
                     ? item.image_file
                     : `${bucketUrl}${item.image_file.trim()}`;
 
@@ -67,12 +67,14 @@ export const GET = async (req: Request) => {
 
                 if (updateError) throw updateError;
 
-                console.log(`✅ ID ${item.id}: Embedded successfully`);
+                console.log(`✅ ID ${item.id}: Embedded successfully.  
+                    File:${item.image_file}`);
                 results.success++;
 
             } catch (error: any) {
-                // ถ้าตัวนึงพัง ให้บันทึกความผิดพลาดแล้วไปทำตัวถัดไป
-                console.error(`❌ ID ${item.id} Failed:`, error.message);
+                console.error(`❌ ID ${item.id} // ถ้าตัวนึงพัง ให้บันทึกความผิดพลาดแล้วไปทำตัวถัดไป
+                    File:${item.image_file}
+                    Failed:`, error.message);
                 results.failed++;
                 results.errors.push(`ID ${item.id}: ${error.message}`);
             }
