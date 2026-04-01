@@ -1,7 +1,7 @@
 import { Artifact } from "@/@types/artifact";
 import supabase from "@/lib/supabase-client";
-export const artifactAction = {
 
+export const artifactAction = {
     addArtifact: async (formData: FormData) => {
         try {
             const response = await fetch('/api/artifacts',
@@ -49,6 +49,7 @@ export const artifactAction = {
         }
     },
 
+    // หาชิ้นที่เกี่ยวข้องกันโดยใช้ RPC ที่เราสร้างไว้ใน Supabase
     getRelatedArtifacts: async (id: number, limit: number = 4): Promise<{ data: Artifact[] | null, error: any }> => {
         try {
             const { data: currentData, error: currentError } = await supabase

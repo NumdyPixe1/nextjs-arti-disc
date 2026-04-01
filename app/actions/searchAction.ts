@@ -4,43 +4,6 @@ import { pipeline, RawImage } from "@xenova/transformers";
 import supabase from "@/lib/supabase-client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-
-// export const searchAction = async (query: string) => {
-//     try {
-//         // 1. โหลดโมเดล MiniLM (384 มิติ) - ตัวเดียวกับที่ใช้ทำ Indexing
-//         const extractor = await pipeline(
-//             'feature-extraction',
-//             'Xenova/paraphrase-multilingual-MiniLM-L12-v2'
-//         );
-
-//         // 2. สร้าง Vector จากข้อความค้นหา (Query)
-//         const output = await extractor(query, {
-//             pooling: 'mean', // MiniLM มักใช้ mean pooling
-//             normalize: true
-//         });
-
-//         // แปลงเป็น Array ปกติ (จะมี 384 ตัวเลข)
-//         const vectorArray = Array.from(output.data);
-//         const vectorString = `[${vectorArray.join(',')}]`;
-//         // 3. เรียกใช้ RPC Function 'match_artifacts' ใน Supabase
-//         const { data, error } = await supabase.rpc('match_artifacts', {
-//             query_embedding: vectorString,      // ส่ง 384 dims ไป
-//             match_threshold: 0.25,        // ปรับความแม่นยำ (0.2 - 0.4 กำลังดี)
-//             match_count: 10,              // จำนวนผลลัพธ์ที่ต้องการ
-//             current_id: -1,               // ถ้าไม่มี ID ที่ต้องยกเว้นให้ส่ง -1
-//             search_type: 'text'           // ✅ ระบุว่าเป็น 'text' เพื่อให้ SQL ไปดูที่คอลัมน์ 384
-//         });
-
-//         if (error) throw error;
-
-//         return { results: data };
-
-//     } catch (error: any) {
-//         console.error("Text Search Error:", error.message);
-//         return { success: false, error: error.message };
-//     }
-// };
-
 export const searchByImageAction = async (formData: FormData) => {
     try {
         // 1. ดึงไฟล์ออกมาจาก FormData (ชื่อต้องตรงกับ 'image_file')
