@@ -1,12 +1,12 @@
 // แปลงรูปภาพ Artifacts ที่ยังไม่มี embedding
-// ** http://localhost:3000/api/image_embedding **
+// ** http://localhost:3000/api/image-embedding **
 
 import { pipeline, RawImage } from "@xenova/transformers";
 import supabase from "@/lib/supabase-client";
 import { NextResponse } from "next/server";
 
 
-export const GET = async (req: Request) => {
+export const POST = async (req: Request) => {
     try {
         // 1. ดึงข้อมูลที่ยังไม่มี image_embedding
         const { data: artifacts, error: dbError } = await supabase
@@ -52,7 +52,6 @@ export const GET = async (req: Request) => {
 
                 const imageBlob = await response.blob();
                 const image = await RawImage.fromBlob(imageBlob);
-
                 // 5. ประมวลผล Vector
                 const output = await visionModel(image as any);
                 const vector = Array.from(output.data);
@@ -66,7 +65,6 @@ export const GET = async (req: Request) => {
                     .eq('id', item.id);
 
                 if (updateError) throw updateError;
-
                 console.log(`✅ ID ${item.id}: Embedded successfully.  
                     File:${item.image_file}`);
                 results.success++;

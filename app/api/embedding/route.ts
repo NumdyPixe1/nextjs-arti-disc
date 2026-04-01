@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import supabase from "@/lib/supabase-client";
 const apiKey = process.env.GOOGLE_GEMINI_API;
 
-export const GET = async () => {
+export const POST = async () => {
     try {
         if (!apiKey) {
             throw new Error("Gemini API Key not found");

@@ -5,6 +5,7 @@ import { artifactAction } from '@/app/actions/artifactAction';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
 import { Card } from "@/app/components/card";
+import Link from "next/link";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
@@ -25,6 +26,14 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
 
     return (
         <div className="font-ibm-thai min-h-screen bg-[#F0EEEB] text-[#13181B]">
+            <div className="p-4 flex items-center justify-start">
+                <Link href="/#artifacts" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    ย้อนกลับ
+                </Link>
+            </div>
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 {/* ส่วนบน: ข้อมูลหลัก */}

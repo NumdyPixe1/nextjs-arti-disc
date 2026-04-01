@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { LocalIcon } from "./LocalIcon";
 import { SimilarityBar } from "./SimilarityBar";
-import { useEffect, useState } from "react";
 
 interface Props {
     data: any;

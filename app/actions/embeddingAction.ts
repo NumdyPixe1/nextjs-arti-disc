@@ -1,11 +1,11 @@
 export const embeddingAction = {
-    embeddingAction: async () => {
+    textEmbeddingAction: async () => {
         try {
             const response = await fetch('/api/embedding', {
                 method: 'POST'
             });
             if (!response.ok) {
-                throw new Error(`Action: Failed to fetch embedding: ${response.status} `);
+                throw new Error(`Action: Failed to fetch embedding: ${response.status}`);
             }
             const results = await response.json();
             return results;
@@ -17,7 +17,7 @@ export const embeddingAction = {
 
     imageEmbeddingAction: async () => {
         try {
-            const response = await fetch('/api/image_embedding', {
+            const response = await fetch('/api/image-embedding', {
                 method: 'POST'
             });
             if (!response.ok) {

@@ -11,7 +11,7 @@ export const analyzeArtifact = async (data: any) => {
             throw new Error("Gemini API Key not found");
         }
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
         const prompt = baseInstruction(data);
         console.log("%กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view", "color: blue");
 

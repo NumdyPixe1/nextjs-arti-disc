@@ -49,6 +49,22 @@ export const artifactAction = {
         }
     },
 
+    getAllArtifactsAdmin: async () => {
+        try {//                           
+            const response = await fetch(`/api/artifacts`);
+
+            if (!response.ok) {
+                console.error('Failed to fetch artifacts');
+                throw new Error(`Failed to fetch artifacts: ${response.status} `);
+            }
+            const results = await response.json();
+            return results;
+        } catch (error) {
+            console.error('Failed to fetch artifacts:', error);
+        }
+    },
+
+
     // หาชิ้นที่เกี่ยวข้องกันโดยใช้ RPC ที่เราสร้างไว้ใน Supabase
     getRelatedArtifacts: async (id: number, limit: number = 4): Promise<{ data: Artifact[] | null, error: any }> => {
         try {

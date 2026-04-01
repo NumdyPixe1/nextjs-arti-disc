@@ -4,10 +4,10 @@
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
 import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
 import { artifactAction } from '@/app/actions/artifactAction';
-import { embeddingAction } from '@/app/actions/embeddingAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
 import Link from 'next/link';
+import { embeddingAction } from '@/app/actions/embeddingAction';
 
 export default function ManagerArtifactsPage() {
     const [query, setQuery] = useState('');
@@ -60,7 +60,7 @@ export default function ManagerArtifactsPage() {
         const loadArtifacts = async () => {
             setLoadingTable(true);
             try {
-                const data = await artifactAction.getAllArtifacts(0, 100);
+                const data = await artifactAction.getAllArtifactsAdmin();
                 setGetArtifacts(data);
             } catch (error) {
                 console.error('Failed to load artifacts:', error);
@@ -76,21 +76,32 @@ export default function ManagerArtifactsPage() {
         if (loadingTable) return;
         setMessageType('nothing');
         setMessage('');
+
         try {
             setLoadingTable(true);
-            const result = await embeddingAction.embeddingAction();
-            if (result?.success) {
+            const textResult = await embeddingAction.textEmbeddingAction();
+            const imageResult = await embeddingAction.imageEmbeddingAction();
+            if (textResult?.success && imageResult?.success) {
                 setMessageType("success");
-                setMessage(result?.success);
-                // ตรงนี้ถ้าใช้ Server Action ระบบจะ Revalidate หน้าให้อัตโนมัติอยู่แล้ว
-            } else {
-                setMessageType("info");
-                setMessage(result?.message);
+                setMessage("Both text and image embeddings were successful.");
             }
-        }
-        catch (error) {
-            setMessage(`Failed to Embedding:${error}`);
+            else if (imageResult?.success && !textResult?.success) {
+                // เคสที่คุณเจอ: Image ได้ แต่ Text แตก
+                setMessageType("info");
+                setMessage(`Image embedding succeeded, but text embedding failed: ${textResult?.message || 'Unknown Error'}`);
+            }
+            else if (textResult?.success && !imageResult?.success) {
+                setMessageType("info");
+                setMessage(`Text embedding succeeded, but image embedding failed: ${imageResult?.message || 'Unknown Error'}`);
+            }
+            else {
+                setMessageType("info");
+                setMessage("There are no new images or texts to embed at this time.");
+            } console.log("Embedding Results:", { textResult, imageResult });
+
+        } catch (error) {
             setMessageType('error');
+            setMessage(`เกิดข้อผิดพลาดร้ายแรง: ${error}`);
         } finally {
             setLoadingTable(false);
         }
@@ -200,7 +211,7 @@ export default function ManagerArtifactsPage() {
             setMessage('Artifact added successfully!');
             clearForm();
             //
-            const updatedData = await artifactAction.getAllArtifacts(0, getArtifacts.length + 1);
+            const updatedData = await artifactAction.getAllArtifactsAdmin();
             setGetArtifacts(updatedData);
         } catch (error) {
             setMessageType('error');
@@ -212,19 +223,21 @@ export default function ManagerArtifactsPage() {
 
     return (
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
-            <Link href="/#artifacts">
-                <button className="px-8 py-3 border border-white/30 hover:border-white/60 text-[#13181B] hover:text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer">
-                    <p>หน้าหลัก</p>
-                </button>
-            </Link>
+            {/* Back Button */}
+            <div className="flex items-center justify-start">
+                <Link href="/#artifacts" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    ย้อนกลับ
+                </Link>
+            </div>
             {/* Add Modal */}
             {isAddModalOpen ? (<AddModal
                 isLodading={loadingAdd}
                 isOpen={isAddModalOpen}
                 onClose={() => { setIsAddModalOpen(false); clearForm(); }}
                 onConfirm={add}
-                // message={message}
-                // messageType={messageType}
 
                 title={title}
                 artStyle={artStyle}
@@ -293,19 +306,19 @@ export default function ManagerArtifactsPage() {
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search artifacts..."
                         className=" rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200" />
-                    <div className='flex-1 flex justify-end'>
+                    <div className='gap-4 flex-1 flex justify-end'>
                         <button disabled={loadingTable} onClick={async () => { await embedding(); setLoadingTable(false); }} className=' cursor-pointer rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700'>
                             🧠 Embedding</button>
                     </div>
 
                 </div>
-                {messageType === 'info' ? (<Alert
+                {messageType ? (<Alert
                     message={message}
                     messageType={messageType} />) : null}
 
                 {loadingTable ? (<LoadingSpinner />)
                     : getArtifacts.length === 0 ? (<p className="text-sm text-slate-500">No artifacts found.</p>)
-                        : (<div className="overflow-x-auto">
+                        : (<div className="max-h-[50vh] overflow-y-auto pr-3 custom-scrollbar ">
                             <table className="text-slate-900 w-full text-left text-sm border-collapse">
                                 <thead>
                                     <tr className="bg-slate-100">
@@ -346,15 +359,6 @@ export default function ManagerArtifactsPage() {
                                     ))}
                                 </tbody>
                             </table>
-                            {/* <div className='flex'>
-                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300'
-                                    disabled={currentPageNumber >= allPage} onClick={goOnNextPage}>Next</button>
-                                <span className='text-black'>{currentPageNumber} of {allPage}</span>
-                                <button className='cursor-pointer rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-black hover:bg-gray-300'
-                                    disabled={currentPageNumber === 1}
-                                    onClick={goOnPrevPage}>
-                                    Prev</button>
-                            </div> */}
                         </div>
                         )}
             </section>
