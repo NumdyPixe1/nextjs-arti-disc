@@ -22,7 +22,7 @@ export const searchByImageAction = async (formData: FormData) => {
         // 4. ค้นหาใน Supabase
         const { data, error } = await (supabase as any).rpc('match_artifacts', {
             query_embedding: imageVector,
-            match_threshold: 0.05,
+            match_threshold: 0.1,
             match_count: 10,
             current_id: -1,
             search_type: 'image' // ✅ อย่าลืมส่ง flag นี้ไปที่ RPC

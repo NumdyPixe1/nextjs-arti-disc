@@ -2,12 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { LocalIcon } from "./LocalIcon";
 import { SimilarityBar } from "./SimilarityBar";
+import { useEffect, useState } from "react";
 
 interface Props {
     data: any;
     href: string;
 }
-export const Card = ({ data, href }: Props) => {
+export const Card = ({ data, href, }: Props) => {
+
 
     const checkImageSrc = () => {
         // เช็คก่อนว่า image_file มีค่าไหม และไม่ใช่คำว่า "ไม่ระบุ"
@@ -49,7 +51,7 @@ export const Card = ({ data, href }: Props) => {
                     </div>
                 </div>
             </div>
-            <SimilarityBar similarity={data.similarity} />
+            {data.similarity > 0 ? (<SimilarityBar similarity={data.similarity} />) : null}
         </Link>
     )
 };

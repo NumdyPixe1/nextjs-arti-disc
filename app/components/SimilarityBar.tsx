@@ -3,8 +3,6 @@ import { getSimilarityColor, silmilarityScore } from "../utils/similarityScore";
 export const SimilarityBar = (similarity: { similarity: number }) => {
     const displayPercent = silmilarityScore(similarity.similarity);
     const { color } = getSimilarityColor(parseInt(displayPercent));
-    let maxWidth = 200;
-    const currentWidth = (parseInt(displayPercent) / 100) * maxWidth;
 
     console.log("SimilarityBar similarity:", similarity.similarity, "displayPercent:", displayPercent, "color:", color);
     return (
@@ -14,7 +12,8 @@ export const SimilarityBar = (similarity: { similarity: number }) => {
             <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
                     className={`h-full transition-all duration-1000 ease-out rounded-full ${color}`}
-                    style={{ width: `${currentWidth}px` }}
+                    // ใช้สูตร: ขนาด px = ฐาน + (เปอร์เซ็นต์ * ตัวคูณ)
+                    style={{ width: `${40 + (parseInt(displayPercent) * 0.8)}px` }}
                 />
             </div>
 
