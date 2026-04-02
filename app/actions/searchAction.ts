@@ -58,7 +58,7 @@ export const searchAction = async (query: string) => {
         const { data, error } = await (supabase as any).rpc('match_artifacts', {
             query_embedding: vector,
             match_threshold: 0.1, // ค่าความคล้าย (0-1) ยิ่งน้อยยิ่งเจอเยอะ
-            match_count: 5,        // จำนวนรายการที่ต้องการ
+            match_count: 10,        // จำนวนรายการที่ต้องการ
             current_id: 0,
             search_type: 'text'
         });
