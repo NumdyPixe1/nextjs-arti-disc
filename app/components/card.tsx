@@ -46,7 +46,7 @@ export const Card = ({ data, href, }: Props) => {
                         <h3 className="text-xl font-bold leading-tight">{data.title}</h3>
                     </div>
                     <div className=" transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out absolute bottom-4 left-4">
-                        <span className="text-[10px] font-bold bg-orange-400 backdrop-blur-md text-white px-2 py-1 rounded">{data.art_style}</span>
+                        <span className="text-[10px] font-bold bg-orange-400 backdrop-blur-md text-white px-2 py-1 rounded">{data.era}</span>
                     </div>
                 </div>
             </div>

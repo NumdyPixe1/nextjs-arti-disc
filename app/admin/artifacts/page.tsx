@@ -351,14 +351,14 @@ export default function ManagerArtifactsPage() {
                             <table className="text-slate-900 w-full text-left text-sm border-collapse">
                                 <thead>
                                     <tr className="bg-slate-100">
+                                        <th className="px-4 py-2 border border-slate-200">Updated at</th>
                                         <th className="px-4 py-2 border border-slate-200">ID</th>
                                         <th className="px-4 py-2 border border-slate-200">Title</th>
-                                        <th className="px-4 py-2 border border-slate-200">Art Style</th>
+                                        <th className="px-4 py-2 border border-slate-200">Era</th>
                                         <th className="px-4 py-2 border border-slate-200">Material</th>
                                         <th className="px-4 py-2 border border-slate-200">Location Found</th>
                                         <th className="px-4 py-2 border border-slate-200">Current Location</th>
                                         {/* <th className="px-4 py-2 border border-slate-200">Description</th> */}
-                                        {/* <th className="px-4 py-2 border border-slate-200">Created</th> */}
                                         <th className="px-4 py-2 border border-slate-200"></th>
                                     </tr>
                                 </thead>
@@ -366,14 +366,14 @@ export default function ManagerArtifactsPage() {
                                     {/* ข้อมูลที่ค้นหาเจอ */}
                                     {fillteredArtifacts.map((item, index) => (
                                         <tr key={item.id || index} className="hover:bg-slate-50">
+                                            <td className="px-4 py-2 border border-slate-200">{item.updated_at ? new Date(item.updated_at).toLocaleString() : '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.id || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.title || '-'}</td>
-                                            <td className="px-4 py-2 border border-slate-200">{item.art_style || '-'}</td>
+                                            <td className="px-4 py-2 border border-slate-200">{item.era || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.material || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.location_found || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.current_location || '-'}</td>
                                             {/* <td className="px-4 py-2 border border-slate-200 max-w-xs truncate">{item.description || '-'}</td> */}
-                                            {/* <td className="px-4 py-2 border border-slate-200">{item.created_at ? new Date(item.created_at).toLocaleString() : '-'}</td> */}
                                             <td className=" justify-center gap-4 flex px-4 py-2 border border-slate-200">
                                                 <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
                                                     onClick={(e) => handleEdit(item, e)}>

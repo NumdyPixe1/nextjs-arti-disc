@@ -3,6 +3,7 @@
 import { ArtifactsList } from "./components/ArtifactsList";
 import { useState } from "react";
 import { SearchBar } from "./components/searchBar";
+import { NavBar } from "./components/NavBar";
 export default function HomePage() {
 
   const [results, setResults] = useState<any[]>([]);
@@ -10,7 +11,10 @@ export default function HomePage() {
 
 
   return (
-    <main className="min-h-screen bg-[#F0EEEB] font-ibm-thai ">
+    <main className="min-h-screen bg-[#F0EEEB] font-ibm-thai " >
+
+      <NavBar />
+
       <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center ">
         <SearchBar
           onResults={(data) => { setResults(data) }}
@@ -20,7 +24,7 @@ export default function HomePage() {
       </div>
 
       {/* Section 1: Visual Search Focus */}
-      <section className="h-screen w-full snap-start flex items-center justify-center">
+      <section className="h-screen w-full snap-start flex items-center  justify-center">
         <div className="flex flex-col ">
           <h1 className="text-[#1A1A1A] mb-60 text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
         </div>

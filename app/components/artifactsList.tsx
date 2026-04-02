@@ -118,7 +118,7 @@ export const ArtifactsList = ({ query }: Props) => {
                     {loading ? (
                         <Loading />
                     ) : hasMore ? (
-                        <p className="text-slate-500">เลื่อนลงเพื่อโหลดข้อมูลเพิ่มเติม...</p>
+                        <p className="text-slate-500">สิ้นสุดการแสดงข้อมูล</p>
                     ) : getArtifacts.length > 0 ? (
                         <p className="text-slate-400 font-bold">สิ้นสุดการแสดงข้อมูล</p>
                     ) : (

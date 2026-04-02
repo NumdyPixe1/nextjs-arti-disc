@@ -3,7 +3,6 @@
 import { useScroll, motion, useTransform, useSpring } from "framer-motion";
 import { useState } from "react";
 import { searchAction, searchByImageAction } from "../actions/searchAction";
-import { Button } from "./Button";
 import { ImageSearchModal } from "./Modal";
 import { Artifact } from "@/@types/artifact";
 
@@ -18,7 +17,7 @@ interface Props {
 // รับคำค้นหา
 export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
     const { scrollY } = useScroll();
-    const y = useTransform(scrollY, [0, 300], [0, -320]);
+    const y = useTransform(scrollY, [0, 300], [50, -320]);
     const smoothY = useSpring(y, { stiffness: 100, damping: 20 });
     // 
     const [word, setWord] = useState<string>("");
@@ -94,7 +93,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
         <>
             <motion.div
                 style={{ y: smoothY }}
-                className="pointer-events-auto sticky group max-w-2xl mx-auto w-full px-4 flex gap-2 items-center justify-center "
+                className="pointer-events-auto sticky group max-w-2xl mx-auto w-full px-4 flex gap-2"
             >
                 <form onSubmit={handleSubmit} className="flex flex-1">
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-green-600">
@@ -109,13 +108,13 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                         value={word}
                         onChange={(e) => setWord(e.target.value)}
                     />
-                    <Button
+                    <button
                         type="submit"
                         disabled={loading}
-                        style="cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600
+                        className="cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600
                      hover:to-blue-700 text-white px-6 py-2 rounded-xl ml-2 h-14 font-medium 
-                     transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2"
-                        children={loading ? (
+                     transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2">
+                        {loading ? (
                             <>
                                 <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -131,16 +130,16 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                                 ส่ง
                             </>
                         )}
-                    />
+                    </button>
+
                 </form>
-                <Button
-                    type="button"
+                <button type="button"
                     disabled={loading}
                     onClick={() => setIsModalOpen(true)}
-                    style="cursor-pointer bg-gradient-to-r from-green-500 
+                    className="cursor-pointer bg-gradient-to-r from-green-500 
                 to-green-600 hover:from-green-600 hover:to-green-700 text-white
-                 px-4 py-2 rounded-xl ml-2 h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center"
-                    children={loading ? (
+                 px-4 py-2 rounded-xl ml-2 h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center">
+                    {loading ? (
                         <>
                             <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -155,7 +154,8 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                             </svg>
                         </>
                     )}
-                />
+                </button>
+
             </motion.div >
             <ImageSearchModal
                 isOpen={isModalOpen}
