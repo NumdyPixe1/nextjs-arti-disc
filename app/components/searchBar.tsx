@@ -55,7 +55,6 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
     const confrimSearchByImage = () => {
         if (!selectedFile) return;
         handleSearch(selectedFile);
-
         clearForm();
     }
 
@@ -86,8 +85,6 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
             setLoading(false);
         }
     }
-
-
 
     return (
         <>

@@ -6,10 +6,11 @@ import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
 import { Card } from "@/app/components/card";
 import Link from "next/link";
+import MapWrapper from "@/app/components/map/MapWrapper";
+
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
-
     // ดึงข้อมูลขนานกันทั้งข้อมูลหลักและข้อมูลที่เกี่ยวข้อง
     const [mainResult, relatedResult] = await Promise.all([
         artifactAction.getArtifactById(id),
@@ -79,6 +80,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                             </div>
                         </div>
                         {/* <AiDescription data={mainData} /> */}
+                        <MapWrapper />
                     </div>
                 </div>
 

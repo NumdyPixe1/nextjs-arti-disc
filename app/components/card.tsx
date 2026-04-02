@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LocalIcon } from "./LocalIcon";
 import { SimilarityBar } from "./SimilarityBar";
 
 interface Props {
@@ -38,7 +37,7 @@ export const Card = ({ data, href, }: Props) => {
                 )}
                 <div className="absolute inset-0 bg-linear-to-t rounded-2xl from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="flex flex-row absolute top-4 left-4">
-                        <LocalIcon />
+                        <img className="size-5" src="/img/location-pin.png" alt="" />
                         <span className="text-[10px] font-bold uppercase tracking-widest  backdrop-blur-md text-white px-2 py-1 rounded">{data.location_found}</span>
                     </div>
 
