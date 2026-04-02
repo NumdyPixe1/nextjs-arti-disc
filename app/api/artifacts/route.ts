@@ -31,8 +31,10 @@ export const POST = async (req: Request) => {
         const art_style = formData.get("art_style") as string;
         const material = formData.get("material") as string;
         const location_found = formData.get("location_found") as string;
-        const location = formData.get("location") as string;
+        const current_location = formData.get("current_location") as string;
         const description = formData.get("description") as string;
+        const era = formData.get("era") as string;
+        const category = formData.get("category") as string;
         // 2. ตรวจสอบชื่อว่าเป็นค่าว่างไหม
         if (!title || title.trim() === "") {
             return NextResponse.json(
@@ -60,7 +62,8 @@ export const POST = async (req: Request) => {
                 return NextResponse.json({ error: error.message }, { status: 500 });
             }
 
-            // 3. ดึง URL (ชื่อ bucket ต้องตรงกัน)
+            // 3. ดึง URL (ชื่อ buck
+            // et ต้องตรงกัน)
             const { data: { publicUrl } } = supabase.storage
                 .from('artifact-images')
                 .getPublicUrl(fileName);
@@ -72,8 +75,8 @@ export const POST = async (req: Request) => {
         const { data, error } = await supabase
             .from('Artifacts')
             .insert({
-                title, art_style, material, location_found,
-                location, description, image_file: finalImageUrl
+                title, art_style, material, location_found, era, category,
+                current_location, description, image_file: finalImageUrl
             })
             .select();
         // Check Error จาก Supabase

@@ -4,11 +4,11 @@
  
 <!-- ** Create Function ** -->
 CREATE OR REPLACE FUNCTION match_artifacts (
-  query_embedding vector(512),
+  query_embedding vector,    -- รองรับทั้ง 3072 (Text) และ 512 (Image)
   match_threshold float,
   match_count int,
   current_id bigint,
-  search_type text DEFAULT 'text' -- ✅ เพิ่มเพื่อเลือกว่าจะค้นหาจากคอลัมน์ไหน
+  search_type text DEFAULT 'text'
 )
 RETURNS TABLE (
   id bigint,
@@ -17,7 +17,10 @@ RETURNS TABLE (
   image_file text,
   location_found text,
   art_style text,
-  similarity float
+  current_location text,
+  era text,
+  category text,
+  similarity float 
 )
 LANGUAGE plpgsql
 AS $$
@@ -30,26 +33,30 @@ BEGIN
     "Artifacts".image_file,
     "Artifacts".location_found,
     "Artifacts".art_style,
-    -- ✅ คำนวณ similarity โดยเช็ค search_type
-    CASE 
-      WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding)
-      ELSE 1 - ("Artifacts".embedding <=> query_embedding)
-    END::float AS similarity
+    "Artifacts".current_location,
+    "Artifacts".era,
+    "Artifacts".category,
+    (CASE 
+      -- กรณีค้นหาด้วยภาพ (เปรียบเทียบ 512 กับ 512)
+      WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding::vector(512))
+      -- กรณีค้นหาด้วยข้อความ (เปรียบเทียบ 3072 กับ 3072)
+      ELSE 1 - ("Artifacts".embedding <=> query_embedding::vector(3072))
+    END)::float AS similarity
   FROM "Artifacts"
   WHERE 
     "Artifacts".id != current_id 
     AND (
+      -- ตรวจสอบเงื่อนไขตามประเภทการค้นหาและขนาดมิติของ Vector
+      (search_type = 'image' AND "Artifacts".image_embedding IS NOT NULL AND vector_dims(query_embedding) = 512) OR
+      (search_type = 'text' AND "Artifacts".embedding IS NOT NULL AND vector_dims(query_embedding) = 3072)
+    )
+    AND (
       CASE 
-        WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding)
-        ELSE 1 - ("Artifacts".embedding <=> query_embedding)
+        WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding::vector(512))
+        ELSE 1 - ("Artifacts".embedding <=> query_embedding::vector(3072))
       END > match_threshold
     )
-    -- ✅ ป้องกันการค้นหาในคอลัมน์ที่ข้อมูลยังเป็น NULL
-    AND (
-      (search_type = 'image' AND "Artifacts".image_embedding IS NOT NULL) OR
-      (search_type = 'text' AND "Artifacts".embedding IS NOT NULL)
-    )
-  ORDER BY similarity DESC
+  ORDER BY 10 DESC 
   LIMIT match_count;
 END;
 $$;

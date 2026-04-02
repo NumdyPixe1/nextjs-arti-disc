@@ -6,7 +6,7 @@ interface Props {
     onClose: () => void;
     onConfirm?: () => void;
     itemName?: string;
-    isLodading?: boolean;
+    isLoading?: boolean;
 }
 interface DataProps extends Props {
     // message?: string;
@@ -14,18 +14,22 @@ interface DataProps extends Props {
     title: string;
     locationFound: string;
     artStyle: string;
-    location: string;
+    currentLocation: string;
     description: string;
     imageFile: File | null;
     material: string;
+    era: string;
+    category: string;
 
     setTitle: (value: string) => void;
     setLocationFound: (value: string) => void;
     setArtStyle: (value: string) => void;
-    setLocation: (value: string) => void;
+    setCurrentLocation: (value: string) => void;
     setDescription: (value: string) => void;
     setImageFile: (file: File | null) => void;
     setMaterial: (value: string) => void;
+    setEra: (value: string) => void;
+    setCategory: (value: string) => void;
 }
 interface ImageSearchProps extends Props {
     // imageFile: File | null;
@@ -33,9 +37,9 @@ interface ImageSearchProps extends Props {
     previewUrl: string | null;
 }
 
-export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
-    title, locationFound, artStyle, location, description, imageFile, material,
-    setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageFile, setMaterial
+export const EditModal = ({ isLoading, isOpen, onClose, onConfirm,
+    title, locationFound, artStyle, currentLocation, description, imageFile, material, era, category,
+    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra
 }: DataProps) => {
     if (!isOpen) return null;
     return (
@@ -49,7 +53,7 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
                     <p className="mt-2 text-sm text-slate-600">Update the details of the artifact below.</p>
                 </header>
 
-                {isLodading ? <LoadingSpinner /> : (<form onSubmit={(e) => {
+                {isLoading ? <LoadingSpinner /> : (<form onSubmit={(e) => {
                     e.preventDefault();
                     onConfirm?.();
                 }}
@@ -82,9 +86,9 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
                         <label htmlFor="location" className="text-sm font-medium text-slate-700">Location</label>
                         <input
                             type="text"
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            id="currentLocation"
+                            value={currentLocation}
+                            onChange={(e) => setCurrentLocation(e.target.value)}
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             placeholder="e.g., Museum"
                         />
@@ -102,7 +106,29 @@ export const EditModal = ({ isLodading, isOpen, onClose, onConfirm,
                             placeholder="e.g., Bangkok, Thailand"
                         />
                     </div>
+                    <div className="grid gap-2">
+                        <label htmlFor="era" className="text-sm font-medium text-slate-700">Era</label>
+                        <input
+                            type="text"
+                            id="era"
+                            value={era}
+                            onChange={(e) => setEra(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Ayutthaya"
+                        />
+                    </div>
 
+                    <div className="grid gap-2">
+                        <label htmlFor="Category" className="text-sm font-medium text-slate-700">Category</label>
+                        <input
+                            type="text"
+                            id="Category"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Ayutthaya"
+                        />
+                    </div>
                     <div className="grid gap-2">
                         <label htmlFor="imageFile" className="text-sm font-medium text-slate-700">Image</label>
                         <input
@@ -228,9 +254,9 @@ export const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => 
     );
 }
 
-export const AddModal = ({ isLodading, isOpen, onClose, onConfirm,
-    title, locationFound, artStyle, location, description, imageFile, material,
-    setTitle, setLocationFound, setArtStyle, setLocation, setDescription, setImageFile, setMaterial
+export const AddModal = ({ isLoading, isOpen, onClose, onConfirm,
+    title, locationFound, artStyle, currentLocation, description, imageFile, material, category, era,
+    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra
 }: DataProps) => {
     if (!isOpen) return null;
     return (
@@ -285,9 +311,9 @@ export const AddModal = ({ isLodading, isOpen, onClose, onConfirm,
                         <label htmlFor="location" className="text-sm font-medium text-slate-700">Location</label>
                         <input
                             type="text"
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            id="currentLocation"
+                            value={currentLocation}
+                            onChange={(e) => setCurrentLocation(e.target.value)}
                             required
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             placeholder="e.g., Bangkok National Museum"
@@ -301,6 +327,29 @@ export const AddModal = ({ isLodading, isOpen, onClose, onConfirm,
                             id="locationFound"
                             value={locationFound}
                             onChange={(e) => setLocationFound(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Ayutthaya"
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <label htmlFor="era" className="text-sm font-medium text-slate-700">Era</label>
+                        <input
+                            type="text"
+                            id="era"
+                            value={era}
+                            onChange={(e) => setEra(e.target.value)}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., Ayutthaya"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="Category" className="text-sm font-medium text-slate-700">Category</label>
+                        <input
+                            type="text"
+                            id="Category"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             placeholder="e.g., Ayutthaya"
                         />
@@ -349,10 +398,10 @@ export const AddModal = ({ isLodading, isOpen, onClose, onConfirm,
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <button
                             type="submit"
-                            disabled={isLodading}
+                            disabled={isLoading}
                             className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                         >
-                            {isLodading ? 'Submitting...' : 'Submit Artifact'}
+                            {isLoading ? 'Submitting...' : 'Submit Artifact'}
                         </button>
                         {/* {message && (
                             <p className={`text-sm ${messageType === 'success' ? 'text-emerald-700' : 'text-rose-600'}`}>

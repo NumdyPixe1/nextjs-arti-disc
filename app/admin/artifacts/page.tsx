@@ -6,10 +6,11 @@ import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
 import { artifactAction } from '@/app/actions/artifactAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
-import Link from 'next/link';
+import { useRouter } from "next/navigation";
 import { embeddingAction } from '@/app/actions/embeddingAction';
 
 export default function ManagerArtifactsPage() {
+    const router = useRouter();
     const [query, setQuery] = useState('');
     const [deleteArtifact, setDeleteArtifact] = useState<number | null>(null);
     const [editArtifact, setEditArtifact] = useState<number | null>(null);
@@ -26,28 +27,34 @@ export default function ManagerArtifactsPage() {
     // Form Fields
     const [title, setTitle] = useState('');
     const [artStyle, setArtStyle] = useState('');
-    const [location, setLocation] = useState('');
+    const [currentLocation, setCurrentLocation] = useState('');
     const [locationFound, setLocationFound] = useState('');
     const [description, setDescription] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [material, setMaterial] = useState('');
+    const [era, setEra] = useState('');
+    const [category, setCategory] = useState('');
     // Edit
     const [editTitle, setEditTitle] = useState('');
     const [editArtStyle, setEditArtStyle] = useState('');
-    const [editLocation, setEditLocation] = useState('');
+    const [editCurrentLocation, setEditCurrentLocation] = useState('');
     const [editLocationFound, setEditLocationFound] = useState('');
     const [editDescription, setEditDescription] = useState('');
     const [editImageFile, setEditImageFile] = useState<File | null>(null);;
     const [editMaterial, setEditMaterial] = useState('');
+    const [editEra, setEditEra] = useState('');
+    const [editCategory, setEditCategory] = useState('');
     // Clear Form
     const clearForm = () => {
         setTitle('');
         setArtStyle('');
-        setLocation('');
+        setCurrentLocation('');
         setLocationFound('');
         setDescription('');
         setImageFile(null);
         setMaterial('');
+        setEra('');
+        setCategory('');
     }
     const [loadingAdd, setLoadingAdd] = useState(false);
     const [loadingSave, setLoadingSave] = useState(false);
@@ -114,12 +121,13 @@ export default function ManagerArtifactsPage() {
         // เมื่อกด edit ให้เอาข้อมูลของ item ที่กดมาใส่ใน state ของ form edit เพื่อให้แสดงใน modal
         setEditTitle(item.title || '');
         setEditArtStyle(item.art_style || '');
-        setEditLocation(item.location || '');
+        setEditCurrentLocation(item.current_location || '');
         setEditLocationFound(item.location_found || '');
         setEditDescription(item.description || '');
         setEditImageFile(item.image_file || null);
         setEditMaterial(item.material || '');
-
+        setEditEra(item.era || '');
+        setEditCategory(item.category || '');
         setIsEditModalOpen(true);
     }
     const saveEdit = async () => {
@@ -133,8 +141,10 @@ export default function ManagerArtifactsPage() {
             formData.append('description', editDescription);
             formData.append('material', editMaterial);
             formData.append('art_style', editArtStyle);
-            formData.append('location', editLocation);
+            formData.append('current_location', editCurrentLocation);
             formData.append('location_found', editLocationFound);
+            formData.append('era', editEra);
+            formData.append('category', editCategory);
             // ตรวจสอบว่า editImageFile เป็น File Object หรือไม่ (ถ้าผู้ใช้เลือกไฟล์ใหม่)
             if (editImageFile instanceof File) {
                 formData.append("image_file", editImageFile);
@@ -147,7 +157,7 @@ export default function ManagerArtifactsPage() {
             setIsEditModalOpen(false);
             setEditArtifact(null);
             setMessageType('info');
-            setMessage('Artifact edited successfully!');
+            setMessage(`Artifact ID ${editArtifact} edited successfully!`);
         }
         catch (error) {
             setMessageType('error');
@@ -196,8 +206,10 @@ export default function ManagerArtifactsPage() {
             formData.append('description', description);
             formData.append('material', material);
             formData.append('art_style', artStyle);
-            formData.append('location', location);
+            formData.append('current_location', currentLocation);
             formData.append('location_found', locationFound);
+            formData.append('era', era);
+            formData.append('category', category);
             if (imageFile) {
                 formData.append('image_file', imageFile);
                 console.log("Attached file to FormData:", imageFile.name);
@@ -225,72 +237,89 @@ export default function ManagerArtifactsPage() {
         <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
             {/* Back Button */}
             <div className="flex items-center justify-start">
-                <Link href="/#artifacts" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
+                <button
+                    onClick={() => router.back()}
+                    className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md"                >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                     ย้อนกลับ
-                </Link>
+                </button>
             </div>
             {/* Add Modal */}
-            {isAddModalOpen ? (<AddModal
-                isLodading={loadingAdd}
-                isOpen={isAddModalOpen}
-                onClose={() => { setIsAddModalOpen(false); clearForm(); }}
-                onConfirm={add}
+            {
+                isAddModalOpen ? (<AddModal
+                    isLoading={loadingAdd}
+                    isOpen={isAddModalOpen}
+                    onClose={() => { setIsAddModalOpen(false); clearForm(); }}
+                    onConfirm={add}
 
-                title={title}
-                artStyle={artStyle}
-                location={location}
-                locationFound={locationFound}
-                description={description}
-                imageFile={imageFile}
-                material={material}
+                    title={title}
+                    artStyle={artStyle}
+                    currentLocation={currentLocation}
+                    locationFound={locationFound}
+                    description={description}
+                    imageFile={imageFile}
+                    material={material}
+                    era={era}
+                    category={category}
 
-                setTitle={setTitle}
-                setArtStyle={setArtStyle}
-                setLocation={setLocation}
-                setLocationFound={setLocationFound}
-                setDescription={setDescription}
-                setImageFile={setImageFile}
-                setMaterial={setMaterial}
-            />) : null}
+                    setTitle={setTitle}
+                    setArtStyle={setArtStyle}
+                    setCurrentLocation={setCurrentLocation}
+                    setLocationFound={setLocationFound}
+                    setDescription={setDescription}
+                    setImageFile={setImageFile}
+                    setMaterial={setMaterial}
+                    setEra={setEra}
+                    setCategory={setCategory}
+                />) : null
+            }
 
             {/* Edit Modal */}
-            {isEditModalOpen ? (<EditModal
-                isLodading={loadingSave}
-                isOpen={isEditModalOpen}
-                onClose={() => setIsEditModalOpen(false)}
-                onConfirm={saveEdit}
-                itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
-                // ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
-                title={editTitle}
-                artStyle={editArtStyle}
-                location={editLocation}
-                locationFound={editLocationFound}
-                description={editDescription}
-                imageFile={editImageFile}
-                material={editMaterial}
-                // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
-                setTitle={setEditTitle}
-                setArtStyle={setEditArtStyle}
-                setLocation={setEditLocation}
-                setLocationFound={setEditLocationFound}
-                setDescription={setEditDescription}
-                setImageFile={setEditImageFile}
-                setMaterial={setEditMaterial}
-            />) : null}
+            {
+                isEditModalOpen ? (<EditModal
+                    isLoading={loadingSave}
+                    isOpen={isEditModalOpen}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onConfirm={saveEdit}
+                    itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
+                    // ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
+                    title={editTitle}
+                    artStyle={editArtStyle}
+                    currentLocation={editCurrentLocation}
+                    locationFound={editLocationFound}
+                    description={editDescription}
+                    imageFile={editImageFile}
+                    material={editMaterial}
+                    era={editEra}
+                    category={editCategory}
+
+                    // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
+                    setTitle={setEditTitle}
+                    setArtStyle={setEditArtStyle}
+                    setCurrentLocation={setEditCurrentLocation}
+                    setLocationFound={setEditLocationFound}
+                    setDescription={setEditDescription}
+                    setImageFile={setEditImageFile}
+                    setMaterial={setEditMaterial}
+                    setEra={setEditEra}
+                    setCategory={setEditCategory}
+                />) : null
+            }
 
             {/* Delete Confirmation Modal */}
-            {isDeleteModalOpen ? (
-                <DeleteModal
-                    isOpen={isDeleteModalOpen}
-                    onClose={() => setIsDeleteModalOpen(false)}
-                    onConfirm={confirmDelete}
-                    // หาชื่อ ID จาก getArtifacts เพื่อเปรียบเทียบกับ deleteArtifact แล้วเอาชื่อมาแสดงใน Modal
-                    itemName={getArtifacts.find(item => item.id === deleteArtifact)?.title || 'this artifact'}
-                />
-            ) : null}
+            {
+                isDeleteModalOpen ? (
+                    <DeleteModal
+                        isOpen={isDeleteModalOpen}
+                        onClose={() => setIsDeleteModalOpen(false)}
+                        onConfirm={confirmDelete}
+                        // หาชื่อ ID จาก getArtifacts เพื่อเปรียบเทียบกับ deleteArtifact แล้วเอาชื่อมาแสดงใน Modal
+                        itemName={getArtifacts.find(item => item.id === deleteArtifact)?.title || 'this artifact'}
+                    />
+                ) : null
+            }
 
             {/* ################## Artifacts Table ################## */}
             <section className=" mx-auto w-full max-w-8xl rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-lg backdrop-blur-sm">
@@ -327,7 +356,7 @@ export default function ManagerArtifactsPage() {
                                         <th className="px-4 py-2 border border-slate-200">Art Style</th>
                                         <th className="px-4 py-2 border border-slate-200">Material</th>
                                         <th className="px-4 py-2 border border-slate-200">Location Found</th>
-                                        <th className="px-4 py-2 border border-slate-200">Location</th>
+                                        <th className="px-4 py-2 border border-slate-200">Current Location</th>
                                         {/* <th className="px-4 py-2 border border-slate-200">Description</th> */}
                                         {/* <th className="px-4 py-2 border border-slate-200">Created</th> */}
                                         <th className="px-4 py-2 border border-slate-200"></th>
@@ -342,7 +371,7 @@ export default function ManagerArtifactsPage() {
                                             <td className="px-4 py-2 border border-slate-200">{item.art_style || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.material || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.location_found || '-'}</td>
-                                            <td className="px-4 py-2 border border-slate-200">{item.location || '-'}</td>
+                                            <td className="px-4 py-2 border border-slate-200">{item.current_location || '-'}</td>
                                             {/* <td className="px-4 py-2 border border-slate-200 max-w-xs truncate">{item.description || '-'}</td> */}
                                             {/* <td className="px-4 py-2 border border-slate-200">{item.created_at ? new Date(item.created_at).toLocaleString() : '-'}</td> */}
                                             <td className=" justify-center gap-4 flex px-4 py-2 border border-slate-200">
@@ -362,6 +391,6 @@ export default function ManagerArtifactsPage() {
                         </div>
                         )}
             </section>
-        </main>
+        </main >
     );
 }

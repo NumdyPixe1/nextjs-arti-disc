@@ -29,9 +29,12 @@ export const POST = async () => {
 
         for (const item of artifacts) {
             const textToEmbed =
-                `Art Style: ${item.art_style}
-            Title: ${item.title}
-            Description: ${item.description}`;
+                `
+                Era: ${item.era}               
+                Category: ${item.category}
+                Art Style: ${item.art_style}
+                Title: ${item.title}
+                Description: ${item.description}`;
 
             // 2. สร้าง Vector ด้วย Gemini
             const result = await embedModel.embedContent(textToEmbed);

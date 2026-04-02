@@ -5,7 +5,6 @@ import { pipeline, RawImage } from "@xenova/transformers";
 import supabase from "@/lib/supabase-client";
 import { NextResponse } from "next/server";
 
-
 export const POST = async (req: Request) => {
     try {
         // 1. ดึงข้อมูลที่ยังไม่มี image_embedding

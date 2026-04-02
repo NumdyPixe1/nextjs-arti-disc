@@ -42,39 +42,45 @@ export type Database = {
       Artifacts: {
         Row: {
           art_style: string | null
+          category: string | null
           created_at: string
+          current_location: string | null
           description: string | null
           embedding: string | null
+          era: string | null
           id: number
           image_embedding: string | null
           image_file: string | null
-          location: string | null
           location_found: string | null
           material: string | null
           title: string | null
         }
         Insert: {
           art_style?: string | null
+          category?: string | null
           created_at?: string
+          current_location?: string | null
           description?: string | null
           embedding?: string | null
+          era?: string | null
           id?: number
           image_embedding?: string | null
           image_file?: string | null
-          location?: string | null
           location_found?: string | null
           material?: string | null
           title?: string | null
         }
         Update: {
           art_style?: string | null
+          category?: string | null
           created_at?: string
+          current_location?: string | null
           description?: string | null
           embedding?: string | null
+          era?: string | null
           id?: number
           image_embedding?: string | null
           image_file?: string | null
-          location?: string | null
           location_found?: string | null
           material?: string | null
           title?: string | null
@@ -96,7 +102,10 @@ export type Database = {
         }
         Returns: {
           art_style: string
+          category: string
+          current_location: string
           description: string
+          era: string
           id: number
           image_file: string
           location_found: string

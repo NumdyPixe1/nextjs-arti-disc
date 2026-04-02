@@ -5,8 +5,10 @@ export type Artifact = {
     description?: string;
     art_style?: string;
     location_found?: string;
-    location?: string;
+    current_location?: string;
     embedding?: number[] | null;
     image_embedding?: number[] | null
     similarity?: number;
+    category?: string;
+    era?: string;
 }

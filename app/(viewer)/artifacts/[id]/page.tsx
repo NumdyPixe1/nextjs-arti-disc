@@ -72,7 +72,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                                 <div className="flex justify-between">
                                     <span>จัดแสดงที่:</span>
                                     <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
-                                        {mainData.location ?? "ไม่ระบุ"}</span>
+                                        {mainData.current_location ?? "ไม่ระบุ"}</span>
                                 </div>
 
 
