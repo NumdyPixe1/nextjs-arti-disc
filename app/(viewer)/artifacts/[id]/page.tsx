@@ -78,7 +78,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
 
                             </div>
                         </div>
-                        {/* <AiDescription data={mainData} /> */}
+                        <AiDescription data={mainData} />
                     </div>
                     <div className="space-y-6"> <MapWrapper lat={mainData.lat ?? 0} lng={mainData.lng ?? 0} /></div>
                 </div>

@@ -43,7 +43,7 @@ export const NavBar = () => {
                     {/* Right Actions */}
                     <div className="flex items-center gap-4">
                         {/* Admin Link */}
-                        <Link
+                        {/* <Link
                             href="/admin/artifacts"
                             className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors"
                         >
@@ -52,7 +52,7 @@ export const NavBar = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
                             Admin
-                        </Link>
+                        </Link> */}
 
                         {/* Mobile Menu Button */}
                         <button
