@@ -8,7 +8,6 @@ import { Card } from "@/app/components/card";
 import Link from "next/link";
 import MapWrapper from "@/app/components/map/MapWrapper";
 
-
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
     // ดึงข้อมูลขนานกันทั้งข้อมูลหลักและข้อมูลที่เกี่ยวข้อง
@@ -38,9 +37,9 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 {/* ส่วนบน: ข้อมูลหลัก */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-10 mb-16">
                     {/* Image */}
-                    <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden bg-[#CCD5DA] border border-white/10">
+                    <div className="relative h-96 md:h-125 rounded-2xl overflow-hidden bg-[#CCD5DA] border border-white/10">
                         <Image
                             className="object-contain p-4"
                             fill
@@ -67,12 +66,12 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                                 </div>
                                 <div className="flex justify-between">
                                     <span>สถานที่ค้นพบ:</span>
-                                    <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
+                                    <span className="font-medium text-[#13181B] text-right wrap-break-word max-w-[60%]">
                                         {mainData.location_found ?? "ไม่ระบุ"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>จัดแสดงที่:</span>
-                                    <span className="font-medium text-[#13181B] text-right break-words max-w-[60%]">
+                                    <span className="font-medium text-[#13181B] text-right wrap-break-word max-w-[60%]">
                                         {mainData.current_location ?? "ไม่ระบุ"}</span>
                                 </div>
 
@@ -80,8 +79,8 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                             </div>
                         </div>
                         {/* <AiDescription data={mainData} /> */}
-                        <MapWrapper />
                     </div>
+                    <div className="space-y-6"> <MapWrapper lat={mainData.lat ?? 0} lng={mainData.lng ?? 0} /></div>
                 </div>
 
                 {/* ส่วนล่าง: Similar Items */}
@@ -95,7 +94,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

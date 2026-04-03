@@ -19,7 +19,7 @@ export const Skeleton = () => {
 
             {/* shimmer */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_1.5s_infinite]" />
+                <div className="h-full w-full bg-linear-to-r from-transparent via-white/20 to-transparent animate-[shimmer_1.5s_infinite]" />
             </div>
         </motion.div>
     );

@@ -11,13 +11,13 @@ export const NavBar = () => {
                 <div className="flex items-center justify-between">
                     {/* Logo & Brand */}
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="relative h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-sky-500 flex items-center justify-center group-hover:shadow-lg transition-shadow">
+                        <div className="relative h-10 w-10 rounded-lg bg-linear-to-br from-blue-500 to-sky-500 flex items-center justify-center group-hover:shadow-lg transition-shadow">
                             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent hidden sm:block">
+                            <span className="text-lg font-bold bg-linear-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent hidden sm:block">
                                 Artifact
                             </span>
                             <span className="text-xs text-slate-500 hidden sm:block">Discovery</span>

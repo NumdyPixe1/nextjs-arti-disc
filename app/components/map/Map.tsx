@@ -1,7 +1,6 @@
 "use client"
 import "leaflet/dist/leaflet.css"; // <--- ห้ามลืมบรรทัดนี้เด็ดขาด!
-import { CircleMarker, MapContainer, Marker, TileLayer, Tooltip, Popup, useMap } from "react-leaflet"
-import { useEffect } from "react";
+import { MapContainer, Marker, TileLayer, Tooltip, Popup } from "react-leaflet"
 import L from "leaflet";
 const icon = L.icon({
     iconUrl: "/img/location-pin.png", // ✅ เริ่มต้นด้วย / และตามด้วยโฟลเดอร์ข้างใน public
@@ -16,27 +15,12 @@ interface Props {
     lng: number;
 }
 
-// function ResizeMap() {
-//     const map = useMap(); // ดึง Instance ของแผนที่มาใช้
-
-//     useEffect(() => {
-//         // สั่งให้แผนที่วาดตัวใหม่ (invalidateSize) หลังจากโหลดเสร็จ 200ms
-//         const timer = setTimeout(() => {
-//             map.invalidateSize();
-//         }, 200);
-
-//         return () => clearTimeout(timer);
-//     }, [map]);
-
-//     return null;
-// }
-
 export default function Map({ lat, lng }: Props) {
     const position: [number, number] = [lat, lng];
-    return (<div className="h-100 w-full rounded-lg overflow-hidden shadow-lg">
+    return (<div className="h-72 w-full rounded-lg overflow-hidden shadow-lg">
         <MapContainer
             center={position}
-            zoom={13}
+            zoom={12}
             scrollWheelZoom={false}
             className="w-full h-full"
         >

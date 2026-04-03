@@ -108,7 +108,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="cursor-pointer bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600
+                        className="cursor-pointer bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600
                      hover:to-blue-700 text-white px-6 py-2 rounded-xl ml-2 h-14 font-medium 
                      transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2">
                         {loading ? (
@@ -133,7 +133,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                 <button type="button"
                     disabled={loading}
                     onClick={() => setIsModalOpen(true)}
-                    className="cursor-pointer bg-gradient-to-r from-green-500 
+                    className="cursor-pointer bg-linear-to-r from-green-500 
                 to-green-600 hover:from-green-600 hover:to-green-700 text-white
                  px-4 py-2 rounded-xl ml-2 h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center">
                     {loading ? (

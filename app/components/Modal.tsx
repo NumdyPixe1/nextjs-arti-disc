@@ -9,8 +9,6 @@ interface Props {
     isLoading?: boolean;
 }
 interface DataProps extends Props {
-    // message?: string;
-    // messageType?: string;
     title: string;
     locationFound: string;
     artStyle: string;
@@ -20,6 +18,8 @@ interface DataProps extends Props {
     material: string;
     era: string;
     category: string;
+    lat: number;
+    lng: number;
 
     setTitle: (value: string) => void;
     setLocationFound: (value: string) => void;
@@ -30,16 +30,17 @@ interface DataProps extends Props {
     setMaterial: (value: string) => void;
     setEra: (value: string) => void;
     setCategory: (value: string) => void;
+    setLat: (value: number) => void;
+    setLng: (value: number) => void;
 }
 interface ImageSearchProps extends Props {
-    // imageFile: File | null;
     onFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
     previewUrl: string | null;
 }
 
 export const EditModal = ({ isLoading, isOpen, onClose, onConfirm,
-    title, locationFound, artStyle, currentLocation, description, imageFile, material, era, category,
-    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra
+    title, locationFound, artStyle, currentLocation, description, imageFile, material, era, category, lat, lng,
+    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra, setLat, setLng
 }: DataProps) => {
     if (!isOpen) return null;
     return (
@@ -129,6 +130,51 @@ export const EditModal = ({ isLoading, isOpen, onClose, onConfirm,
                             placeholder="e.g., Ayutthaya"
                         />
                     </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="Lat" className="text-sm font-medium text-slate-700">Lat</label>
+                        <input
+                            type="number"
+                            step="any"
+                            id="Lat"
+                            value={lat}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+
+                                // ป้องกันการส่งค่า NaN เข้าไป (กรณีลบจนว่าง)
+                                if (!isNaN(val)) {
+                                    setLat(val);
+                                } else {
+                                    setLat(0); // หรือค่าเริ่มต้นที่คุณกำหนดไว้
+                                }
+                            }}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., 123.45"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="Lat" className="text-sm font-medium text-slate-700">Lng</label>
+                        <input
+                            type="number"
+                            step="any"
+                            id="Lng"
+                            value={lng}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+
+                                // ป้องกันการส่งค่า NaN เข้าไป (กรณีลบจนว่าง)
+                                if (!isNaN(val)) {
+                                    setLng(val);
+                                } else {
+                                    setLng(0); // หรือค่าเริ่มต้นที่คุณกำหนดไว้
+                                }
+                            }}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., 123.45"
+                        />
+                    </div>
+
                     <div className="grid gap-2">
                         <label htmlFor="imageFile" className="text-sm font-medium text-slate-700">Image</label>
                         <input
@@ -255,8 +301,8 @@ export const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => 
 }
 
 export const AddModal = ({ isLoading, isOpen, onClose, onConfirm,
-    title, locationFound, artStyle, currentLocation, description, imageFile, material, category, era,
-    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra
+    title, locationFound, artStyle, currentLocation, description, imageFile, material, category, era, lat, lng,
+    setTitle, setLocationFound, setArtStyle, setCurrentLocation, setDescription, setImageFile, setMaterial, setCategory, setEra, setLat, setLng
 }: DataProps) => {
     if (!isOpen) return null;
     return (
@@ -356,6 +402,51 @@ export const AddModal = ({ isLoading, isOpen, onClose, onConfirm,
                     </div>
 
                     <div className="grid gap-2">
+                        <label htmlFor="Lat" className="text-sm font-medium text-slate-700">Lat</label>
+                        <input
+                            type="number"
+                            step="any"
+                            id="Lat"
+                            value={lat}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+
+                                // ป้องกันการส่งค่า NaN เข้าไป (กรณีลบจนว่าง)
+                                if (!isNaN(val)) {
+                                    setLat(val);
+                                } else {
+                                    setLat(0); // หรือค่าเริ่มต้นที่คุณกำหนดไว้
+                                }
+                            }}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., 123.45"
+                        />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <label htmlFor="Lat" className="text-sm font-medium text-slate-700">Lng</label>
+                        <input
+                            type="number"
+                            step="any"
+                            id="Lng"
+                            value={lng}
+                            onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+
+                                // ป้องกันการส่งค่า NaN เข้าไป (กรณีลบจนว่าง)
+                                if (!isNaN(val)) {
+                                    setLng(val);
+                                } else {
+                                    setLng(0); // หรือค่าเริ่มต้นที่คุณกำหนดไว้
+                                }
+                            }}
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm text-black outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            placeholder="e.g., 123.45"
+                        />
+                    </div>
+
+
+                    <div className="grid gap-2">
                         <label htmlFor="image" className="text-sm font-medium text-slate-700">Image</label>
                         <input
                             type="file"
@@ -425,7 +516,7 @@ export const ImageSearchModal = ({ isOpen, onClose, onFileChange, previewUrl, it
     }, []);
     if (!mounted) return null;
     return createPortal(
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
             <div className="absolute  inset-0 bg-black/60 backdrop-blur-sm"
                 onClick={onClose}
             />

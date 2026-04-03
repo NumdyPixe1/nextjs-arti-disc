@@ -34,6 +34,8 @@ export default function ManagerArtifactsPage() {
     const [material, setMaterial] = useState('');
     const [era, setEra] = useState('');
     const [category, setCategory] = useState('');
+    const [lat, setLat] = useState(0);
+    const [lng, setLng] = useState(0);
     // Edit
     const [editTitle, setEditTitle] = useState('');
     const [editArtStyle, setEditArtStyle] = useState('');
@@ -44,6 +46,8 @@ export default function ManagerArtifactsPage() {
     const [editMaterial, setEditMaterial] = useState('');
     const [editEra, setEditEra] = useState('');
     const [editCategory, setEditCategory] = useState('');
+    const [editLat, setEditLat] = useState(0);
+    const [editLng, setEditLng] = useState(0);
     // Clear Form
     const clearForm = () => {
         setTitle('');
@@ -55,6 +59,8 @@ export default function ManagerArtifactsPage() {
         setMaterial('');
         setEra('');
         setCategory('');
+        setLat(0);
+        setLng(0);
     }
     const [loadingAdd, setLoadingAdd] = useState(false);
     const [loadingSave, setLoadingSave] = useState(false);
@@ -145,6 +151,8 @@ export default function ManagerArtifactsPage() {
             formData.append('location_found', editLocationFound);
             formData.append('era', editEra);
             formData.append('category', editCategory);
+            formData.append('lat', `${editLat}`);
+            formData.append('lng', `${editLng}`);
             // ตรวจสอบว่า editImageFile เป็น File Object หรือไม่ (ถ้าผู้ใช้เลือกไฟล์ใหม่)
             if (editImageFile instanceof File) {
                 formData.append("image_file", editImageFile);
@@ -210,6 +218,8 @@ export default function ManagerArtifactsPage() {
             formData.append('location_found', locationFound);
             formData.append('era', era);
             formData.append('category', category);
+            formData.append('lat', `${lat}`);
+            formData.append('lng', `${lng}`);
             if (imageFile) {
                 formData.append('image_file', imageFile);
                 console.log("Attached file to FormData:", imageFile.name);
@@ -234,7 +244,7 @@ export default function ManagerArtifactsPage() {
     }
 
     return (
-        <main className="flex flex-col gap-10 min-h-screen bg-gradient-to-br from-slate-50 to-sky-100 p-6">
+        <main className="flex flex-col gap-10 min-h-screen bg-linear-to-br from-slate-50 to-sky-100 p-6">
             {/* Back Button */}
             <div className="flex items-center justify-start">
                 <button
@@ -263,6 +273,8 @@ export default function ManagerArtifactsPage() {
                     material={material}
                     era={era}
                     category={category}
+                    lat={lat}
+                    lng={lng}
 
                     setTitle={setTitle}
                     setArtStyle={setArtStyle}
@@ -273,6 +285,8 @@ export default function ManagerArtifactsPage() {
                     setMaterial={setMaterial}
                     setEra={setEra}
                     setCategory={setCategory}
+                    setLat={setLat}
+                    setLng={setLng}
                 />) : null
             }
 
@@ -294,6 +308,8 @@ export default function ManagerArtifactsPage() {
                     material={editMaterial}
                     era={editEra}
                     category={editCategory}
+                    lat={editLat}
+                    lng={editLng}
 
                     // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
                     setTitle={setEditTitle}
@@ -305,6 +321,8 @@ export default function ManagerArtifactsPage() {
                     setMaterial={setEditMaterial}
                     setEra={setEditEra}
                     setCategory={setEditCategory}
+                    setLat={setEditLat}
+                    setLng={setEditLng}
                 />) : null
             }
 

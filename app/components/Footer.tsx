@@ -1,12 +1,12 @@
 export const Footer = () => {
     return (
-        <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <footer className="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
             <div className="max-w-7xl mx-auto px-4 py-16">
                 {/* Main Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                     {/* Brand Section */}
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-sky-400 bg-clip-text text-transparent">
+                        <h3 className="text-2xl font-bold bg-linear-to-r from-blue-400 to-sky-400 bg-clip-text text-transparent">
                             Artifact Discovery
                         </h3>
                         <p className="text-slate-400 text-sm leading-relaxed">
@@ -68,7 +68,7 @@ export const Footer = () => {
                 </div>
 
                 {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent mb-8" />
+                <div className="h-px bg-linear-to-r from-transparent via-slate-700 to-transparent mb-8" />
 
                 {/* Newsletter Signup */}
                 {/*  <div className="bg-slate-800 rounded-xl p-6 mb-8">
