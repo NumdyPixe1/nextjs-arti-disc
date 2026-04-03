@@ -37,20 +37,29 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-12">
                 {/* ส่วนบน: ข้อมูลหลัก */}
-                <div className="grid grid-cols-2 md:grid-cols-2 gap-10 mb-16">
-                    {/* Image */}
-                    <div className="relative h-96 md:h-125 rounded-2xl overflow-hidden bg-[#CCD5DA] border border-white/10">
-                        <Image
-                            className="object-contain p-4"
-                            fill
-                            sizes="(max-w-768px) 100vw, 800px"
-                            src={mainData.image_file ?? "/img/no-photos.png"}
-                            alt={mainData.title ?? "โบราณวัตถุ"}
-                            priority
-                        />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+                    {/* Left: Image + map */}
+                    <div className="space-y-6">
+                        <div className="relative h-96 md:h-125 rounded-2xl overflow-hidden bg-[#CCD5DA] border border-white/10">
+                            <Image
+                                className="object-contain p-4"
+                                fill
+                                sizes="(max-w-768px) 100vw, 800px"
+                                src={mainData.image_file ?? "/img/no-photos.png"}
+                                alt={mainData.title ?? "โบราณวัตถุ"}
+                                priority
+                            />
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+                            <h3 className="text-base font-semibold mb-2">แผนที่ตำแหน่ง</h3>
+                            <div className="h-64 rounded-xl overflow-hidden">
+                                <MapWrapper lat={mainData.lat ?? 0} lng={mainData.lng ?? 0} />
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Info */}
+                    {/* Right: Info */}
                     <div className="space-y-6">
                         <div>
                             <h2 className="text-4xl md:text-5xl font-bold mb-2">{mainData.title}</h2>
@@ -75,26 +84,24 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                                         {mainData.current_location ?? "ไม่ระบุ"}</span>
                                 </div>
 
-
                             </div>
                         </div>
                         <AiDescription data={mainData} />
                     </div>
-                    <div className="space-y-6"> <MapWrapper lat={mainData.lat ?? 0} lng={mainData.lng ?? 0} /></div>
-                </div>
 
-                {/* ส่วนล่าง: Similar Items */}
-                <div className="border-t border-[#CCD5DA] pt-12">
-                    <h2 className="text-2xl font-bold text-[#13181B] mb-8">🔎 โบราณวัตถุที่มีลักษณะใกล้เคียง</h2>
-                    <div className="snap-x-mandatory flex gap-6 overflow-x-auto py-4">
-                        {
-                            relatedData ? relatedData.map((item) => (
-                                <Card key={item.id} data={item} href={`/artifacts/${item.id}`} />
-                            )) : <p>Error</p>}
+                    {/* ส่วนล่าง: Similar Items */}
+                    <div className="border-t border-[#CCD5DA] pt-12">
+                        <h2 className="text-2xl font-bold text-[#13181B] mb-8">🔎 โบราณวัตถุที่มีลักษณะใกล้เคียง</h2>
+                        <div className="snap-x-mandatory flex gap-6 overflow-x-auto py-4">
+                            {
+                                relatedData ? relatedData.map((item) => (
+                                    <Card key={item.id} data={item} href={`/artifacts/${item.id}`} />
+                                )) : <p>Error</p>}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div >
-    );
+            </div >
+        </div>
+    )
 }
 
