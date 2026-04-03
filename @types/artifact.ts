@@ -11,4 +11,6 @@ export type Artifact = {
     similarity?: number;
     category?: string;
     era?: string;
+    lat?: number;
+    lng?: number;
 }

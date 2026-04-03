@@ -51,9 +51,12 @@ export type Database = {
           id: number
           image_embedding: string | null
           image_file: string | null
+          lat: number | null
+          lng: number | null
           location_found: string | null
           material: string | null
           title: string | null
+          updated_at: string | null
         }
         Insert: {
           art_style?: string | null
@@ -66,9 +69,12 @@ export type Database = {
           id?: number
           image_embedding?: string | null
           image_file?: string | null
+          lat?: number | null
+          lng?: number | null
           location_found?: string | null
           material?: string | null
           title?: string | null
+          updated_at?: string | null
         }
         Update: {
           art_style?: string | null
@@ -81,9 +87,12 @@ export type Database = {
           id?: number
           image_embedding?: string | null
           image_file?: string | null
+          lat?: number | null
+          lng?: number | null
           location_found?: string | null
           material?: string | null
           title?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
