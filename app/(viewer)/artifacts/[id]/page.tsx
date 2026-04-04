@@ -71,7 +71,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
 
                                 <div className="flex justify-between">
                                     <span>สมัย:</span>
-                                    <span className="font-medium text-[#13181B]">{mainData.art_style ?? "ไม่ระบุ"}</span>
+                                    <span className="font-medium text-[#13181B]">{mainData.era ?? "ไม่ระบุ"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>สถานที่ค้นพบ:</span>
@@ -89,15 +89,15 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                         <AiDescription data={mainData} />
                     </div>
 
-                    {/* ส่วนล่าง: Similar Items */}
-                    <div className="border-t border-[#CCD5DA] pt-12">
-                        <h2 className="text-2xl font-bold text-[#13181B] mb-8">🔎 โบราณวัตถุที่มีลักษณะใกล้เคียง</h2>
-                        <div className="snap-x-mandatory flex gap-6 overflow-x-auto py-4">
-                            {
-                                relatedData ? relatedData.map((item) => (
-                                    <Card key={item.id} data={item} href={`/artifacts/${item.id}`} />
-                                )) : <p>Error</p>}
-                        </div>
+                </div>
+                {/* ส่วนล่าง: Similar Items */}
+                <div className="border-t border-[#CCD5DA] pt-12">
+                    <h2 className="text-2xl font-bold text-[#13181B] mb-8">🔎 โบราณวัตถุที่มีลักษณะใกล้เคียง</h2>
+                    <div className="snap-x-mandatory flex gap-6 overflow-x-auto py-4">
+                        {
+                            relatedData ? relatedData.map((item) => (
+                                <Card key={item.id} data={item} href={`/artifacts/${item.id}`} />
+                            )) : <p>Error</p>}
                     </div>
                 </div>
             </div >

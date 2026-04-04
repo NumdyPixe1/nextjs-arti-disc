@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
 import { useRouter } from "next/navigation";
 import { embeddingAction } from '@/app/actions/embeddingAction';
+import Link from 'next/link';
 
 export default function ManagerArtifactsPage() {
     const router = useRouter();
@@ -247,14 +248,11 @@ export default function ManagerArtifactsPage() {
         <main className="flex flex-col gap-10 min-h-screen bg-linear-to-br from-slate-50 to-sky-100 p-6">
             {/* Back Button */}
             <div className="flex items-center justify-start">
-                <button
-                    onClick={() => router.back()}
-                    className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md"                >
+                <Link href={'/'} className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md"                >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
-                    ย้อนกลับ
-                </button>
+                    หน้าแรก</Link>
             </div>
             {/* Add Modal */}
             {
