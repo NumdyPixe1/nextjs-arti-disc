@@ -1,7 +1,10 @@
 // แปลงรูปภาพ Artifacts ที่ยังไม่มี embedding
 // ** http://localhost:3000/api/image-embedding **
+import { env, pipeline, RawImage } from '@xenova/transformers';
 
-import { pipeline, RawImage } from "@xenova/transformers";
+// --- วางไว้บนสุดของไฟล์ (นอก Function) ---
+env.allowLocalModels = false;
+env.backends.onnx.wasm.numThreads = 1;
 import supabase from "@/lib/supabase-client";
 import { NextResponse } from "next/server";
 
