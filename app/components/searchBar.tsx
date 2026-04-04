@@ -130,7 +130,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                     </button>
 
                 </form>
-                {/* <button type="button"
+                <button type="button"
                     disabled={loading}
                     onClick={() => setIsModalOpen(true)}
                     className="cursor-pointer bg-linear-to-r from-green-500 
@@ -151,7 +151,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                             </svg>
                         </>
                     )}
-                </button> */}
+                </button>
 
             </motion.div >
             <ImageSearchModal
