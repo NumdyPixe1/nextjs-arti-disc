@@ -2,9 +2,17 @@
 // ** http://localhost:3000/api/image-embedding **
 import { env, pipeline, RawImage } from '@xenova/transformers';
 
-// --- วางไว้บนสุดของไฟล์ (นอก Function) ---
+// 1. ตั้งค่า Environment ให้เด็ดขาดก่อนเริ่ม Logic
 env.allowLocalModels = false;
-env.backends.onnx.wasm.numThreads = 1;
+env.allowRemoteModels = true; // อนุญาตให้โหลดจาก Hub
+env.useBrowserCache = false;  // Serverless ไม่ควรใช้ cache ไฟล์
+
+// บังคับใช้ WASM และจำกัด Thread สำหรับ Serverless Environment (Vercel)
+if (typeof window === 'undefined') {
+    env.backends.onnx.wasm.numThreads = 1;
+    // ปิดการใช้ SIMD ถ้า Vercel CPU ไม่รองรับ (ช่วยให้เสถียรขึ้น)
+    env.backends.onnx.wasm.simd = false;
+}
 import supabase from "@/lib/supabase-client";
 import { NextResponse } from "next/server";
 
