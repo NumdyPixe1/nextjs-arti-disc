@@ -1,4 +1,4 @@
-import { Skeleton } from "./Skeleton"
+import { Skeleton } from "./skeleton"
 
 export const Loading = () => {
     return <>
