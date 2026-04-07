@@ -11,7 +11,7 @@ export const searchByImageAction = async (formData: FormData) => {
         if (!file || file.size === 0) throw new Error("No file uploaded");
 
         // 2. โหลด Model (แนะนำให้ประกาศไว้ข้างนอกหรือใช้ Singleton ถ้าทำได้)
-        const visionModel = await pipeline('image-feature-extraction', 'Xenova/clip-vit-base-patch32');
+        const visionModel = await pipeline('image-feature-extraction', 'Xenova/mobilenetv3-small-100');
 
         // 3. แปลงภาพเป็น Vector
         const buffer = Buffer.from(await file.arrayBuffer());

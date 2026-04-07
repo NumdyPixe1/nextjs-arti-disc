@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
         }
 
         // 2. โหลด Model ครั้งเดียว (ใช้นอก Loop)
-        const visionModel = await pipeline('image-feature-extraction', 'Xenova/clip-vit-base-patch32');
+        const visionModel = await pipeline('image-feature-extraction', 'Xenova/mobilenetv3-small-100');
         console.log(`🚀 Starting Image Embeddings for ${artifacts.length} items...`);
 
         const results = { success: 0, failed: 0, errors: [] as string[] };

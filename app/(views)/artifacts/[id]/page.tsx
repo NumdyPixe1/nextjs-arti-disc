@@ -2,11 +2,11 @@
 // Main Page
 import Image from "next/image";
 import { artifactAction } from '@/app/actions/artifactAction';
-import NotFoundPage from "./not-found";
+import NotFoundPage from "../../not-found";
 import { AiDescription } from "@/app/components/AiDescription";
-import { Card } from "@/app/components/card";
+import { Card } from "@/app/components/Card";
 import Link from "next/link";
-import MapWrapper from "@/app/components/map/MapWrapper";
+import MapWrapper from "@/app/components/map/Map";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
@@ -25,7 +25,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
     }
 
     return (
-        <div className="font-ibm-thai min-h-screen bg-[#F0EEEB] text-[#13181B]">
+        <div className="min-h-screen bg-[#F0EEEB] text-[#13181B]">
             <div className="p-4 flex items-center justify-start">
                 <Link href="/#artifacts" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
