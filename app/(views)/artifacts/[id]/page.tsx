@@ -4,7 +4,7 @@ import Image from "next/image";
 import { artifactAction } from '@/app/actions/artifactAction';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
-import { Card } from "@/app/components/Card";
+import { Card } from "@/app/components/card";
 import Link from "next/link";
 import MapWrapper from "@/app/components/map/Map";
 
