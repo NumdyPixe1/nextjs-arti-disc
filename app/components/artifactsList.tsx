@@ -4,8 +4,8 @@
 "use client"
 import { useEffect, useCallback, useRef, useState } from "react";
 import { artifactAction } from "../actions/artifactAction";
-import { Loading } from "./Loading";
-import { Card } from "./Card";
+import { Loading } from "./loading";
+import { Card } from "./card";
 interface Props {
     // รับคำค้นหา จาก Home page
     query?: any[];
