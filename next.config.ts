@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+
+  serverExternalPackages: ['@xenova/transformers'],
+
+  // ถ้ายังติดเรื่อง ONNX ให้เพิ่ม Webpack config นิดหน่อย
+  experimental: {
+  },
   /* config options here */
   images: {
     remotePatterns: [
@@ -14,6 +20,7 @@ const nextConfig: NextConfig = {
     ],
   },
 
-};
+}
+  ;
 
 export default nextConfig;

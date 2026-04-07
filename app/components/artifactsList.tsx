@@ -2,10 +2,10 @@
 
 // แสดงข้อมูลรายการจาก *ค้นหา* และ *ข้อมูลทั้งหมด*
 "use client"
-import { Card } from "./card";
 import { useEffect, useCallback, useRef, useState } from "react";
 import { artifactAction } from "../actions/artifactAction";
-import { Loading } from "./loading";
+import { Loading } from "./Loading";
+import { Card } from "./Card";
 interface Props {
     // รับคำค้นหา จาก Home page
     query?: any[];

@@ -5,13 +5,13 @@ export const embeddingAction = {
                 method: 'POST'
             });
             if (!response.ok) {
-                throw new Error(`Action: Failed to fetch embedding: ${response.status}`);
+                throw new Error(`Error Action: Failed to fetch embedding: ${response.status}`);
             }
             const results = await response.json();
             return results;
         }
         catch (error: any) {
-            console.error('Action: Failed to embedding:', error);
+            console.error('Error Action: Failed to embedding:', error);
         }
     },
 
@@ -21,13 +21,13 @@ export const embeddingAction = {
                 method: 'POST'
             });
             if (!response.ok) {
-                throw new Error(`Action: Failed to fetch image embedding: ${response.status} `);
+                throw new Error(`Error Action: Failed to fetch image embedding: ${response.status} `);
             }
             const results = await response.json();
             return results;
         }
         catch (error: any) {
-            console.error('Action: Failed to image embedding:', error);
+            console.error('Error Action: Failed to image embedding:', error);
         }
     }
 }

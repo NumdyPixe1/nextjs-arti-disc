@@ -1,6 +1,6 @@
 "use client"
 
-import { ArtifactsList } from "./components/artifactsList";
+import { ArtifactsList } from "./components/ArtifactsList";
 import { useEffect, useState } from "react";
 import { SearchBar } from "./components/searchBar";
 import { NavBar } from "./components/NavBar";
@@ -32,7 +32,7 @@ export default function HomePage() {
   }, [results, loading]);
 
   return (
-    <main className="min-h-screen bg-[#F0EEEB] font-ibm-thai " >
+    <main className="min-h-screen bg-[#F0EEEB]" >
 
       <NavBar />
 

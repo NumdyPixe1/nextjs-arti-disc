@@ -16,7 +16,7 @@ export const Card = ({ data, href, }: Props) => {
         }
         return data.image_file;
     };
-    console.log("Displaying artfacts:", data.similarity);
+    // console.log("Displaying artfacts:", data.similarity);
 
     return (
         <Link href={href}>
