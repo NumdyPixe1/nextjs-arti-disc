@@ -1,8 +1,10 @@
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
 import { NextResponse } from "next/server";
 
 // http://localhost:3000/api/artifacts
+const supabase = await createClient();
 export const GET = async (req: Request) => {
+
     try {
         const { data, error } = await supabase
             .from('Artifacts')

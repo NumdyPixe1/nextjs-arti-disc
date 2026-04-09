@@ -1,5 +1,5 @@
  https://supabase.com/dashboard/project/zfcjarjlreqtvbtwzzyp/integrations/data_api/docs?page=tables-intro
- <!--  -->
+<!--   -->
  ALTER SEQUENCE "Artifacts_id_seq" RESTART WITH 9;
  
 <!-- ** Create Function ** -->
@@ -61,8 +61,35 @@ BEGIN
 END;
 $$;
 
-** (สำหรับเพิ่มข้อมูล) นับ ID ใหม่ให้เริ่มต่อจากค่าที่มากที่สุดในตารางปัจจุบัน **
+% ** (สำหรับเพิ่มข้อมูล) นับ ID ใหม่ให้เริ่มต่อจากค่าที่มากที่สุดในตารางปัจจุบัน **
 SELECT setval(pg_get_serial_sequence('"Artifacts"', 'id'), coalesce(max(id), 0) + 1, false) FROM "Artifacts";
 
-** Remove Function **
+% ** Remove Function **
 DROP FUNCTION IF EXISTS match_artifacts(vector, float, int);
+
+%  ** Function สำหรับ copy ข้อมูล user ไปลงใน table **
+-- 1. สร้าง Function สำหรับ Copy ข้อมูล
+CREATE OR REPLACE FUNCTION public.handle_new_user_profile()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- จุดสำคัญ: ตรวจสอบว่าตารางคุณชื่อ Profiles หรือ profiles
+  -- ถ้าชื่อตารางใน Table Editor เป็นตัวเล็กหมด ให้ลบเครื่องหมายคำพูดออกเหลือแค่ profiles
+  INSERT INTO public."Profiles" (id, email, full_name, role)
+  VALUES (
+    NEW.id, 
+    NEW.email, 
+    COALESCE(NEW.raw_user_meta_data->>'full_name', 'No Name'), 
+    COALESCE(NEW.raw_user_meta_data->>'role', 'user')
+  );
+  RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+  -- ถ้าพัง ให้คืนค่า NEW ไปก่อนเพื่อให้ Auth สำเร็จ (แต่ข้อมูลอาจไม่ลงตาราง)
+  -- วิธีนี้จะช่วยให้เราเห็นว่ามันพังที่ตรงไหนใน Logs
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 3. สร้าง Trigger
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user_profile();

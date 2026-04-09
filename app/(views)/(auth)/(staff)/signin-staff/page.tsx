@@ -16,10 +16,6 @@ export default function SignInStaffPage() {
                 <div className="space-y-6">
                     <SignInStaffForm />
 
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                        หากยังไม่มีบัญชีเจ้าหน้าที่ กรุณาติดต่อผู้ดูแลระบบเพื่อขอสิทธิ์ใช้งาน
-                    </div>
-
                     <div className="pt-4 text-center text-sm text-slate-500">
                         <Link href="/" className="font-medium text-sky-600 hover:text-sky-700">
                             กลับสู่หน้าหลัก
@@ -30,3 +26,14 @@ export default function SignInStaffPage() {
         </main>
     );
 }
+
+
+
+{/* <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                        <p>
+                            หากยังไม่มีบัญชีเจ้าหน้าที่
+                            <Link href="/signup" className="ml-1 font-medium text-sky-600 hover:text-sky-700">
+                                สมัครสมาชิก
+                            </Link>
+                        </p>
+                    </div> */}

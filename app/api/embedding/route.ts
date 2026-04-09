@@ -2,8 +2,9 @@
 // ** http://localhost:3000/api/embedding **
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
 const apiKey = process.env.GOOGLE_GEMINI_API;
+const supabase = await createClient();
 
 export const POST = async () => {
     try {

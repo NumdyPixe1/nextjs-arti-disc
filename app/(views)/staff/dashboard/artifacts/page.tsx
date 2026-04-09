@@ -11,7 +11,6 @@ import { embeddingAction } from '@/app/actions/embeddingAction';
 import Link from 'next/link';
 
 export default function ManagerArtifactsPage() {
-    const router = useRouter();
     const [query, setQuery] = useState('');
     const [deleteArtifact, setDeleteArtifact] = useState<number | null>(null);
     const [editArtifact, setEditArtifact] = useState<number | null>(null);

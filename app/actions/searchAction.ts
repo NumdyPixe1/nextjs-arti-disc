@@ -1,8 +1,9 @@
 // *** แปลงคำค้นหาเป็น Vector ***
 "use server"
 import { pipeline, RawImage } from "@xenova/transformers";
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+const supabase = await createClient();
 
 export const searchByImageAction = async (formData: FormData) => {
     try {

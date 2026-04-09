@@ -1,5 +1,6 @@
 import { Artifact } from "@/@types/artifact";
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
+const supabase = await createClient();
 
 export const artifactAction = {
     addArtifact: async (formData: FormData) => {

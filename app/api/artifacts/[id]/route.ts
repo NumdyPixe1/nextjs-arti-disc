@@ -1,10 +1,11 @@
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
 import { NextResponse } from "next/server";
 
 // กำหนด Type ของ context ให้ถูกต้องตามมาตรฐาน Next.js 15
 type RouteContext = {
     params: Promise<{ id: string }>;
 };
+const supabase = await createClient();
 
 // http://localhost:3000/api/artifacts/{id}
 export const GET = async (req: Request, { params }: RouteContext) => {

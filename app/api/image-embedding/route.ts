@@ -2,8 +2,9 @@
 // ** http://localhost:3000/api/image-embedding **
 
 import { pipeline, RawImage } from "@xenova/transformers";
-import supabase from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase/supabaseClient";
 import { NextResponse } from "next/server";
+const supabase = await createClient();
 
 export const POST = async (req: Request) => {
     try {

@@ -1,31 +1,31 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from 'next/navigation'
-import supabase from "@/lib/supabase-client";
 
+import { signInAction } from "@/app/actions/signInAction";
 export const SignInStaffForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError("");
         setLoading(true);
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email, password
-            });
-            router.push('/admin/dashboard');
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
-        } finally {
+            const formData = new FormData(event.currentTarget);
+            const result = await signInAction(formData);
+            if (result?.error) {
+                setError(result.error);
+                setLoading(false); // หยุดโหลดเพื่อให้ผู้ใช้แก้ข้อมูลใหม่ได้
+            }
+        } catch (error) {
+            setError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
             setLoading(false);
         }
+
     };
 
     return (
@@ -59,6 +59,7 @@ export const SignInStaffForm = () => {
                     onChange={(event) => setPassword(event.target.value)}
                     placeholder="••••••••"
                     className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                    required
                 />
             </div>
 
