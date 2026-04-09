@@ -33,7 +33,7 @@ export const POST = async (req: Request) => {
                 }
 
                 // 3. จัดการ URL ให้ปลอดภัย
-                const bucketUrl = "https://zfcjarjlreqtvbtwzzyp.supabase.co/storage/v1/object/public/artifact-images/";
+                const bucketUrl = process.env.NEXT_PUBLIC_SUPABASE_IMAGE_STORAGE as string;
 
 
                 let imageUrl = item.image_file.startsWith('http')  // ตัดช่องว่าง และ Encode เฉพาะส่วนชื่อไฟล์ถ้าจำเป็น หรือ Encode ทั้งหมดอย่างระมัดระวัง
@@ -88,18 +88,3 @@ export const POST = async (req: Request) => {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
-
-
-
-// const formData = await req.formData();
-// const imageFile = formData.get("image_file") as Blob;
-// console.log("Received file:", imageFile);
-// if (!imageFile) {
-//     throw new Error("No image file provided");
-// }
-
-// const image = await RawImage.fromBlob(imageFile);
-// // ส่งภาพเข้า Model เพื่อแปลงเป็น Vector
-// const output = await visionModel(image as any);
-// // เรียก Model
-// const imageVector = Array.from(output.data);

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PATHS } from "../utils/paths";
 
 export const Sidebar = () => {
     return (
@@ -12,19 +13,19 @@ export const Sidebar = () => {
 
                 <nav className="space-y-2">
                     <Link
-                        href="/staff/dashboard"
+                        href={PATHS.DASHBOARD}
                         className="block rounded-2xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200"
                     >
                         Overview
                     </Link>
-                    <Link
-                        href="/staff/dashboard/artifacts"
+                    {/* <Link
+                        href={ }
                         className="block rounded-2xl px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
                     >
                         Artifacts
-                    </Link>
+                    </Link> */}
                     <Link
-                        href="/staff/dashboard/artifacts"
+                        href={PATHS.MANAGER_ARTIFACTS}
                         className="block rounded-2xl px-4 py-3 text-sm text-slate-700 transition hover:bg-slate-100"
                     >
                         Manage artifacts

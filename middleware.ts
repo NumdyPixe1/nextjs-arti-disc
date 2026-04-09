@@ -7,7 +7,8 @@ export const middleware = async (req: NextRequest) => {
         process.env.NEXT_PUBLIC_SUPABASE_URL as string,
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY as string,
         {
-            cookies: { // จำว่า User คนนี้ล็อกอินอยู่หรือไม่
+            cookies: {
+                // จำว่า User คนนี้ล็อกอินอยู่หรือไม่
                 getAll() {
                     return req.cookies.getAll()
                 },
@@ -36,7 +37,7 @@ export const middleware = async (req: NextRequest) => {
     }
     // ล็อกอินค้างไว้แล้ว แต่อยากกลับไปหน้า Signin (ให้ดีดกลับไปหน้างาน)
     if (isSignInStaffPath && user) {
-        return NextResponse.redirect(new URL('/staff/dashboard/artifacts', req.url))
+        return NextResponse.redirect(new URL('/staff/artifacts', req.url))
     }
     return response;
 }

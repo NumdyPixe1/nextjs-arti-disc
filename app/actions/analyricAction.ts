@@ -1,6 +1,6 @@
 // *** วิเคราะห์ข้อมูลในหน้า Full view ของ Artifact นั้น ***
 "use server";
-import { baseInstruction } from "@/lib/analyric-prompt";
+import { BASE_INSTRUCTION } from "@/app/utils/analyricPrompt";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GOOGLE_GEMINI_API;
@@ -12,7 +12,7 @@ export const analyzeArtifact = async (data: any) => {
         }
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
-        const prompt = baseInstruction(data);
+        const prompt = BASE_INSTRUCTION(data);
         console.log("%กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view", "color: blue");
 
         // --- ส่งข้อมูลไปให้ Gemini วิเคราะห์ ---

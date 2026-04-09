@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SignInStaffForm } from "./SignInStaffForm";
+import { PATHS } from "@/app/utils/paths";
 
 export default function SignInStaffPage() {
     return (
@@ -17,7 +18,7 @@ export default function SignInStaffPage() {
                     <SignInStaffForm />
 
                     <div className="pt-4 text-center text-sm text-slate-500">
-                        <Link href="/" className="font-medium text-sky-600 hover:text-sky-700">
+                        <Link href={PATHS.HOME} className="font-medium text-sky-600 hover:text-sky-700">
                             กลับสู่หน้าหลัก
                         </Link>
                     </div>

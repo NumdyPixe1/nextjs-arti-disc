@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Sidebar } from "../../../components/Sidebar";
+import { Sidebar } from "../../components/Sidebar";
+import { PATHS } from "@/app/utils/paths";
 
 export default function DashBoard() {
     return (
@@ -21,7 +22,7 @@ export default function DashBoard() {
                         </div>
 
                         <Link
-                            href="/staff/dashboard/artifacts"
+                            href={PATHS.MANAGER_ARTIFACTS}
                             className="inline-flex rounded-2xl bg-sky-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-sky-600/20 transition hover:bg-sky-700"
                         >
                             View artifacts

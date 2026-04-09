@@ -1,5 +1,5 @@
 // ** Base instruction **
-export const baseInstruction = (dbData: any) =>
+export const BASE_INSTRUCTION = (dbData: any) =>
   `
 You are a Digital Curator and Expert Archaeologist. 
 Your mission is to analyze images and database information, 

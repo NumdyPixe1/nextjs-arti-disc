@@ -1,6 +1,7 @@
 'use server'
 import { createClient } from '@/lib/supabase/supabaseServer'
 import { redirect } from 'next/navigation'
+import { PATHS } from '../utils/paths'
 
 export const signInAction = async (formData: FormData) => {
     const supabase = await createClient()
@@ -29,7 +30,7 @@ export const signInAction = async (formData: FormData) => {
         await supabase.auth.signOut(); // ล็อกเอาท์ออกทันทีถ้าไม่ใช่สตาฟ
         return { error: "คุณไม่มีสิทธิ์เข้าถึงระบบเจ้าหน้าที่" };
     } else {
-        redirect('/admin/artifacts') // ถ้าเป็นสตาฟส่งไปหลังบ้าน
+        redirect(PATHS.MANAGER_ARTIFACTS) // ถ้าเป็นสตาฟส่งไปหลังบ้าน
 
     }
 }
