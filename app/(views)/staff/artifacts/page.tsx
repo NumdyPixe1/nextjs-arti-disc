@@ -2,13 +2,14 @@
 // Full View
 "use client";
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
-import { AddModal, DeleteModal, EditModal } from '@/app/components/Modal';
+import { AddModal, DeleteModal, EditModal } from '@/app/(views)/staff/artifacts/Modal';
 import { artifactAction } from '@/app/actions/artifactAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
-import { useRouter } from "next/navigation";
 import { embeddingAction } from '@/app/actions/embeddingAction';
 import Link from 'next/link';
+import { convertToFormData } from '@/app/utils/convertToFormData';
+import { ArtifactsForm } from '@/@types/artifact';
 
 export default function ManagerArtifactsPage() {
     const [query, setQuery] = useState('');
@@ -24,44 +25,6 @@ export default function ManagerArtifactsPage() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Form Fields
-    const [title, setTitle] = useState('');
-    const [artStyle, setArtStyle] = useState('');
-    const [currentLocation, setCurrentLocation] = useState('');
-    const [locationFound, setLocationFound] = useState('');
-    const [description, setDescription] = useState('');
-    const [imageFile, setImageFile] = useState<File | null>(null);
-    const [material, setMaterial] = useState('');
-    const [era, setEra] = useState('');
-    const [category, setCategory] = useState('');
-    const [lat, setLat] = useState(0);
-    const [lng, setLng] = useState(0);
-    // Edit
-    const [editTitle, setEditTitle] = useState('');
-    const [editArtStyle, setEditArtStyle] = useState('');
-    const [editCurrentLocation, setEditCurrentLocation] = useState('');
-    const [editLocationFound, setEditLocationFound] = useState('');
-    const [editDescription, setEditDescription] = useState('');
-    const [editImageFile, setEditImageFile] = useState<File | null>(null);;
-    const [editMaterial, setEditMaterial] = useState('');
-    const [editEra, setEditEra] = useState('');
-    const [editCategory, setEditCategory] = useState('');
-    const [editLat, setEditLat] = useState(0);
-    const [editLng, setEditLng] = useState(0);
-    // Clear Form
-    const clearForm = () => {
-        setTitle('');
-        setArtStyle('');
-        setCurrentLocation('');
-        setLocationFound('');
-        setDescription('');
-        setImageFile(null);
-        setMaterial('');
-        setEra('');
-        setCategory('');
-        setLat(0);
-        setLng(0);
-    }
     const [loadingAdd, setLoadingAdd] = useState(false);
     const [loadingSave, setLoadingSave] = useState(false);
     const [loadingTable, setLoadingTable] = useState(true);
@@ -119,52 +82,42 @@ export default function ManagerArtifactsPage() {
             setLoadingTable(false);
         }
     }
-
+    const [selectedArtifactData, setSelectedArtifactData] = useState<ArtifactsForm | null>(null);
     const handleEdit = async (item: any, e: React.FormEvent) => {
         e.stopPropagation();
         setEditArtifact(item.id);
 
-        // เมื่อกด edit ให้เอาข้อมูลของ item ที่กดมาใส่ใน state ของ form edit เพื่อให้แสดงใน modal
-        setEditTitle(item.title || '');
-        setEditArtStyle(item.art_style || '');
-        setEditCurrentLocation(item.current_location || '');
-        setEditLocationFound(item.location_found || '');
-        setEditDescription(item.description || '');
-        setEditImageFile(item.image_file || null);
-        setEditMaterial(item.material || '');
-        setEditEra(item.era || '');
-        setEditCategory(item.category || '');
+        // แปลงข้อมูลจาก DB (snake_case) ให้เป็นรูปแบบ Form (camelCase)
+        const formData = {
+            title: item.title || '',
+            art_style: item.art_style || '',
+            current_location: item.current_location || '',
+            location_found: item.location_found || '',
+            description: item.description || '',
+            material: item.material || '',
+            era: item.era || '',
+            category: item.category || '',
+            lng: item.lng || '',
+            lat: item.lat || '',
+            image_file: item.image_file || null
+        }
+        setSelectedArtifactData(formData);
         setIsEditModalOpen(true);
     }
-    const saveEdit = async () => {
+    const saveEdit = async (data: ArtifactsForm) => {
         if (editArtifact === null) return;
 
         setLoadingSave(true);
         try {
-            const formData = new FormData();
-
-            formData.append('title', editTitle);
-            formData.append('description', editDescription);
-            formData.append('material', editMaterial);
-            formData.append('art_style', editArtStyle);
-            formData.append('current_location', editCurrentLocation);
-            formData.append('location_found', editLocationFound);
-            formData.append('era', editEra);
-            formData.append('category', editCategory);
-            formData.append('lat', `${editLat}`);
-            formData.append('lng', `${editLng}`);
-            // ตรวจสอบว่า editImageFile เป็น File Object หรือไม่ (ถ้าผู้ใช้เลือกไฟล์ใหม่)
-            if (editImageFile instanceof File) {
-                formData.append("image_file", editImageFile);
-            }
+            const formData = convertToFormData(data);
             //editArtifact(id, data)
             const response = await artifactAction.editArtifact(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
             const updatedItem = response.data[0];
-            setGetArtifacts(prev => prev.map(item => item.id === editArtifact ? { ...item, ...updatedItem } : item));
-            setIsEditModalOpen(false);
+            setGetArtifacts(prev => prev.map(item =>
+                item.id === editArtifact ? { ...item, ...updatedItem } : item));
             setEditArtifact(null);
-            setMessageType('info');
+            setMessageType('success');
             setMessage(`Artifact ID ${editArtifact} edited successfully!`);
         }
         catch (error) {
@@ -173,6 +126,7 @@ export default function ManagerArtifactsPage() {
             console.error('Failed to save edit:', error);
         } finally {
             setLoadingSave(false);
+            setIsEditModalOpen(false);
         }
 
     }
@@ -185,7 +139,7 @@ export default function ManagerArtifactsPage() {
         setDeleteArtifact(id);
     }
 
-    const confirmDelete = async () => {
+    const onDeleteSubmit = async () => {
         if (deleteArtifact !== null) {
             try {
                 await artifactAction.deleteArtifact(deleteArtifact);
@@ -205,36 +159,15 @@ export default function ManagerArtifactsPage() {
         setIsAddModalOpen(true)
     }
 
-    const add = async () => {
+    const onAddSubmit = async (data: ArtifactsForm) => {
         setLoadingAdd(true);
         try {
-            const formData = new FormData();
-            // 1. ใส่ข้อมูล Text ทั่วไป
-            formData.append('title', title);
-            formData.append('description', description);
-            formData.append('material', material);
-            formData.append('art_style', artStyle);
-            formData.append('current_location', currentLocation);
-            formData.append('location_found', locationFound);
-            formData.append('era', era);
-            formData.append('category', category);
-            formData.append('lat', `${lat}`);
-            formData.append('lng', `${lng}`);
-            if (imageFile) {
-                formData.append('image_file', imageFile);
-                console.log("Attached file to FormData:", imageFile.name);
-            }
-            else {
-                console.log("No file selected!");
-            }
+            const formData = convertToFormData(data);
             await artifactAction.addArtifact(formData);
-
             setMessageType('success');
             setMessage('Artifact added successfully!');
-            clearForm();
-            //
-            const updatedData = await artifactAction.getAllArtifactsAdmin();
-            setGetArtifacts(updatedData);
+            const updatedDataList = await artifactAction.getAllArtifactsAdmin();
+            setGetArtifacts(updatedDataList);
         } catch (error) {
             setMessageType('error');
             setMessage('An error occurred while adding the artifact.');
@@ -259,69 +192,22 @@ export default function ManagerArtifactsPage() {
                 isAddModalOpen ? (<AddModal
                     isLoading={loadingAdd}
                     isOpen={isAddModalOpen}
-                    onClose={() => { setIsAddModalOpen(false); clearForm(); }}
-                    onConfirm={add}
-
-                    title={title}
-                    artStyle={artStyle}
-                    currentLocation={currentLocation}
-                    locationFound={locationFound}
-                    description={description}
-                    imageFile={imageFile}
-                    material={material}
-                    era={era}
-                    category={category}
-                    lat={lat}
-                    lng={lng}
-
-                    setTitle={setTitle}
-                    setArtStyle={setArtStyle}
-                    setCurrentLocation={setCurrentLocation}
-                    setLocationFound={setLocationFound}
-                    setDescription={setDescription}
-                    setImageFile={setImageFile}
-                    setMaterial={setMaterial}
-                    setEra={setEra}
-                    setCategory={setCategory}
-                    setLat={setLat}
-                    setLng={setLng}
+                    onClose={() => { setIsAddModalOpen(false); }}
+                    onSubmit={onAddSubmit}
                 />) : null
             }
 
             {/* Edit Modal */}
             {
-                isEditModalOpen ? (<EditModal
-                    isLoading={loadingSave}
-                    isOpen={isEditModalOpen}
-                    onClose={() => setIsEditModalOpen(false)}
-                    onConfirm={saveEdit}
-                    itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
-                    // ส่ง props ของข้อมูลที่ต้องการแก้ไขไปให้ EditModal เพื่อแสดงใน form และให้ user แก้ไข
-                    title={editTitle}
-                    artStyle={editArtStyle}
-                    currentLocation={editCurrentLocation}
-                    locationFound={editLocationFound}
-                    description={editDescription}
-                    imageFile={editImageFile}
-                    material={editMaterial}
-                    era={editEra}
-                    category={editCategory}
-                    lat={editLat}
-                    lng={editLng}
-
-                    // ส่ง setState ไปให้ EditModal เพื่อให้สามารถแก้ไข state ของ form ได้จากภายใน Modal
-                    setTitle={setEditTitle}
-                    setArtStyle={setEditArtStyle}
-                    setCurrentLocation={setEditCurrentLocation}
-                    setLocationFound={setEditLocationFound}
-                    setDescription={setEditDescription}
-                    setImageFile={setEditImageFile}
-                    setMaterial={setEditMaterial}
-                    setEra={setEditEra}
-                    setCategory={setEditCategory}
-                    setLat={setEditLat}
-                    setLng={setEditLng}
-                />) : null
+                isEditModalOpen ? (
+                    <EditModal
+                        isLoading={loadingSave}
+                        isOpen={isEditModalOpen}
+                        onClose={() => { setIsEditModalOpen(false); setSelectedArtifactData(null); }}
+                        onSubmit={async (data) => { await saveEdit(data); }}
+                        initialData={selectedArtifactData ?? undefined}
+                        itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
+                    />) : null
             }
 
             {/* Delete Confirmation Modal */}
@@ -330,7 +216,7 @@ export default function ManagerArtifactsPage() {
                     <DeleteModal
                         isOpen={isDeleteModalOpen}
                         onClose={() => setIsDeleteModalOpen(false)}
-                        onConfirm={confirmDelete}
+                        onSubmit={onDeleteSubmit}
                         // หาชื่อ ID จาก getArtifacts เพื่อเปรียบเทียบกับ deleteArtifact แล้วเอาชื่อมาแสดงใน Modal
                         itemName={getArtifacts.find(item => item.id === deleteArtifact)?.title || 'this artifact'}
                     />

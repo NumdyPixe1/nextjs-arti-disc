@@ -2,10 +2,13 @@
 "use client"
 import { useScroll, motion, useTransform, useSpring } from "framer-motion";
 import { useState } from "react";
-import { searchAction, searchByImageAction } from "../actions/searchAction";
-import { ImageSearchModal } from "./Modal";
+import { searchAction, searchByImageAction } from "../../actions/searchAction";
+import { ImageSearchModal } from "./ImageSearchModal";
 import { Artifact } from "@/@types/artifact";
 
+export interface ImageFile {
+    imageFile: File | null;
+}
 
 interface Props {
     //รับ param 1 ตัว ชื่อ query เท่านั้น และ รับค่าเข้าโดยไม่ต้องส่งค่าออก
@@ -22,11 +25,9 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
     // 
     const [word, setWord] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [itemName, setItemName] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const clearForm = () => {
-        setPreviewUrl(null);
         setItemName("");
         setWord("");
         setIsModalOpen(false);
@@ -39,22 +40,12 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
         console.log("Searching for:", word);
         handleSearch(word);
     }
-    // ค้นหาด้วยขรูปภาพ
-    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const file = e.target.files?.[0];
-        if (!file) return;
-        // 2. สร้าง URL ชั่วคราวเพื่อแสดงรูป
-        const objectUrl = URL.createObjectURL(file);
-        setPreviewUrl(objectUrl);
-        setSelectedFile(file);
-        setItemName(file.name);
-        e.target.value = "";
-    }
 
-    const confrimSearchByImage = () => {
-        if (!selectedFile) return;
-        handleSearch(selectedFile);
+    // ค้นหาด้วยภาพ โดย รับค่าจาก ImageSearchModal.tsx
+    const handleImageSubmit = (data: ImageFile) => {
+        if (!data.imageFile) return;
+        // ส่งก้อน File ไปที่ handleSearch
+        handleSearch(data.imageFile);
         clearForm();
     }
 
@@ -156,11 +147,12 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
             </motion.div >
             <ImageSearchModal
                 isOpen={isModalOpen}
-                previewUrl={previewUrl}
-                onClose={() => { setIsModalOpen(false); clearForm(); }}
-                onFileChange={handleFileChange}
-                itemName={itemName}
-                onConfirm={confrimSearchByImage}
+                onClose={() => { setIsModalOpen(false); }}
+                onSubmit={handleImageSubmit}
+            // previewUrl={previewUrl}
+            // onFileChange={handleFileChange}
+            // itemName={itemName}
+            // onConfirm={handleImageSubmit}
             />
         </>
     );
