@@ -41,6 +41,9 @@ export const PUT = async (req: Request, { params }: RouteContext) => {
             description: formData.get("description"),
             era: formData.get("era"),
             category: formData.get("category"),
+            lat: formData.get("lat"),
+            lng: formData.get("lng"),
+
         };
         // 2. จัดการรูปภาพ (ถ้ามีการส่งไฟล์ใหม่มา)
         const imageFile = formData.get("image_file") as File;

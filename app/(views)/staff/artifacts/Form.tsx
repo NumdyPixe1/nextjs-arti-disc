@@ -1,25 +1,37 @@
-import { useForm, UseFormRegister } from "react-hook-form";
-import { InputField } from "@/app/components/InputField";
+import { useForm } from "react-hook-form";
+import { InputField } from "@/app/(views)/staff/artifacts/InputField";
 import { ArtifactsForm } from "@/@types/artifact";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { LoadingSpinner } from "../../../components/LoadingSpinner";
 
 interface Props {
     initialData?: ArtifactsForm | null;
     onSubmit: (data: ArtifactsForm) => void;
-    isLoading: boolean;
+    isLoading?: boolean;
 }
-
 
 export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const { register, handleSubmit, reset, setValue } = useForm<ArtifactsForm>({ defaultValues: initialData || {} });
+    const { register, handleSubmit, setValue } = useForm<ArtifactsForm>({ defaultValues: initialData || {} });
+
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleImageUpload(e, (file, url) => {
             setPreviewUrl(url);
             setValue("image_file", file);
         });
     }
+
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                // Memory Cleanup
+                URL.revokeObjectURL(previewUrl);
+                console.log("Cleaned up proxy URL");
+            }
+        }
+    }, [previewUrl]);
+
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <InputField
@@ -60,14 +72,14 @@ export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
                 id="category"
             />
             <InputField
-                {...register("lat")}
+                {...register("lat", { valueAsNumber: true })}
                 label="Lat"
                 placeholder="e.g., 123.45"
                 type="text"
                 id="lat"
             />
             <InputField
-                {...register("lng")}
+                {...register("lng", { valueAsNumber: true })}
                 label="Lng"
                 placeholder="e.g., 123.45"
                 type="text"
@@ -81,7 +93,6 @@ export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
                 id="material"
             />
             <InputField
-
                 {...register("image_file")}
                 label="Image"
                 type="file"
@@ -106,7 +117,9 @@ export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
                     disabled={isLoading}
                     className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                 >
-                    {isLoading ? 'Submitting...' : 'Submit Artifact'}
+                    {isLoading
+                        ? (initialData ? 'Saving...' : 'Submitting...')
+                        : (initialData ? 'Save Changes' : 'Submit')}
                 </button>
             </div>
         </form>

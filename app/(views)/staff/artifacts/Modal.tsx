@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-import { LoadingSpinner } from "../../../components/LoadingSpinner";
-import { useForm } from "react-hook-form";
-import { InputField } from "@/app/components/InputField";
 import { ModalLayout } from "@/app/components/ModalLayout";
 import { ArtifactsForm } from "@/@types/artifact";
+import { ArtifactForm } from "./Form";
 
 interface Props {
     isOpen?: boolean;
@@ -19,89 +16,20 @@ interface Props {
 
 export const EditModal = ({ initialData, isLoading, isOpen, onClose, onSubmit,
 }: Props) => {
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const { register, handleSubmit, reset, setValue } = useForm({ defaultValues: initialData });
-
-    // อัปเดตข้อมูลในฟอร์มทุกครั้งที่เปิด Modal ชิ้นใหม่
-    useEffect(() => {
-        if (isOpen && initialData) {
-            reset(initialData);
-            console.log("Resetting form with:", initialData);
-        }
-    }, [initialData, isOpen, reset])
 
     const handleClose = () => {
-        reset();
         onClose();
-        setPreviewUrl(null);
     };
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageUpload(e, (file, url) => {
-            setPreviewUrl(url);
-            setValue("image_file", file);
-        });
-    }
-
-    useEffect(() => {
-        return () => {
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
-        };
-    }, [previewUrl]);
-
-    if (!isOpen) return null;
     return (
-        <ModalLayout isOpen={isOpen} handleClose={handleClose} title="Edit Artifact">
-            {isLoading ? <LoadingSpinner /> : (
-                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {/* ใช้ InputField ที่เราสร้างไว้ก่อนหน้า */}
-                    <InputField
-                        {...register("title")}
-                        label="Title"
-                        placeholder="e.g., Golden Buddha Statue"
-                        type="text"
-                        id="title" />
-                    <InputField label="Art Style" {...register("art_style")} placeholder="e.g., Impressionism" id="artStyle" />
-                    <InputField label="Location" {...register("current_location")} />
-                    <InputField label="Location Found" {...register("location_found")} />
-                    <InputField label="Era" {...register("era")} />
-                    <InputField label="Category" {...register("category")} id="category" />
-
-                    {/* พิกัดภูมิศาสตร์ */}
-                    <InputField label="Lat" type="number" step="any" {...register("lat")} />
-                    <InputField label="Lng" type="number" step="any" {...register("lng")} />
-
-                    {/* การจัดการรูปภาพ */}
-                    <div className="grid gap-2">
-                        <InputField
-                            label="Image"
-                            type="file"
-                            accept="image/*"
-                            onChange={onFileChange}
-                        />
-
-                    </div>
-
-                    <InputField label="Material" {...register("material")} />
-
-                    <div className="md:col-span-2">
-                        <InputField label="Description" isTextArea {...register("description")} />
-                    </div>
-
-                    {/* Buttons Section */}
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-                        >
-                            {isLoading ? 'Saving...' : 'Save Changes'}
-                        </button>
-                    </div>
-                </form>
-            )}
+        <ModalLayout isOpen={isOpen}
+            handleClose={handleClose}
+            title="Edit Artifact" context="">
+            <ArtifactForm
+                initialData={initialData}
+                onSubmit={onSubmit}
+                isLoading={isLoading}
+            />
         </ModalLayout>)
-
 }
 
 export const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => {
@@ -154,129 +82,22 @@ export const DeleteModal = ({ isOpen, onClose, onConfirm, itemName }: Props) => 
     );
 }
 
-export const AddModal = ({ isLoading, isOpen, onClose, onSubmit }: Props) => {
-    const { register, handleSubmit, reset, setValue } = useForm<ArtifactsForm>();
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export const AddModal = ({ isLoading, isOpen, onClose, onSubmit, initialData }: Props) => {
 
     const handleClose = () => {
-        reset();
         onClose();
-        setPreviewUrl(null);
     };
-    const internalSubmit = (data: ArtifactsForm) => {
-        // ส่งข้อมูลกลับไปให้ตัวแม่ (Parent)
-        onSubmit(data);
-    }
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageUpload(e, (file, url) => {
-            setPreviewUrl(url);
-            setValue("image_file", file);
-        });
-    }
-    useEffect(() => {
-        return () => {
-            if (previewUrl) {
-                // Memory Cleanup
-                URL.revokeObjectURL(previewUrl);
-                console.log("Cleaned up proxy URL");
-            }
-        }
-    }, [previewUrl]);
 
     if (!isOpen) return null;
     return (
-        <ModalLayout isOpen={isOpen} handleClose={handleClose} title="Add New Artifact" context="Fill in the details below to register a new artifact in the collection.">
-            <form onSubmit={handleSubmit(internalSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <InputField
-                    {...register("title")}
-                    label="Title"
-                    placeholder="e.g., Golden Buddha Statue"
-                    type="text"
-                    id="title" />
-                <InputField
-                    {...register("art_style")}
-                    label="Art Style"
-                    placeholder="e.g., Impressionism"
-                    type="text"
-                    id="artStyle" />
-                <InputField
-                    {...register("current_location")}
-                    label="Location"
-                    placeholder="e.g., Bangkok National Museum"
-                    type="text"
-                    id="currentLocation" />
-                <InputField
-                    {...register("location_found")}
-                    label="Location Found"
-                    placeholder="e.g., Ayutthaya"
-                    type="text"
-                    id="locationFound" />
-                <InputField
-                    {...register("era")}
-                    label="Era"
-                    placeholder="e.g., Ayutthaya"
-                    type="text"
-                    id="era" />
-                <InputField
-                    {...register("category")}
-                    label="Category"
-                    placeholder="e.g., Ayutthaya"
-                    type="text"
-                    id="category"
-                />
-                <InputField
-                    {...register("lat")}
-                    label="Lat"
-                    placeholder="e.g., 123.45"
-                    type="text"
-                    id="lat"
-                />
-                <InputField
-                    {...register("lng")}
-                    label="Lng"
-                    placeholder="e.g., 123.45"
-                    type="text"
-                    id="lng"
-                />
-                <InputField
-                    {...register("material")}
-                    label="Material"
-                    placeholder="e.g., Bronze, Wood, Stone"
-                    type="text"
-                    id="material"
-                />
-                <InputField
-
-                    {...register("image_file")}
-                    label="Image"
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={onFileChange}
-                />
-
-                <div className="grid gap-2 md:col-span-2">
-                    <InputField
-                        isTextArea
-                        {...register("description")}
-                        label="Description"
-                        placeholder="Describe the artifact..."
-                        id="description"
-                    />
-                </div>
-                {/* Buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="cursor-pointer rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-                    >
-                        {isLoading ? 'Submitting...' : 'Submit Artifact'}
-                    </button>
-                </div>
-            </form>
-
+        <ModalLayout isOpen={isOpen}
+            handleClose={handleClose}
+            title="Add New Artifact" context="Fill in the details below to register a new artifact in the collection.">
+            <ArtifactForm
+                initialData={initialData}
+                onSubmit={onSubmit}
+                isLoading={isLoading}
+            />
         </ModalLayout>)
 
 }

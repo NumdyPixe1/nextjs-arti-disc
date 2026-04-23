@@ -3,7 +3,7 @@ import { PATHS } from "../utils/paths";
 
 export const Sidebar = () => {
     return (
-        <aside className="hidden xl:block w-72 shrink-0 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm shadow-slate-200/40">
+        <aside className="hidden xl:block fixed left-0 top-0 h-screen w-72 shrink-0 overflow-y-auto border-r border-slate-200 bg-white/95 p-6 shadow-sm shadow-slate-200/40">
             <div className="space-y-6">
                 <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Staff panel</p>
@@ -37,11 +37,6 @@ export const Sidebar = () => {
                         Site home
                     </Link>
                 </nav>
-
-                <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-600">
-                    <p className="font-semibold text-slate-900">Staff tips</p>
-                    <p className="mt-2">Use the Artifacts page to review and curate submitted content.</p>
-                </div>
             </div>
         </aside>
     );

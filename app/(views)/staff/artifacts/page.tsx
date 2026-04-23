@@ -36,7 +36,7 @@ export default function ManagerArtifactsPage() {
         const loadArtifacts = async () => {
             setLoadingTable(true);
             try {
-                const data = await artifactAction.getAllArtifactsAdmin();
+                const data = await artifactAction.getAllArtifactsStaff();
                 setGetArtifacts(data);
             } catch (error) {
                 console.error('Failed to load artifacts:', error);
@@ -82,8 +82,9 @@ export default function ManagerArtifactsPage() {
             setLoadingTable(false);
         }
     }
+
     const [selectedArtifactData, setSelectedArtifactData] = useState<ArtifactsForm | null>(null);
-    const handleEdit = async (item: any, e: React.FormEvent) => {
+    const openEditModal = async (item: any, e: React.FormEvent) => {
         e.stopPropagation();
         setEditArtifact(item.id);
 
@@ -97,25 +98,29 @@ export default function ManagerArtifactsPage() {
             material: item.material || '',
             era: item.era || '',
             category: item.category || '',
-            lng: item.lng || '',
-            lat: item.lat || '',
+            lng: item.lng || 0,
+            lat: item.lat || 0,
             image_file: item.image_file || null
         }
         setSelectedArtifactData(formData);
         setIsEditModalOpen(true);
     }
-    const saveEdit = async (data: ArtifactsForm) => {
+
+    const updateArtifact = async (data: ArtifactsForm) => {
         if (editArtifact === null) return;
 
         setLoadingSave(true);
         try {
             const formData = convertToFormData(data);
-            //editArtifact(id, data)
             const response = await artifactAction.editArtifact(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
             const updatedItem = response.data[0];
             setGetArtifacts(prev => prev.map(item =>
-                item.id === editArtifact ? { ...item, ...updatedItem } : item));
+                item.id === editArtifact
+                    ? {
+                        ...item,
+                        ...updatedItem
+                    } : item));
             setEditArtifact(null);
             setMessageType('success');
             setMessage(`Artifact ID ${editArtifact} edited successfully!`);
@@ -128,10 +133,9 @@ export default function ManagerArtifactsPage() {
             setLoadingSave(false);
             setIsEditModalOpen(false);
         }
-
     }
 
-    const handleDelete = async (id: number, e: React.FormEvent) => {
+    const openRemoveModal = async (id: number, e: React.FormEvent) => {
         // หยุดการกระจายของ event เพื่อไม่ให้เกิดการทำงานอื่นๆ ที่ไม่ต้องการ (เช่น การเปิด modal ซ้อนกัน)
         e.stopPropagation()
         setIsDeleteModalOpen(true);
@@ -139,7 +143,8 @@ export default function ManagerArtifactsPage() {
         setDeleteArtifact(id);
     }
 
-    const onDeleteSubmit = async () => {
+    const removeArtifact = async () => {
+        console.log("Starting delete for ID:", deleteArtifact); // เช็กว่า ID มาไหม
         if (deleteArtifact !== null) {
             try {
                 await artifactAction.deleteArtifact(deleteArtifact);
@@ -153,26 +158,27 @@ export default function ManagerArtifactsPage() {
         }
     }
 
-    const handleAdd = async (e: React.FormEvent) => {
+    const openAddModal = async (e: React.FormEvent) => {
         // ป้องกันการรีเฟรชหน้าเมื่อ submit form
         e.preventDefault();
         setIsAddModalOpen(true)
     }
 
-    const onAddSubmit = async (data: ArtifactsForm) => {
+    const createArtifact = async (data: ArtifactsForm) => {
         setLoadingAdd(true);
         try {
             const formData = convertToFormData(data);
             await artifactAction.addArtifact(formData);
             setMessageType('success');
             setMessage('Artifact added successfully!');
-            const updatedDataList = await artifactAction.getAllArtifactsAdmin();
+            const updatedDataList = await artifactAction.getAllArtifactsStaff();
             setGetArtifacts(updatedDataList);
         } catch (error) {
             setMessageType('error');
             setMessage('An error occurred while adding the artifact.');
         } finally {
             setLoadingAdd(false);
+            setIsAddModalOpen(false)
         }
     }
 
@@ -193,7 +199,7 @@ export default function ManagerArtifactsPage() {
                     isLoading={loadingAdd}
                     isOpen={isAddModalOpen}
                     onClose={() => { setIsAddModalOpen(false); }}
-                    onSubmit={onAddSubmit}
+                    onSubmit={createArtifact}
                 />) : null
             }
 
@@ -204,19 +210,20 @@ export default function ManagerArtifactsPage() {
                         isLoading={loadingSave}
                         isOpen={isEditModalOpen}
                         onClose={() => { setIsEditModalOpen(false); setSelectedArtifactData(null); }}
-                        onSubmit={async (data) => { await saveEdit(data); }}
+                        onSubmit={updateArtifact}
                         initialData={selectedArtifactData ?? undefined}
                         itemName={getArtifacts.find(item => item.id === editArtifact)?.title || 'this artifact'}
                     />) : null
             }
 
-            {/* Delete Confirmation Modal */}
+            {/* Delete Modal */}
             {
                 isDeleteModalOpen ? (
                     <DeleteModal
+                        onSubmit={() => { }}
                         isOpen={isDeleteModalOpen}
                         onClose={() => setIsDeleteModalOpen(false)}
-                        onSubmit={onDeleteSubmit}
+                        onConfirm={removeArtifact}
                         // หาชื่อ ID จาก getArtifacts เพื่อเปรียบเทียบกับ deleteArtifact แล้วเอาชื่อมาแสดงใน Modal
                         itemName={getArtifacts.find(item => item.id === deleteArtifact)?.title || 'this artifact'}
                     />
@@ -230,7 +237,7 @@ export default function ManagerArtifactsPage() {
                     <p className="text-sm text-slate-500">List of artifacts from the database.</p>
                 </header>
                 <div className=' gap-10 flex mb-5'>
-                    <button onClick={(e) => handleAdd(e)} className="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
+                    <button onClick={(e) => openAddModal(e)} className="cursor-pointer rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
                         + Add Artifact
                     </button>
                     <input type="text"
@@ -278,11 +285,11 @@ export default function ManagerArtifactsPage() {
                                             {/* <td className="px-4 py-2 border border-slate-200 max-w-xs truncate">{item.description || '-'}</td> */}
                                             <td className=" justify-center gap-4 flex px-4 py-2 border border-slate-200">
                                                 <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
-                                                    onClick={(e) => handleEdit(item, e)}>
+                                                    onClick={(e) => openEditModal(item, e)}>
                                                     Edit
                                                 </button>
                                                 <button className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"
-                                                    onClick={(e) => handleDelete(item.id, e)}>
+                                                    onClick={(e) => openRemoveModal(item.id, e)}>
                                                     Delete
                                                 </button>
                                             </td>
