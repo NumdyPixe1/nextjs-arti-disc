@@ -50,7 +50,7 @@ export const artifactAction = {
         }
     },
 
-    getAllArtifactsAdmin: async () => {
+    getAllArtifactsStaff: async () => {
         try {//                           
             const response = await fetch(`/api/artifacts`);
 

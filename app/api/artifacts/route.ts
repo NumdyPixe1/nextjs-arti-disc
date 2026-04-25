@@ -25,8 +25,14 @@ export const POST = async (req: Request) => {
     try {
         // 1. JSON ไม่รองรับไฟล์ดิบ (Binary) ต้องใช้ .formData แทน .json
         const formData = await req.formData();
-        const imageFile = formData.get("image_file") as File;
+
+        const image_file = formData.get("image_file") as File;
         let finalImageUrl = "";
+
+        const rawLat = formData.get("lat");
+        const rawLng = formData.get("lng");
+        const lat = rawLat ? parseFloat(rawLat.toString()) : null;
+        const lng = rawLng ? parseFloat(rawLng.toString()) : null;
 
         // ดึงข้อมูลข้อความ
         const title = formData.get("title") as string;
@@ -37,6 +43,7 @@ export const POST = async (req: Request) => {
         const description = formData.get("description") as string;
         const era = formData.get("era") as string;
         const category = formData.get("category") as string;
+
         // 2. ตรวจสอบชื่อว่าเป็นค่าว่างไหม
         if (!title || title.trim() === "") {
             return NextResponse.json(
@@ -45,16 +52,17 @@ export const POST = async (req: Request) => {
             );
         }
         // 3. จัดการอัปโหลดรูปไปที่ Supabase Storage
-        if (imageFile) {
+        // ตรวจสอบประเภทของไฟล์
+        if (image_file instanceof File && image_file.size > 0) {
             // 1. แยกนามสกุลไฟล์ (ระวังจุดใน split)
-            const fileExt = imageFile.name.split('.').pop();
+            const fileExt = image_file.name.split('.').pop();
             const fileName = `${Date.now()}.${fileExt}`;
 
             // 2. อัปโหลด
             const { data, error } = await supabase.storage
                 .from('artifact-images') // ตัวพิมพ์เล็กทั้งหมดตามรูป
-                .upload(fileName, imageFile, {
-                    contentType: imageFile.type,
+                .upload(fileName, image_file, {
+                    contentType: image_file.type,
                     upsert: false
                 });
 
@@ -78,7 +86,8 @@ export const POST = async (req: Request) => {
             .from('Artifacts')
             .insert({
                 title, art_style, material, location_found, era, category,
-                current_location, description, image_file: finalImageUrl
+                current_location, description, image_file: finalImageUrl,
+                lat, lng
             })
             .select();
         // Check Error จาก Supabase

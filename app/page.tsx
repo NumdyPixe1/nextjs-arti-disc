@@ -2,7 +2,7 @@
 
 import { ArtifactsList } from "./components/artifactsList";
 import { useEffect, useState } from "react";
-import { SearchBar } from "./components/searchBar";
+import { SearchBar } from "./components/search/searchBar";
 import { NavBar } from "./components/NavBar";
 import { useRef } from "react";
 export default function HomePage() {
