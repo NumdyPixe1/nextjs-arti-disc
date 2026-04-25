@@ -1,4 +1,4 @@
-// *** แปลงคำค้นหาเป็น Vector ***
+// *** แปลงคำค้นหาเป็น Vector (512)***
 "use server"
 import { pipeline, RawImage } from "@xenova/transformers";
 import { createClient } from "@/lib/supabase/supabaseClient";
@@ -12,13 +12,14 @@ export const searchByImageAction = async (formData: FormData) => {
         if (!file || file.size === 0) throw new Error("No file uploaded");
 
         // 2. โหลด Model (แนะนำให้ประกาศไว้ข้างนอกหรือใช้ Singleton ถ้าทำได้)
-        const visionModel = await pipeline('image-feature-extraction', 'Xenova/mobilenetv3-small-100');
+        const visionModel = await pipeline('image-feature-extraction', 'Xenova/clip-vit-base-patch32');
 
         // 3. แปลงภาพเป็น Vector
         const buffer = Buffer.from(await file.arrayBuffer());
         const image = await RawImage.fromBlob(new Blob([buffer]));
         const output = await visionModel(image);
         const imageVector = Array.from(output.data);
+        // console.log("Vector Length:", imageVector.length);
 
         // 4. ค้นหาใน Supabase
         const { data, error } = await (supabase as any).rpc('match_artifacts', {

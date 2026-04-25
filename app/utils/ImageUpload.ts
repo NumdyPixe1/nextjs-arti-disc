@@ -1,5 +1,4 @@
-
-const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>,
+export const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>,
     onFileProcessed: (file: File | null, previewUrl: string | null) => void) => {
     const file = e.target.files?.[0] || null;
 

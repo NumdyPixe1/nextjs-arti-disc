@@ -3,6 +3,7 @@ import { InputField } from "@/app/(views)/staff/artifacts/InputField";
 import { ArtifactsForm } from "@/@types/artifact";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
+import { handleImageUpload } from '@/app/utils/ImageUpload';
 
 interface Props {
     initialData?: ArtifactsForm | null;

@@ -7,7 +7,7 @@ import { ImageSearchModal } from "./ImageSearchModal";
 import { Artifact } from "@/@types/artifact";
 
 export interface ImageFile {
-    imageFile: File | null;
+    image_file: File | null;
 }
 
 interface Props {
@@ -25,14 +25,12 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
     // 
     const [word, setWord] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [itemName, setItemName] = useState<string>("");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
     const clearForm = () => {
-        setItemName("");
         setWord("");
         setIsModalOpen(false);
-        setSelectedFile(null);
     }
+
     // ค้นหาด้วยข้อความ
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,9 +41,9 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
 
     // ค้นหาด้วยภาพ โดย รับค่าจาก ImageSearchModal.tsx
     const handleImageSubmit = (data: ImageFile) => {
-        if (!data.imageFile) return;
+        if (!data.image_file) return;
         // ส่งก้อน File ไปที่ handleSearch
-        handleSearch(data.imageFile);
+        handleSearch(data.image_file);
         clearForm();
     }
 
@@ -149,10 +147,6 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                 isOpen={isModalOpen}
                 onClose={() => { setIsModalOpen(false); }}
                 onSubmit={handleImageSubmit}
-            // previewUrl={previewUrl}
-            // onFileChange={handleFileChange}
-            // itemName={itemName}
-            // onConfirm={handleImageSubmit}
             />
         </>
     );
