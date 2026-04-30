@@ -81,7 +81,8 @@ export const ImageSearchModal = ({ isOpen, onClose, onSubmit }: Props) => {
 
                     <div className="mt-4">
                         <label htmlFor="imageFile" className="cursor-pointer">
-                            <span className="mt-2 block text-sm font-medium text-gray-900">{fileName || "Upload an image"}</span>
+                            <span className="mt-2 block text-sm font-medium text-gray-900">{
+                                fileName ? (fileName) : ("Upload an image")}</span>
                         </label>
                         <input
                             accept="image/*"
