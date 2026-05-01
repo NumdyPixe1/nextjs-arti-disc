@@ -10,4 +10,5 @@ export const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>,
     const objectUrl = URL.createObjectURL(file);
     // ส่งค่ากลับผ่าน callback แทนการเรียก setPreviewUrl ตรงๆ (ถ้าไม่มี state ในนี้)
     onFileProcessed(file, objectUrl);
+    console.log("Selected file:", file);
 }

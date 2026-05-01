@@ -32,7 +32,7 @@ export default function HomePage() {
   }, [results, loading]);
 
   return (
-    <main className="min-h-screen bg-[#F0EEEB]" >
+    <main className="min-h-screen bg-[#f8f4e8]" >
 
       <NavBar />
 

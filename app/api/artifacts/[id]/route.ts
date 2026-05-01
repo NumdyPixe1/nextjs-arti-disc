@@ -30,11 +30,11 @@ export const PUT = async (req: Request, { params }: RouteContext) => {
     const { id } = await params;
     try {
         const formData = await req.formData();
-
         // 1. ดึงข้อมูลพื้นฐาน
         const updateData: any = {
             title: formData.get("title"),
             art_style: formData.get("art_style"),
+
             material: formData.get("material"),
             location_found: formData.get("location_found"),
             current_location: formData.get("current_location"),
@@ -45,17 +45,19 @@ export const PUT = async (req: Request, { params }: RouteContext) => {
             lng: formData.get("lng"),
 
         };
-        // 2. จัดการรูปภาพ (ถ้ามีการส่งไฟล์ใหม่มา)
-        const imageFile = formData.get("image_file") as File;
 
-        if (imageFile) {
-            const fileExt = imageFile.name.split('.').pop();
+        // 2. จัดการรูปภาพ (ถ้ามีการส่งไฟล์ใหม่มา)
+        const image_file = formData.get("image_file") as File;
+        console.log("Received image file:", image_file);
+
+        if (image_file) {
+            const fileExt = image_file.name.split('.').pop();
             const fileName = `${Date.now()}.${fileExt}`;
 
             // อัปโหลดขึ้น Storage 'artifact-images'
             const { error: uploadError } = await supabase.storage
                 .from('artifact-images')
-                .upload(fileName, imageFile);
+                .upload(fileName, image_file);
 
             if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
 

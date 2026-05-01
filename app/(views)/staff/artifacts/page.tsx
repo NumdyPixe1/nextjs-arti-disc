@@ -55,25 +55,29 @@ export default function ManagerArtifactsPage() {
 
         try {
             setLoadingTable(true);
-            const textResult = await embeddingAction.textEmbeddingAction();
-            const imageResult = await embeddingAction.imageEmbeddingAction();
-            if (textResult?.success && imageResult?.success) {
+            const [textResult, imageResult] = await Promise.all([
+                embeddingAction.textEmbeddingAction(), embeddingAction.imageEmbeddingAction()]);
+            const textOk = textResult?.success;
+            const imageOk = imageResult?.success;
+
+            if (textOk && imageOk) {
                 setMessageType("success");
-                setMessage("Both text and image embeddings were successful.");
+                setMessage("สำเร็จทั้งคู่: ดึงข้อมูลอัตลักษณ์ภาพและข้อความเรียบร้อย");
             }
-            else if (imageResult?.success && !textResult?.success) {
-                // เคสที่คุณเจอ: Image ได้ แต่ Text แตก
-                setMessageType("info");
-                setMessage(`Image embedding succeeded, but text embedding failed: ${textResult?.message || 'Unknown Error'}`);
-            }
-            else if (textResult?.success && !imageResult?.success) {
-                setMessageType("info");
-                setMessage(`Text embedding succeeded, but image embedding failed: ${imageResult?.message || 'Unknown Error'}`);
+            else if (!textOk && !imageOk) {
+                // กรณีล้มเหลวทั้งคู่ หรือไม่มีข้อมูลใหม่ทั้งคู่
+                setMessageType("error");
+                setMessage(textResult?.message || imageResult?.message || "No artifacts found without embeddings.");
             }
             else {
+                // กรณีที่มีอันใดอันหนึ่งผ่าน (Partial Success)
                 setMessageType("info");
-                setMessage("There are no new images or texts to embed at this time.");
-            } console.log("Embedding Results:", { textResult, imageResult });
+                const textStatus = textOk ? "Text สำเร็จ" : `Text ล้มเหลว (${textResult?.message})`;
+                const imageStatus = imageOk ? "Image สำเร็จ" : `Image ล้มเหลว (${imageResult?.message})`;
+                setMessage(`${textStatus} และ ${imageStatus}`);
+            }
+
+            console.log("Embedding Results:", { textResult, imageResult });
 
         } catch (error) {
             setMessageType('error');
@@ -103,6 +107,8 @@ export default function ManagerArtifactsPage() {
             image_file: item.image_file || null
         }
         setSelectedArtifactData(formData);
+        console.log("Before Edit:", formData);
+
         setIsEditModalOpen(true);
     }
 
@@ -112,6 +118,8 @@ export default function ManagerArtifactsPage() {
         setLoadingSave(true);
         try {
             const formData = convertToFormData(data);
+            console.log("After edit:", data);
+
             const response = await artifactAction.editArtifact(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
             const updatedItem = response.data[0];

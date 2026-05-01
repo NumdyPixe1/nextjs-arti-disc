@@ -14,7 +14,7 @@ interface Props {
 export const ImageSearchModal = ({ isOpen, onClose, onSubmit }: Props) => {
     const { handleSubmit, reset, setValue } = useForm<ArtifactsForm>();
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [fileName, setFileName] = useState<string>("");
+    const [imageFileName, setImageFileName] = useState<string>("");
     const [mounted, setMounted] = useState(false);
 
     // เช็คว่า Component โหลดที่ Browser หรือยัง
@@ -31,7 +31,7 @@ export const ImageSearchModal = ({ isOpen, onClose, onSubmit }: Props) => {
         reset();
         onClose();
         setPreviewUrl(null);
-        setFileName("");
+        setImageFileName("");
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +42,7 @@ export const ImageSearchModal = ({ isOpen, onClose, onSubmit }: Props) => {
                 }
 
                 setPreviewUrl(url);
-                setFileName(file.name);
+                setImageFileName(file?.name ?? "");
                 // อัปเดตค่าใน react-hook-form เพื่อเตรียมส่งไป API
                 setValue("image_file", file);
                 console.log("Image File", file);
@@ -82,7 +82,7 @@ export const ImageSearchModal = ({ isOpen, onClose, onSubmit }: Props) => {
                     <div className="mt-4">
                         <label htmlFor="imageFile" className="cursor-pointer">
                             <span className="mt-2 block text-sm font-medium text-gray-900">{
-                                fileName ? (fileName) : ("Upload an image")}</span>
+                                imageFileName ? (imageFileName) : ("No image selected")}</span>
                         </label>
                         <input
                             accept="image/*"

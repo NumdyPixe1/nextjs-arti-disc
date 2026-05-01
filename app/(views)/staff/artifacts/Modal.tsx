@@ -16,7 +16,6 @@ interface Props {
 
 export const EditModal = ({ initialData, isLoading, isOpen, onClose, onSubmit,
 }: Props) => {
-
     const handleClose = () => {
         onClose();
     };

@@ -6,7 +6,7 @@ export const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <nav className=" top-0 z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-lg backdrop-saturate-150">
+        <nav className=" top-0 z-40 w-full border-b border-slate-200 bg-[#f8f4e8] backdrop-blur-lg backdrop-saturate-150">
             <div className="max-w-7xl mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo & Brand */}

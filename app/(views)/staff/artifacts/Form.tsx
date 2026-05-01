@@ -1,9 +1,7 @@
 import { useForm } from "react-hook-form";
 import { InputField } from "@/app/(views)/staff/artifacts/InputField";
 import { ArtifactsForm } from "@/@types/artifact";
-import { useEffect, useState } from "react";
 import { LoadingSpinner } from "../../../components/LoadingSpinner";
-import { handleImageUpload } from '@/app/utils/ImageUpload';
 
 interface Props {
     initialData?: ArtifactsForm | null;
@@ -12,27 +10,7 @@ interface Props {
 }
 
 export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const { register, handleSubmit, setValue } = useForm<ArtifactsForm>({ defaultValues: initialData || {} });
-
-    const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleImageUpload(e, (file, url) => {
-            setPreviewUrl(url);
-            setValue("image_file", file);
-        });
-    }
-
-    useEffect(() => {
-        return () => {
-            if (previewUrl) {
-                // Memory Cleanup
-                URL.revokeObjectURL(previewUrl);
-                console.log("Cleaned up proxy URL");
-            }
-        }
-    }, [previewUrl]);
-
-
+    const { register, handleSubmit } = useForm<ArtifactsForm>({ defaultValues: initialData || {} });
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <InputField
@@ -93,14 +71,17 @@ export const ArtifactForm = ({ isLoading, initialData, onSubmit }: Props) => {
                 type="text"
                 id="material"
             />
-            <InputField
-                {...register("image_file")}
-                label="Image"
-                type="file"
-                id="image"
-                accept="image/*"
-                onChange={onFileChange}
-            />
+            <div className="md:col-span-2">
+                <InputField
+                    {...register("image_file")}
+                    label="Image"
+                    id="artifactImage"
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    isImageField={true}
+                />
+            </div>
 
             <div className="grid gap-2 md:col-span-2">
                 <InputField

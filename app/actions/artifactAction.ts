@@ -100,10 +100,10 @@ export const artifactAction = {
                     body: formData
                 }
             );
-            if (!response.ok) {
+
+            if (!response.ok)
                 throw new Error(`Failed to update artifact: ${response.status}`);
-            }
-            return response.json();
+            return await response.json();
         }
         catch (error: any) {
             console.error('Failed to update artifact:', error);
@@ -123,13 +123,5 @@ export const artifactAction = {
             console.error('Failed to delete artifact:', error);
         }
     }
-
-
-
-
-
-
-
-
 
 }

@@ -95,7 +95,7 @@ export const POST = async (req: Request) => {
             console.error("Supabase Error:", error);
             return NextResponse.json({ error: error.message }, { status: 500 });
         }
-        return NextResponse.json({ message: "Add artifact successfully", data }, { status: 201 });
+        return NextResponse.json({ success: true, message: "Add artifact successfully", data }, { status: 201 });
     }
     catch (error: any) {
         console.error("Supabase Error:", error);
