@@ -4,7 +4,7 @@ export const SimilarityBar = (similarity: { similarity: number }) => {
     const displayPercent = silmilarityScore(similarity.similarity);
     const { color } = getSimilarityColor(parseInt(displayPercent));
 
-    console.log("SimilarityBar similarity:", similarity.similarity, "displayPercent:", displayPercent, "color:", color);
+    // console.log("SimilarityBar similarity:", similarity.similarity, "displayPercent:", displayPercent, "color:", color);
     return (
         <div className="flex flex-row items-center gap-4 mt-2   rounded-xl border border-slate-200 bg-[#fffdf6]  px-2 py-1 shadow-lg backdrop-blur-sm backdrop-saturate-150">
             <p className="text-sm font-medium text-slate-700">แม่นยำ</p>

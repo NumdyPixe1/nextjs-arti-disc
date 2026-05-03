@@ -3,7 +3,7 @@
 import { ArtifactsList } from "./components/artifactsList";
 import { useEffect, useState } from "react";
 import { SearchBar } from "./components/search/searchBar";
-import { NavBar } from "./components/NavBar";
+import { NavBar } from "./components/nav/NavBar";
 import { useRef } from "react";
 export default function HomePage() {
 
@@ -35,8 +35,14 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#f8f4e8]" >
 
       <NavBar />
+      {/* Section 1: Visual Search Focus */}
+      <section className=" h-screen w-full snap-start flex items-center  justify-center">
+        <div className="flex flex-col text-center">
+          <h1 className="text-[#1A1A1A] mb-80 sm:mb-80 md:mb-60 text-4xl  md:text-5xl  font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
+        </div>
+      </section>
 
-      <div className="fixed inset-0 z-50 pointer-events-none flex flex-col items-center justify-center ">
+      <div className="fixed inset-x-0 top-1/2 z-50 pointer-events-none flex items-center justify-center px-4 sm:px-6 -translate-y-1/2">
         <SearchBar
           onResults={(data) => { setResults(data) }}
           loading={loading}
@@ -44,14 +50,8 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Section 1: Visual Search Focus */}
-      <section className="h-screen w-full snap-start flex items-center  justify-center">
-        <div className="flex flex-col ">
-          <h1 className="text-[#1A1A1A] mb-60 text-5xl font-bold">ระบบสืบค้นฐานข้อมูลโบราณวัตถุ</h1>
-        </div>
-      </section>
-
       {/* Section 2: ผลลัพธ์ (ใช้ Artifacts ตัวเดียวจบ) */}
+
       <section className="w-full max-w-7xl mx-auto px-4 py-10" ref={resultsSectionRef}>
         {/* {results.length > 0 ? (<h1 className="text-[#1A1A1A] mb-6 text-2xl font-bold">ผลลัพธ์การค้นหา: {results.length} รายการ</h1>) : null} */}
         {/* ส่ง results เข้าไป ถ้าว่างมันจะโหลดหน้าแรกเอง ถ้ามีมันจะโชว์ผลการค้นหา */}

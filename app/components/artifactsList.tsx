@@ -4,8 +4,8 @@
 "use client"
 import { useEffect, useCallback, useRef, useState } from "react";
 import { artifactAction } from "../actions/artifactAction";
-import { Loading } from "./loading";
 import { Card } from "./card";
+import { SkeletonLoader } from "./SkeletonLoader";
 interface Props {
     // รับคำค้นหา จาก Home page
     query?: any[];
@@ -16,7 +16,6 @@ export const ArtifactsList = ({ query }: Props) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const loaderRef = useRef<HTMLDivElement | null>(null);
     const isFetchingRef = useRef(false);
 
@@ -99,31 +98,40 @@ export const ArtifactsList = ({ query }: Props) => {
         };
     }, [loadMoreArtifacts, loading, hasMore, query]);
 
-    const displayData = query && query.length > 0 ? query : getArtifacts;
-
+    // มีการค้นหา : แสดงข้อมูลทั้งหมดถ้าไม่มีการค้นหา
+    const displayData = query && query.length > 0
+        ? query.filter(item => (item.similarity * 100) >= 50)
+        : getArtifacts;
     return (
         <div className="flex flex-col items-center w-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                {displayData.map((item) => (
-                    <Card key={item.id} data={item ?? "ไม่ระบุ"} href={`/artifacts/${item.id}`} />
-                ))}
-            </div>
-
-            {error && (
-                <div className="py-4 text-red-600 font-medium">{error}</div>
+            {displayData.length === 0 ? (
+                loading ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
+                        {[...Array(4)].map((_, index) => (
+                            <SkeletonLoader key={index} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="py-20 text-center text-slate-500">
+                        <p className="text-lg font-medium">ไม่พบโบราณวัตถุที่ใกล้เคียงเพียงพอ</p>
+                        <p className="text-sm">กรุณาลองใช้ภาพอื่นที่มีความชัดเจนมากขึ้น</p>
+                    </div>
+                )
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                    {displayData.map((item) => (
+                        <Card key={item.id} data={item ?? "ไม่ระบุ"} href={`/artifacts/${item.id}`} />
+                    ))}
+                </div>
             )}
 
             {!(query && query.length > 0) && (
                 <div ref={loaderRef} className="py-20 text-center">
                     {loading ? (
-                        <Loading />
+                        <p className="text-slate-500">กำลังโหลดข้อมูลเพิ่มเติม...</p>
                     ) : hasMore ? (
                         <p className="text-slate-500">สิ้นสุดการแสดงข้อมูล</p>
-                    ) : getArtifacts.length > 0 ? (
-                        <p className="text-slate-400 font-bold">สิ้นสุดการแสดงข้อมูล</p>
-                    ) : (
-                        <p className="text-slate-500">ไม่พบข้อมูล</p>
-                    )}
+                    ) : (null)}
                 </div>
             )}
         </div>

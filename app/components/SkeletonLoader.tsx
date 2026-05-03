@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export const Skeleton = () => {
+export const SkeletonLoader = () => {
     return (
         <motion.div
             initial={{ opacity: 0.7, scale: 0.98 }}

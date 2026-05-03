@@ -22,6 +22,7 @@ export const searchByImageAction = async (formData: FormData) => {
         // console.log("Vector Length:", imageVector.length);
 
         // 4. ค้นหาใน Supabase
+        //เมื่อคุณเรียกใช้ฟังก์ชัน match_artifacts ผ่าน RPC ตัวฐานข้อมูลจะนำ imageVector ไปเปรียบเทียบกับภาพทุุกใบในคลังข้อมูล โดยใช้หลักการที่เรียกว่า Cosine Similarity
         const { data, error } = await (supabase as any).rpc('match_artifacts', {
             query_embedding: imageVector,
             match_threshold: 0.1,

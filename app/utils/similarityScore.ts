@@ -1,11 +1,9 @@
 export const silmilarityScore = (similarity: number) => {
     // .toFixed(2): จะทำการ "ปัดเศษตามหลักคณิตศาสตร์" และรักษาทศนิยมไว้
     // ถ้าได้ 0.9999 มันจะแสดงเป็น 100.00% หรือถ้าได้ 0.9556 จะแสดงเป็น 95.56%
-    const percent = similarity * 100;
-    return percent.toFixed(2) + "%";
+    const percent = (similarity * 100).toFixed(2);
+    return percent + "%";
     // const percent = Math.floor(similarity * 100);
-    // return `${percent}%`;
-
 }
 
 export const getSimilarityColor = (percent: number) => {

@@ -59,7 +59,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                 const formData = new FormData();
                 formData.append('image_file', query);
                 response = await searchByImageAction(formData);
-                console.log("Image Response:", response);
+                // console.log("Image Response:", response);
             }
             if (response && response.results) {
                 onResults(response.results || []); // ส่งผลลัพธ์กลับไปที่ Parent Component
@@ -79,27 +79,27 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
         <>
             <motion.div
                 style={{ y: smoothY }}
-                className="pointer-events-auto sticky group max-w-2xl mx-auto w-full px-4 flex gap-2"
+                className="pointer-events-auto sticky group max-w-2xl mx-auto w-full px-4 flex flex-col sm:flex-row gap-2"
             >
-                <form onSubmit={handleSubmit} className="flex flex-1">
-                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-green-600">
-                        <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                <form onSubmit={handleSubmit} className="flex flex-1 flex-col sm:flex-row gap-2 items-stretch">
+                    <div className="relative flex-1">
+                        <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-green-600 pointer-events-none">
+                            <svg className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="ค้นหา..."
+                            className="w-full h-14 min-w-0 pl-12 sm:pl-16 pr-6 rounded-xl bg-white text-gray-900 text-lg focus:outline-none transition shadow-2xl border border-gray-100"
+                            value={word}
+                            onChange={(e) => setWord(e.target.value)}
+                        />
                     </div>
-                    <input
-                        type="text"
-                        placeholder="ค้นหา..."
-                        className="flex-1 h-14 pl-16 pr-6 rounded-xl bg-white text-gray-900 text-xl focus:outline-none transition shadow-2xl border border-gray-100"
-                        value={word}
-                        onChange={(e) => setWord(e.target.value)}
-                    />
                     <button
                         type="submit"
                         disabled={loading}
-                        className="cursor-pointer bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600
-                     hover:to-blue-700 text-white px-6 py-2 rounded-xl ml-2 h-14 font-medium 
-                     transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2">
+                        className="w-full sm:w-auto cursor-pointer bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 sm:px-6 py-3 sm:py-2 rounded-xl sm:ml-2 h-12 sm:h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center gap-2">
                         {loading ? (
                             <>
                                 <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
@@ -122,9 +122,7 @@ export const SearchBar = ({ onResults, setLoading, loading }: Props) => {
                 <button type="button"
                     disabled={loading}
                     onClick={() => setIsModalOpen(true)}
-                    className="cursor-pointer bg-linear-to-r from-green-500 
-                to-green-600 hover:from-green-600 hover:to-green-700 text-white
-                 px-4 py-2 rounded-xl ml-2 h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center">
+                    className="w-full sm:w-auto cursor-pointer bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 sm:px-5 py-3 sm:py-2 rounded-xl sm:ml-2 h-12 sm:h-14 font-medium transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg flex items-center justify-center">
                     {loading ? (
                         <>
                             <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
