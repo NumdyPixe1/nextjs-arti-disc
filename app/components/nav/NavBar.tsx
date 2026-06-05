@@ -11,7 +11,7 @@ export const NavBar = () => {
             <div className="max-w-7xl mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo & Brand */}
-                    <Link href={PATHS.HOME} className="flex items-center gap-3 group">
+                    {/* <Link href={PATHS.HOME} className="flex items-center gap-3 group">
                         <div className="relative h-10 w-10 rounded-lg bg-linear-to-br from-blue-500 to-sky-500 flex items-center justify-center group-hover:shadow-lg transition-shadow">
                             <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -23,7 +23,7 @@ export const NavBar = () => {
                             </span>
                             <span className="text-xs text-slate-500 hidden sm:block">Discovery</span>
                         </div>
-                    </Link>
+                    </Link> */}
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-8">
