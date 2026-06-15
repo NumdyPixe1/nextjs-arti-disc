@@ -73,3 +73,46 @@ export const searchAction = async (query: string) => {
         return { error: error.message };
     }
 }
+
+/*
+function L2Normalize(vector: number[]): number[] {
+    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+    if (norm === 0) return vector;
+    return vector.map(val => val / norm);
+}
+
+export const searchAction = async (query: string) => {
+    try {
+        if (!query) return { error: "กรุณาใส่คำค้นหา" };
+
+        // เปลี่ยนมาใช้โมเดล Multilingual เพื่อให้รองรับภาษาไทยได้แม่นยำขึ้น
+        const model_id = 'Xenova/clip-vit-base-patch32';
+        const tokenizer = await AutoTokenizer.from_pretrained(model_id);
+        const text_model = await CLIPTextModelWithProjection.from_pretrained(model_id);
+
+        const text_inputs = await tokenizer(query, {
+            padding: true,
+            truncation: true
+        });
+
+        const { text_embeds } = await text_model(text_inputs);
+
+        // 🌟 จุดที่นำมาใช้: ฟอกค่า Raw เวกเตอร์ก่อนส่งไปค้นหา
+        const rawVector = Array.from(text_embeds.data) as number[]; // แปลงเป็น number[] เพื่อความชัดเจน
+        const vector = L2Normalize(rawVector); // <--- เรียกใช้ตรงนี้
+
+        // 5. เรียกใช้ RPC Function ใน Supabase
+        const { data, error } = await (supabase as any).rpc('match_artifacts', {
+            query_embedding: vector, // ส่งเวกเตอร์ที่ผ่านการ Normalize แล้วไปคิวรี
+            match_threshold: 0.1,
+            match_count: null,
+            current_id: 0,
+            search_type: 'text'
+        });
+
+        return { results: data };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}
+*/

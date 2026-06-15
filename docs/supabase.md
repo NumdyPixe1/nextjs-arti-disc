@@ -2,7 +2,7 @@
 <!--   -->
  ALTER SEQUENCE "Artifacts_id_seq" RESTART WITH 9;
  
-<!-- ** Create Function ** -->
+<!-- ** Create Function match_artifacts 3072 GEMINI and 512 CLIP ** -->
 CREATE OR REPLACE FUNCTION match_artifacts (
   query_embedding vector,    -- รองรับทั้ง 3072 (Text) และ 512 (Image)
   match_threshold float,
@@ -57,6 +57,65 @@ BEGIN
       END > match_threshold
     )
   ORDER BY 10 DESC 
+  LIMIT match_count;
+END;
+$$;
+
+% ** Create Function match_artifacts 512 CLIP **
+CREATE OR REPLACE FUNCTION match_artifacts (
+  query_embedding vector,    -- ตอนนี้จะรองรับ 512 มิติ ทั้ง Text และ Image
+  match_threshold float,
+  match_count int,
+  current_id bigint,         -- ใช้ bigint ตามโครงสร้างเดิมของคุณ
+  search_type text DEFAULT 'text'
+)
+RETURNS TABLE (
+  id bigint,                 -- ใช้ bigint ตามโครงสร้างเดิมของคุณ
+  title text,
+  description text,
+  image_file text,
+  location_found text,
+  art_style text,
+  current_location text,
+  era text,
+  category text,
+  similarity float 
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    "Artifacts".id,
+    "Artifacts".title,
+    "Artifacts".description,
+    "Artifacts".image_file,
+    "Artifacts".location_found,
+    "Artifacts".art_style,
+    "Artifacts".current_location,
+    "Artifacts".era,
+    "Artifacts".category,
+    (CASE 
+      -- แก้ไข: ปรับเป็น 512 มิติ ทั้งกรณีค้นหาด้วยภาพและข้อความ
+      WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding::vector(512))
+      ELSE 1 - ("Artifacts".embedding <=> query_embedding::vector(512))
+    END)::float AS similarity
+  FROM "Artifacts"
+  WHERE 
+    "Artifacts".id != current_id 
+    AND (
+      -- แก้ไข: เปลี่ยนเงื่อนไขการตรวจเช็กมิติข้อมูล (vector_dims) ให้เป็น 512 ทั้งคู่
+      (search_type = 'image' AND "Artifacts".image_embedding IS NOT NULL AND vector_dims(query_embedding) = 512) OR
+      (search_type = 'text' AND "Artifacts".embedding IS NOT NULL AND vector_dims(query_embedding) = 512)
+    )
+    AND (
+      -- แก้ไข: ปรับการคัดกรองค่าความคล้ายคลึง (Threshold) ให้แมปกับเวกเตอร์ 512 มิติ
+      CASE 
+        WHEN search_type = 'image' THEN 1 - ("Artifacts".image_embedding <=> query_embedding::vector(512))
+        ELSE 1 - ("Artifacts".embedding <=> query_embedding::vector(512))
+      END > match_threshold
+    )
+  ORDER BY similarity DESC -- เปลี่ยนจากเลข 10 มาใช้ชื่อคอลัมน์เพื่อความชัดเจนในการทำงาน
   LIMIT match_count;
 END;
 $$;

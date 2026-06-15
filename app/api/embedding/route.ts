@@ -60,3 +60,53 @@ export const POST = async () => {
     }
 
 }
+
+/*
+import { AutoTokenizer, CLIPTextModelWithProjection } from '@xenova/transformers';
+
+// 🌟 วางฟังก์ชัน L2Normalize ไว้ด้านบนสุดของไฟล์ (นอก export)
+function L2Normalize(vector: number[]): number[] {
+    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+    if (norm === 0) return vector;
+    return vector.map(val => val / norm);
+}
+
+export const POST = async () => {
+    try {
+        // เปลี่ยนมาใช้โมเดล Multilingual เพื่อความแม่นยำภาษาไทย
+        const model_id = 'Xenova/clip-vit-base-patch32';
+        const tokenizer = await AutoTokenizer.from_pretrained(model_id);
+        const text_model = await CLIPTextModelWithProjection.from_pretrained(model_id);
+
+        const { data: artifacts } = await supabase
+            .from('Artifacts')
+            .select('*')
+            .is('embedding', null);
+
+        if (artifacts && artifacts.length > 0) {
+            for (const item of artifacts) {
+                const textToEmbed = `Era: ${item.era} Category: ${item.category} Art Style: ${item.art_style} Title: ${item.title} Description: ${item.description}`.trim();
+
+                const text_inputs = await tokenizer(textToEmbed, { padding: true, truncation: true });
+                const { text_embeds } = await text_model(text_inputs);
+
+                // 🌟 จุดที่นำมาใช้: ฟอกค่าเวกเตอร์ของข้อมูลโบราณวัตถุแต่ละชิ้น
+                const rawVector = Array.from(text_embeds.data) as number[];
+                const vectorArray = L2Normalize(rawVector); // <--- เรียกใช้ตรงนี้
+
+                // 4. บันทึกลง Supabase
+                await supabase
+                    .from('Artifacts')
+                    .update({
+                        // นำเวกเตอร์ที่ถูก Normalize เรียบร้อยแล้วไปแปลงเป็นสตริงอัปเดตลงตาราง
+                        embedding: `[${vectorArray.join(',')}]` as any
+                    })
+                    .eq('id', item.id);
+            }
+        }
+        return NextResponse.json({ message: "Embedded successfully." });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+*/
