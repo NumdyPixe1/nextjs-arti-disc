@@ -2,24 +2,33 @@
 // Full View
 "use client";
 import { LoadingSpinner } from '@/app/components/LoadingSpinner';
-import { AddModal, DeleteModal, EditModal } from '@/app/(views)/staff/artifacts/Modal';
-import { artifactAction } from '@/app/actions/artifactAction';
+import { AddModal, DeleteModal, EditModal } from '@/app/(views)/dashboard/artifacts/Modal';
+import { getAllArtifactsStaff, addArtifact as addArtifactAction, editArtifact as editArtifactAction, deleteArtifact as deleteArtifactAction } from '@/app/actions/artifactAction';
 import { useState, useEffect } from 'react';
 import { Alert } from '@/app/components/Alert';
 import { embeddingAction } from '@/app/actions/embeddingAction';
 import Link from 'next/link';
 import { convertToFormData } from '@/app/utils/convertToFormData';
 import { ArtifactsForm } from '@/@types/artifact';
+import { Pagination } from '@/app/components/Pagination';
 
 export default function ManagerArtifactsPage() {
     const [query, setQuery] = useState('');
     const [deleteArtifact, setDeleteArtifact] = useState<number | null>(null);
     const [editArtifact, setEditArtifact] = useState<number | null>(null);
     const [getArtifacts, setGetArtifacts] = useState<any[]>([]);
-    const fillteredArtifacts = getArtifacts.filter(item =>
-        item.title?.toLowerCase().includes(query.toLowerCase()) || item.art_style?.toLowerCase().includes(query.toLowerCase()) ||
-        item.material?.toLowerCase().includes(query.toLowerCase()) || item.id?.toString().includes(query)
-    )
+    const fillteredArtifacts = getArtifacts
+        .filter(item =>
+            item.title?.toLowerCase().includes(query.toLowerCase()) || item.art_style?.toLowerCase().includes(query.toLowerCase()) ||
+            item.material?.toLowerCase().includes(query.toLowerCase()) || item.id?.toString().includes(query)
+        ).sort((a, b) => Number(b.id) - Number(a.id));
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // กำหนดจำนวนชิ้นต่อหน้า (เช่น 10 ชิ้น)
+    const totalPages = Math.ceil(fillteredArtifacts.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = fillteredArtifacts.slice(indexOfFirstItem, indexOfLastItem);
     //Modal
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -36,7 +45,7 @@ export default function ManagerArtifactsPage() {
         const loadArtifacts = async () => {
             setLoadingTable(true);
             try {
-                const data = await artifactAction.getAllArtifactsStaff();
+                const data = await getAllArtifactsStaff();
                 setGetArtifacts(data);
             } catch (error) {
                 console.error('Failed to load artifacts:', error);
@@ -120,7 +129,7 @@ export default function ManagerArtifactsPage() {
             const formData = convertToFormData(data);
             console.log("After edit:", data);
 
-            const response = await artifactAction.editArtifact(editArtifact, formData);
+            const response = await editArtifactAction(editArtifact, formData);
             // หยิบ item มาไล่ดูทีละชื้นว่าตรงกับ id ที่ต้องการไหม ถ้าตรงก็ทับข้อมูลใหม่ไปเลย : ไม่ตรงก็คืนค่าเดิมกลับไป
             const updatedItem = response.data[0];
             setGetArtifacts(prev => prev.map(item =>
@@ -155,7 +164,7 @@ export default function ManagerArtifactsPage() {
         console.log("Starting delete for ID:", deleteArtifact); // เช็กว่า ID มาไหม
         if (deleteArtifact !== null) {
             try {
-                await artifactAction.deleteArtifact(deleteArtifact);
+                await deleteArtifactAction(deleteArtifact);
                 // อัปเดต UI หลังลบสำเร็จ
                 setGetArtifacts(prev => prev.filter(item => item.id !== deleteArtifact))
                 setIsDeleteModalOpen(false);
@@ -176,10 +185,10 @@ export default function ManagerArtifactsPage() {
         setLoadingAdd(true);
         try {
             const formData = convertToFormData(data);
-            await artifactAction.addArtifact(formData);
+            await addArtifactAction(formData);
             setMessageType('success');
             setMessage('Artifact added successfully!');
-            const updatedDataList = await artifactAction.getAllArtifactsStaff();
+            const updatedDataList = await getAllArtifactsStaff();
             setGetArtifacts(updatedDataList);
         } catch (error) {
             setMessageType('error');
@@ -191,10 +200,9 @@ export default function ManagerArtifactsPage() {
     }
 
     return (
-        <main className="flex flex-col gap-10 min-h-screen bg-linear-to-br from-slate-50 to-sky-100 p-6">
-            {/* Back Button */}
+        <main className="flex min-h-screen w-full flex-col gap-8 bg-linear-to-br from-slate-50 to-sky-100 p-4 sm:p-8">            {/* Back Button */}
             <div className="flex items-center justify-start">
-                <Link href="/staff"
+                <Link href="/dashboard"
                     className="cursor-pointer inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md"                >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -239,7 +247,7 @@ export default function ManagerArtifactsPage() {
             }
 
             {/* ################## Artifacts Table ################## */}
-            <section className=" mx-auto w-full max-w-8xl rounded-3xl border border-slate-200 bg-white/90 p-8 shadow-lg backdrop-blur-sm">
+            <section className="    rounded-3xl border border-slate-200 bg-white/90 p-8  ">
                 <header className="mb-5">
                     <h2 className="text-2xl font-bold text-slate-900">Artifacts Table</h2>
                     <p className="text-sm text-slate-500">List of artifacts from the database.</p>
@@ -281,9 +289,9 @@ export default function ManagerArtifactsPage() {
                                 </thead>
                                 <tbody>
                                     {/* ข้อมูลที่ค้นหาเจอ */}
-                                    {fillteredArtifacts.map((item, index) => (
-                                        <tr key={item.id || index} className="hover:bg-slate-50">
-                                            <td className="px-4 py-2 border border-slate-200">{item.updated_at ? new Date(item.updated_at).toLocaleString() : '-'}</td>
+                                    {currentItems.map((item, index) => (
+                                        <tr key={item.id || index} className=" hover:bg-slate-50">
+                                            <td className=" px-4 py-2 border border-slate-200">{item.updated_at ? new Date(item.updated_at).toLocaleString() : '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.id || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.title || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.era || '-'}</td>
@@ -291,22 +299,32 @@ export default function ManagerArtifactsPage() {
                                             <td className="px-4 py-2 border border-slate-200">{item.location_found || '-'}</td>
                                             <td className="px-4 py-2 border border-slate-200">{item.current_location || '-'}</td>
                                             {/* <td className="px-4 py-2 border border-slate-200 max-w-xs truncate">{item.description || '-'}</td> */}
-                                            <td className=" justify-center gap-4 flex px-4 py-2 border border-slate-200">
-                                                <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
-                                                    onClick={(e) => openEditModal(item, e)}>
-                                                    Edit
-                                                </button>
-                                                <button className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"
-                                                    onClick={(e) => openRemoveModal(item.id, e)}>
-                                                    Delete
-                                                </button>
+                                            <td className="px-4 py-3 border border-slate-200 text-center whitespace-nowrap">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button className="cursor-pointer rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
+                                                        onClick={(e) => openEditModal(item, e)}>
+                                                        Edit
+                                                    </button>
+                                                    <button className="cursor-pointer rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white hover:bg-red-700"
+                                                        onClick={(e) => openRemoveModal(item.id, e)}>
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+
                         )}
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={fillteredArtifacts.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
             </section>
         </main >
     );

@@ -28,22 +28,22 @@ export const middleware = async (req: NextRequest) => {
     )
     // ดึงข้อมูล user
     const { data: { user } } = await supabase.auth.getUser();
-    const isStaffPath = req.nextUrl.pathname.startsWith("/staff");
+    const isDashboardPath = req.nextUrl.pathname.startsWith("/dashboard");
     const isSignInStaffPath = req.nextUrl.pathname.startsWith("/signin-staff");
 
     // พยายามเข้าหน้า Staff แต่ไม่ได้ล็อกอิน
-    if (isStaffPath && !user) {
+    if (isDashboardPath && !user) {
         return NextResponse.redirect(new URL('/signin-staff', req.url))
     }
     // ล็อกอินค้างไว้แล้ว แต่อยากกลับไปหน้า Signin (ให้ดีดกลับไปหน้างาน)
     if (isSignInStaffPath && user) {
-        return NextResponse.redirect(new URL('/staff/artifacts', req.url))
+        return NextResponse.redirect(new URL('/dashboard', req.url))
     }
     return response;
 }
 // ตรวจสอบ Link
 export const config = {
     matcher: [
-        "/staff/:path*",
+        "/dashboard/:path*",
         "/signin-staff"]
 }

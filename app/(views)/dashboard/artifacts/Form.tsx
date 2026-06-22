@@ -1,7 +1,8 @@
+"use client";
+
 import { useForm } from "react-hook-form";
-import { InputField } from "@/app/(views)/staff/artifacts/InputField";
+import { InputField } from "@/app/(views)/dashboard/artifacts/InputField";
 import { ArtifactsForm } from "@/@types/artifact";
-import { LoadingSpinner } from "../../../components/LoadingSpinner";
 
 interface Props {
     initialData?: ArtifactsForm | null;

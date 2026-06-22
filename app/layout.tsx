@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Sans_Thai_Looped } from "next/font/google";
 import "./globals.css";
-import { Footer } from "./components/Footer";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -34,7 +33,6 @@ export default function RootLayout({
         className={`${ibmPlexThaiLooped.className} `}
       >
         {children}
-        <Footer />
       </body>
     </html>
   );

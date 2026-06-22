@@ -1,3 +1,4 @@
+"use client";
 import { handleImageUpload } from "@/app/utils/ImageUpload";
 import React, { useEffect, useState } from "react";
 

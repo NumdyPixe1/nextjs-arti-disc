@@ -13,6 +13,7 @@ export type Artifact = {
     era?: string;
     lat?: number;
     lng?: number;
+    material?: string;
 }
 
 export type ArtifactsForm = {

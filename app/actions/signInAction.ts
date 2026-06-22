@@ -17,16 +17,16 @@ export const signInAction = async (formData: FormData) => {
         return { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" }
     }
 
-    const { data: profile, error: profileError } = await supabase
-        .from("Profiles")
+    const { data: user, error: userError } = await supabase
+        .from("Users")
         .select("role")
         .eq("id", authData.user.id)
         .single()
 
-    if (profileError || !profile) {
-        return { error: "ไม่พบข้อมูลโปรไฟล์ในระบบ" }
+    if (userError || !user) {
+        return { error: "ไม่พบข้อมูลผู้ใช้ในระบบ" }
     }
-    if (profile.role !== "staff") {
+    if (user.role !== "staff") {
         await supabase.auth.signOut(); // ล็อกเอาท์ออกทันทีถ้าไม่ใช่สตาฟ
         return { error: "คุณไม่มีสิทธิ์เข้าถึงระบบเจ้าหน้าที่" };
     } else {

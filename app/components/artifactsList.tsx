@@ -3,7 +3,7 @@
 // แสดงข้อมูลรายการจาก *ค้นหา* และ *ข้อมูลทั้งหมด*
 "use client"
 import { useEffect, useCallback, useRef, useState } from "react";
-import { artifactAction } from "../actions/artifactAction";
+import { getAllArtifacts } from "../actions/artifactAction";
 import { Card } from "./card";
 import { SkeletonLoader } from "./SkeletonLoader";
 interface Props {
@@ -29,7 +29,7 @@ export const ArtifactsList = ({ query }: Props) => {
             const limit = 10;
             // ใช้ page-1 ถ้า Backend ของคุณนับ offset เริ่มจาก 0
             // แต่ถ้าดูจาก Log ของคุณ offset=2, 3... แสดงว่า page ของคุณคือ offset โดยตรง
-            const newData = await artifactAction.getAllArtifacts(page, limit);
+            const newData = await getAllArtifacts(page, limit);
 
             if (!newData || newData.length === 0) {
                 setHasMore(false);

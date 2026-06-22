@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PATHS } from "@/app/utils/paths";
 
 export default function NotFoundPage() {
     return (
@@ -25,7 +26,7 @@ export default function NotFoundPage() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/">
+                    <Link href={PATHS.HOME}>
                         <button className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 cursor-pointer">
                             กลับไปหน้าแรก
                         </button>

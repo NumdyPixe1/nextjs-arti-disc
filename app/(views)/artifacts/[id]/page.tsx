@@ -1,19 +1,20 @@
-
 // Main Page
 import Image from "next/image";
-import { artifactAction } from '@/app/actions/artifactAction';
+import { getArtifactById, getRelatedArtifacts } from '@/app/actions/artifactAction';
 import NotFoundPage from "./not-found";
 import { AiDescription } from "@/app/components/AiDescription";
 import { Card } from "@/app/components/card";
 import Link from "next/link";
 import MapWrapper from "@/app/components/map/Map";
+import { Footer } from "@/app/components/Footer";
+import { PATHS } from "@/app/utils/paths";
 
 export default async function ArtifactDetailsPage({ params }: { params: { id: number } }) {
     const { id } = await params;
     // ดึงข้อมูลขนานกันทั้งข้อมูลหลักและข้อมูลที่เกี่ยวข้อง
     const [mainResult, relatedResult] = await Promise.all([
-        artifactAction.getArtifactById(id),
-        artifactAction.getRelatedArtifacts(id, 4)
+        getArtifactById(id),
+        getRelatedArtifacts(id, 4)
     ]);
 
     const mainData = mainResult.data;
@@ -27,7 +28,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
     return (
         <div className="min-h-screen bg-[#F0EEEB] text-[#13181B]">
             <div className="p-4 flex items-center justify-start">
-                <Link href="/#artifacts" className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
+                <Link href={PATHS.HOME} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:shadow-md">
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
@@ -101,6 +102,7 @@ export default async function ArtifactDetailsPage({ params }: { params: { id: nu
                     </div>
                 </div>
             </div >
+            <Footer />
         </div>
     )
 }

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { SearchBar } from "./components/search/searchBar";
 import { NavBar } from "./components/nav/NavBar";
 import { useRef } from "react";
+import { Footer } from "./components/Footer";
+
 export default function HomePage() {
 
   const [results, setResults] = useState<any[]>([]);
@@ -57,6 +59,8 @@ export default function HomePage() {
         {/* ส่ง results เข้าไป ถ้าว่างมันจะโหลดหน้าแรกเอง ถ้ามีมันจะโชว์ผลการค้นหา */}
         <ArtifactsList query={results.length > 0 ? results : undefined} />
       </section>
+      <Footer />
     </main>
+
   );
 }

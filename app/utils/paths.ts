@@ -8,6 +8,8 @@ export const PATHS = {
 
     // STAFF
     SIGNIN_STAFF: "/signin-staff",
-    DASHBOARD: "/staff",
-    MANAGER_ARTIFACTS: "/staff/artifacts",
+    DASHBOARD: "/dashboard",
+    MANAGER_ARTIFACTS: "/dashboard/artifacts",
+    MANAGER_STAFF: "/dashboard/staff",
+
 }
