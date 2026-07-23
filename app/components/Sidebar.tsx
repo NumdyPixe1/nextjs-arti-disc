@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { PATHS } from "../utils/paths";
+import { signOutAction } from "../actions/signOutAction";
 
 export const Sidebar = () => {
     return (
         <aside className="hidden xl:block fixed left-0 top-0 h-screen w-72 shrink-0 overflow-y-auto border-r border-slate-200 bg-white/95 p-6 shadow-sm shadow-slate-200/40">
             <div className="space-y-6">
                 <div>
-                    <h2 className="mt-3 text-2xl font-semibold text-slate-900">Dashboard</h2>
+                    <h2 className="mt-3 text-2xl font-semibold text-slate-900">
+                        Dashboard
+                    </h2>
                 </div>
 
                 <nav className="space-y-2">
@@ -41,6 +44,11 @@ export const Sidebar = () => {
                         Site home
                     </Link>
                 </nav>
+            </div>
+            <div className="block rounded-2xl px-4 py-3 text-sm transition hover:bg-slate-100">
+                <button onClick={signOutAction} className="cursor-pointer text-red-600 font-semibold">
+                    Log out
+                </button>
             </div>
         </aside>
     );

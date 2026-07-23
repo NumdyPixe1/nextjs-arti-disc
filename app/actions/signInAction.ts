@@ -30,7 +30,7 @@ export const signInAction = async (formData: FormData) => {
         await supabase.auth.signOut(); // ล็อกเอาท์ออกทันทีถ้าไม่ใช่สตาฟ
         return { error: "คุณไม่มีสิทธิ์เข้าถึงระบบเจ้าหน้าที่" };
     } else {
-        redirect(PATHS.MANAGER_ARTIFACTS) // ถ้าเป็นสตาฟส่งไปหลังบ้าน
+        redirect(PATHS.DASHBOARD) // ถ้าเป็นสตาฟส่งไปหลังบ้าน
 
     }
 }

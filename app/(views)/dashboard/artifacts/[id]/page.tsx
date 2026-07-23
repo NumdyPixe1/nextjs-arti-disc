@@ -1,12 +1,13 @@
-import { getArtifactById } from '@/app/actions/artifactAction';
-import EditArtifactFormPage from './Form';
+import { getArtifactById, editArtifact } from '@/app/actions/artifactAction';
+import { ArtifactForm } from './Form';
+import { convertToFormData } from '@/app/utils/convertToFormData';
+import { ArtifactsForm } from '@/@types/artifact';
+
 interface PageProps {
     params: Promise<{ id: string }>
 }
 
-// 🟢 ตัด Parameter ตัวที่สองออกไปเลย เพราะ Next.js Page รับได้แค่ params เท่านั้น
 export default async function ArtifactEditPage({ params }: PageProps) {
-    // 1. await params แกะเอา id ออกมา
     const { id: rawId } = await params;
     const id = Number(rawId);
 
@@ -18,7 +19,6 @@ export default async function ArtifactEditPage({ params }: PageProps) {
         );
     }
 
-    // ดึงข้อมูลโบราณวัตถุผ่าน Server Action
     const mainResult = await getArtifactById(id);
     const artifact = mainResult?.data;
 
@@ -30,7 +30,6 @@ export default async function ArtifactEditPage({ params }: PageProps) {
         );
     }
 
-    // 2. จัดแจงข้อมูลตั้งต้นที่จะเอาไปแสดงในฟอร์มกรอกข้อมูล
     const initialFormData = {
         title: artifact.title || '',
         art_style: artifact.art_style || '',
@@ -42,7 +41,18 @@ export default async function ArtifactEditPage({ params }: PageProps) {
         category: artifact.category || '',
         lng: artifact.lng || 0,
         lat: artifact.lat || 0,
-        image_file: null
+        image_file: null as any
+    };
+
+    // 🟢 สร้างฟังก์ชันรองรับการทำงานเมื่อฟอร์มกด Submit
+    const handleFormSubmit = async (data: ArtifactsForm) => {
+        "use server"; // ระบุเขตเป็น Server Action
+        try {
+            const formData = convertToFormData(data);
+            await editArtifact(id, formData);
+        } catch (error) {
+            console.error("Failed to update artifact:", error);
+        }
     };
 
     return (
@@ -58,10 +68,11 @@ export default async function ArtifactEditPage({ params }: PageProps) {
                     </div>
                 </div>
 
-                {/* 🟢 เรียกใช้คอมโพเนนต์หน้าฟอร์ม (Form.tsx) แล้วส่งค่าที่เราคิวรีได้จากในนี้ลงไปโดยตรง */}
-                <EditArtifactFormPage
-                    artifact={artifact}
+                {/* 🟢 ส่ง handleFormSubmit เข้าไปเคลียร์อาการฟ้องของ TypeScript */}
+                <ArtifactForm
                     initialData={initialFormData}
+                    onSubmit={handleFormSubmit}
+                    isLoading={false}
                 />
             </div>
         </div>

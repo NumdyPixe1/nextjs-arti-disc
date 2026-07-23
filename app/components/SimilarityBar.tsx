@@ -7,7 +7,7 @@ export const SimilarityBar = (similarity: { similarity: number }) => {
     // console.log("SimilarityBar similarity:", similarity.similarity, "displayPercent:", displayPercent, "color:", color);
     return (
         <div className="flex flex-row items-center gap-4 mt-2   rounded-xl border border-slate-200 bg-[#fffdf6]  px-2 py-1 shadow-lg backdrop-blur-sm backdrop-saturate-150">
-            <p className="text-sm font-medium text-slate-700">แม่นยำ</p>
+            <p className="text-sm font-medium text-slate-700">คล้ายคลึง</p>
 
             <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div

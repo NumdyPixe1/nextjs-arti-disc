@@ -48,7 +48,7 @@ export const InputField = React.forwardRef<any, Props>(
                         className={inputClass}
                         id={id}
                         placeholder={placeholder}
-                        rows={3}
+                        rows={10}
                         {...(props as any)}
                         onChange={onChange}
                     />

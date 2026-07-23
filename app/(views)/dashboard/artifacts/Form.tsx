@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { InputField } from "@/app/(views)/dashboard/artifacts/InputField";
+import { InputField } from "@/app/(views)/dashboard/artifacts/[id]/InputField";
 import { ArtifactsForm } from "@/@types/artifact";
 
 interface Props {
