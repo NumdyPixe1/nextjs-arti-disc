@@ -11,9 +11,9 @@ export const analyzeArtifact = async (data: any) => {
             throw new Error("Gemini API Key not found");
         }
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
         const prompt = BASE_INSTRUCTION(data);
-        console.log("%กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view", "color: blue");
+        console.log("กำลังใช้ AI วิเคราะห์ ข้อมูลในหน้า Full view");
 
         // --- ส่งข้อมูลไปให้ Gemini วิเคราะห์ ---
         const result = await model.generateContent([
@@ -29,6 +29,6 @@ export const analyzeArtifact = async (data: any) => {
         return JSON.parse(cleanedJson);
     }
     catch (error: any) {
-        console.error("%Connection Gemini Failed:", "color: red;", error);
+        console.error("%Connection Gemini Failed:", error);
     }
 }
